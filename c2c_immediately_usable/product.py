@@ -25,11 +25,15 @@ from tools.translate import _
 class ProductImmediatelyUsable(osv.osv):
     """
     Inherit Product in order to add an "immediately usable quantity" stock field
+    Immediately usable quantity is : real stock - outgoing qty
     """
+    _inherit = 'product.product'
     
     def _product_available(self, cr, uid, ids, field_names=None, arg=False, context=None):
-        # We need available and outgoing quantities to compute immediately usable
-        # quantity so we add them in the calculation
+        # We need available and outgoing quantities to compute immediately usable quantity.
+        # When immediately_usable_qty is displayed but not qty_available and outgoing_qty,
+        # they are not computed in the super method so we cannot compute immediately_usable_qty.
+        # To avoid this issue, we add the 2 fields in field_names to compute them.
         if 'immediately_usable_qty' in field_names:
             field_names.append('qty_available')
             field_names.append('outgoing_qty')
@@ -37,18 +41,43 @@ class ProductImmediatelyUsable(osv.osv):
         res = super(ProductImmediatelyUsable, self)._product_available(cr, uid, ids, field_names, arg, context)
         
         if 'immediately_usable_qty' in field_names:        
+            # for each product we compute the stock 
             for product_id, stock_qty in res.iteritems():
                 res[product_id]['immediately_usable_qty'] = stock_qty['qty_available'] - stock_qty['outgoing_qty']
         
         return res
     
-    _inherit = 'product.product'
     _columns = {
-        'qty_available': fields.function(_product_available, method=True, type='float', string='Real Stock', help="Current quantities of products in selected locations or all internal if none have been selected.", multi='qty_available'),
-        'virtual_available': fields.function(_product_available, method=True, type='float', string='Virtual Stock', help="Futur stock for this product according to the selected location or all internal if none have been selected. Computed as: Real Stock - Outgoing + Incoming.", multi='qty_available'),
-        'incoming_qty': fields.function(_product_available, method=True, type='float', string='Incoming', help="Quantities of products that are planned to arrive in selected locations or all internal if none have been selected.", multi='qty_available'),
-        'outgoing_qty': fields.function(_product_available, method=True, type='float', string='Outgoing', help="Quantities of products that are planned to leave in selected locations or all internal if none have been selected.", multi='qty_available'),    
-        'immediately_usable_qty': fields.function(_product_available, method=True, type='float', string='Immediately Usable Stock', help="Quantities of products really available for sale. Computed as: Real Stock - Outgoing.", multi='qty_available'),
+        'qty_available': fields.function(_product_available, 
+                                         method=True,
+                                         type='float', 
+                                         string='Real Stock', 
+                                         multi='qty_available',
+                                         help="Current quantities of products in selected locations or all internal if none have been selected."),
+        'virtual_available': fields.function(_product_available, 
+                                             method=True, 
+                                             type='float', 
+                                             string='Virtual Stock', 
+                                             multi='qty_available',
+                                             help="Futur stock for this product according to the selected location or all internal if none have been selected. Computed as: Real Stock - Outgoing + Incoming."),
+        'incoming_qty': fields.function(_product_available, 
+                                        method=True, 
+                                        type='float', 
+                                        string='Incoming', 
+                                        multi='qty_available',
+                                        help="Quantities of products that are planned to arrive in selected locations or all internal if none have been selected."),
+        'outgoing_qty': fields.function(_product_available, 
+                                        method=True, 
+                                        type='float', 
+                                        string='Outgoing', 
+                                        multi='qty_available',
+                                        help="Quantities of products that are planned to leave in selected locations or all internal if none have been selected."),    
+        'immediately_usable_qty': fields.function(_product_available, 
+                                                  method=True, 
+                                                  type='float', 
+                                                  string='Immediately Usable Stock', 
+                                                  multi='qty_available',
+                                                  help="Quantities of products really available for sale. Computed as: Real Stock - Outgoing."),
     }
     
     
