@@ -2,7 +2,7 @@
 <openerp>
 <data>
 
-	<menuitem name= "Chimie" id="menu_product_Chimie" parent="product.menu_config_product"/>
+	<menuitem name= "Chimie" id="menu_product_Chimie" parent="base.menu_product"/>
 
 <!--Addition of three tabs in the notebook's existing product sheet for risk / safety / hazards -->
 

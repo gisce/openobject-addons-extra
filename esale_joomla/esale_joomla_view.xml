@@ -545,7 +545,7 @@
         <field name="view_type">form</field>
         <field name="view_id" ref="view_esale_joomla_category_tree"/>
     </record>
-    <menuitem action="esale_joomla_category_action_form" id="menu_product_category_action_form" parent="product.menu_config_product" sequence="1"/>
+    <menuitem action="esale_joomla_category_action_form" id="menu_product_category_action_form" parent="base.menu_product" sequence="1"/>
 
     <!-- Web Products -->
 
