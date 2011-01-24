@@ -184,7 +184,7 @@ class display(object):
         self.attrs = {
             'form': {'group': True, 'label': False, 'colspan':4, 'height': 4},
             'tree': {'colspan':4},
-        'search': {'group': True, 'label': False, 'colspan':16, 'height': 2},
+	        'search': {'group': True, 'label': False, 'colspan':16, 'height': 2},
             'group': {'group': True, 'display':False, 'label':False, 'height': 0},
             'notebook': {'group': True, 'display':False, 'label':False, 'height': 0, 'colspan':4},
             'page': {'group': True, 'label':False, 'height': 2, 'colspan':4},
@@ -301,7 +301,6 @@ class display(object):
                 self.sizes.pop()
 
         return posx,posy
-
         
     def process_search(self, element, posx=0, posy=0):
         label = element.attrib.get('string','')
@@ -314,24 +313,44 @@ class display(object):
         colspan = int(element.attrib.get('colspan',self.attrs.get(element.tag, {}).get('colspan', 1)))
         pos_x = posx
         pos_y = posy
-    labelspan=0
-    default=None
-    if element.tag == 'search':
+        labelspan=0
+        default=None
+        if element.tag == 'search':
             self.draw_element(pos_x, pos_y, self.sizes[-1][1], height, 'shape - '+element.tag, {},label)
-            pos_y = pos_y+height
-    if element.tag=='newline':
-       return 0, 80
-    if element.tag == 'separator':
-        posx = pos_x+1    
+            posx = pos_x
+            posy = pos_y
+            
+        if element.tag=='newline':
 
-    if element.tag == 'filter':
-        self.draw_element(pos_x, pos_y, self.sizes[-1][1], height, 'shape - '+element.tag, {},label)
-        posx = pos_x+4    
-    if element.tag == 'group':
-        label = element.attrib.get('string','')
-        if label == "Extended Filters...":
-             self.draw_element(pos_x, 20, self.sizes[-1][1] , height, None, {}, label)    
+            posx = 0
+            posy += 2
+            
+        if element.tag == 'separator':
+            posx = pos_x+1
+            posy = pos_y
 
+        if element.tag == 'filter':
+            fname = element.attrib.get('icon',False)
+            self.draw_element(pos_x-2, pos_y, self.sizes[-1][1], height, 'shape - '+element.tag, {},label)
+            
+#           TODO:Code to find the Icon name and adding icon to the Filter button            
+#            if self.view['fields'][field_name].has_key('icon'):
+#                print "---------->>",self.view['fields'][field_name]['icon']
+#            self.draw_element(pos_x, pos_y, 0.6, 0.6, 'shape - personal', {})
+            posx = pos_x+4
+            posy = pos_y
+        
+        if element.tag == 'group':
+            label = element.attrib.get('string','')
+            if label == "Extended Filters...":
+                self.draw_element(0, pos_y+0.5, self.sizes[-1][1] , 1.4, 'shape - search_group', {}, label)
+                posx += 0
+                posy += 2
+            if label == "Group By...":
+                self.draw_element(0, pos_y+0.5, self.sizes[-1][1] , 1.4, 'shape - search_group', {}, label)	
+                posx += 0
+                posy += 2
+                
         if element.tag=='field':
             field_name = element.attrib.get('name')
             attr = self.view['fields'][field_name]
@@ -347,6 +366,7 @@ class display(object):
                 labelspan = 1
                 if attr.get('colspan', 0):
                     colspan = int(attr.get('colspan', 0)) - 1
+
             if not label:
                 label = self.view['fields'][field_name]['string']
             if nolabel:
@@ -361,26 +381,24 @@ class display(object):
             shape = self.shapes.get(shape_type,'shape - '+shape_type)
             height = self.fields.get(shape_type, {}).get('height', 2)
             label = label and label + ' : '
-            attrs['text_alignment'] =self.fields.get(shape_type, {}).get('style',{}).get('text_alignment',1)
-
+            attrs['text_alignment'] = self.fields.get(shape_type, {}).get('style',{}).get('text_alignment',2)
             attrs['text'] = label
-
             colsize = self.sizes[-1][1] / float(self.sizes[-1][0])
             if colspan == 0:
-            colspan = 1
-            size = colsize * colspan
-
-            #if posx+colspan > self.sizes[-1][0]:
-          #  posx = labelspan
-          #  posy = self.sizes[-1][-1]
-            self.sizes[-1][-1] = max(self.sizes[-1][-1], posy + height)
-
-            pos_x = posx * colsize  + self.sizes[-1][2]
-            pos_y = posy
+                colspan = 2
+            size = colsize * colspan - 3
+            pos_x = posx * colsize  + self.sizes[-1][2] 
+            pos_y = posy 
+            if posx == 1:
+                posx = 5
+            if shape_type in ['one2many', 'many2many']:
+                shape = self.shapes.get(shape_type,'shape - char')
+                height = 2
+                attrs.update({'text_alignment':2})
             if self.attrs.get(element.tag, {}).get('display', True):
-            self.draw_element(posx, posy, size, height, shape, attrs, default)
-
-            posx += len(label)/2+4
+                self.draw_element(posx, posy, size, height, shape, attrs, default)
+            posx += (len(label)/2) + 3
+            posy = pos_y
 
         if element.tag in self.attrs:
             col = int(element.attrib.get('col',6))
@@ -389,10 +407,11 @@ class display(object):
             posy2 = posy + height
             for e in element.getchildren():
                 posx2,posy2 = self.process_search(e, posx2, posy2)
+                posx=posx2
+                posy=posy2 
             self.sizes[-2][-1] = max(self.sizes[-2][-1],  self.sizes[-1][-1])
         return posx, posy
    
-
     def process_tree(self, element, posx=0, posy=0):
         label = element.attrib.get('string','')
         attrs = {
@@ -438,7 +457,8 @@ class display(object):
         if type == 'tree':
             self.process_tree(self.etree, 0, 5)
         if type == 'search':
-            self.process_search(self.etree, 0, 5)
+            x, y = self.process_search(self.etree, 0, 5)
+            self.draw_element(0, y+2.2, 30, 2, 'shape - search_view_botton', {})
         if 'toolbar' in self.view:
             y = 6
             for data in ('print', 'action', 'relate'):

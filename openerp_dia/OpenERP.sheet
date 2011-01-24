@@ -93,10 +93,7 @@
 <object name="shape - one2many_list">
 <description>one2many_list</description>
 </object>
-<object name="shape - search_view_top">
-<description>Header (Search View)</description>
-</object>
-<object name="shape - search_view_top">
+<object name="shape - search">
 <description>Header (Search View)</description>
 </object>
 <object name="shape - search_view_botton">
@@ -104,6 +101,12 @@
 </object>
 <object name="shape - filter">
 <description>Filter (Search View)</description>
+</object>
+<object name="shape - search_group">
+<description> Filter Group (Search View)</description>
+</object>
+<object name="shape - search_view_top">
+<description>Header (Search View)</description>
 </object>
 </contents>
 </sheet>

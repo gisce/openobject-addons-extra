@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<sheet xmlns="http://www.lysator.liu.se/~alla/dia/dia-sheet-ns">
+<!--Dia-Version: 0.96.1-->
+<!--File: /home/fp/.dia/sheets/OpenERP.sheet-->
+<!--Date: Wed Nov 12 12:16:55 2008-->
+<!--For: fp-->
+
+<name>Open ERP Button Icons</name>
+    <description>Design Open ERP Button Using this Icons sets</description>
+    <contents>
+        <!--add shapes here-->
+        <object name="shape - gtk-about">
+            <description>GTK About</description>
+        </object>
+        <object name="shape - personal">
+            <description>Personal</description>
+        </object>
+        <object name="shape - personal-">
+            <description>Personal - </description>
+        </object>
+        <object name="shape - terp-personal+">
+            <description>Personal + </description>
+        </object>
+    </contents>
+</sheet>
