@@ -42,8 +42,6 @@ class window(object):
             None,
             gtk.DIALOG_MODAL|gtk.DIALOG_DESTROY_WITH_PARENT
         )
-        #self.dia.set_property('default-width', 760)
-        #self.dia.set_property('default-height', 500)
 
         self.but_cancel = self.dia.add_button(gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL)
         self.but_ok = self.dia.add_button(gtk.STOCK_OK, gtk.RESPONSE_OK)
@@ -71,7 +69,6 @@ class window(object):
             if col>1:
                 col=0
                 row+=1
-
 
         self.dia.vbox.pack_start(table, expand=True, fill=True)
         self.dia.show_all()
@@ -176,7 +173,7 @@ class display(object):
         self.view = view
         self.etree = etree.fromstring(view['arch'])
         self.select1 = self.select2 = []
-        self.sizes = [[4 ,48 , 0 , 6, 8]]
+        self.sizes = [[4 ,52 , 0 , 6, 8]]
         self.defaults = default
         self.shapes = {
             'form' : 'shape - head_title',
@@ -187,6 +184,7 @@ class display(object):
         self.attrs = {
             'form': {'group': True, 'label': False, 'colspan':4, 'height': 4},
             'tree': {'colspan':4},
+        'search': {'group': True, 'label': False, 'colspan':16, 'height': 2},
             'group': {'group': True, 'display':False, 'label':False, 'height': 0},
             'notebook': {'group': True, 'display':False, 'label':False, 'height': 0, 'colspan':4},
             'page': {'group': True, 'label':False, 'height': 2, 'colspan':4},
@@ -232,13 +230,12 @@ class display(object):
         attrs = {
             'text_alignment': 0,
             'text_colour': "#000000",
-            'text_height': 1
+            'text_height': 1,
         }
         height = self.attrs.get(element.tag, {}).get('height', 2)
         if element.tag=='newline':
            return 0, self.sizes[-1][-1]
-        if element.tag=='button':
-             attrs['text_alignment'] = 1
+            
         if element.tag=='field':
             field_name = element.attrib.get('name')
             attr = self.view['fields'][field_name]
@@ -288,7 +285,7 @@ class display(object):
         pos_x = posx * colsize  + self.sizes[-1][2]
         pos_y = posy
         if self.attrs.get(element.tag, {}).get('display', True):
-            self.draw_element(pos_x, pos_y, size, height, shape, attrs, default)
+             self.draw_element(pos_x, pos_y, size, height, shape, attrs, default)
 
         posx += colspan
 
@@ -304,7 +301,98 @@ class display(object):
                 self.sizes.pop()
 
         return posx,posy
+
         
+    def process_search(self, element, posx=0, posy=0):
+        label = element.attrib.get('string','')
+        attrs = {
+            'text_alignment': 0,
+            'text_colour': "#000000",
+        }
+        height = self.attrs.get(element.tag, {}).get('height', 2)
+        shape = self.shapes.get(element.tag,'shape - '+element.tag)
+        colspan = int(element.attrib.get('colspan',self.attrs.get(element.tag, {}).get('colspan', 1)))
+        pos_x = posx
+        pos_y = posy
+    labelspan=0
+    default=None
+    if element.tag == 'search':
+            self.draw_element(pos_x, pos_y, self.sizes[-1][1], height, 'shape - '+element.tag, {},label)
+            pos_y = pos_y+height
+    if element.tag=='newline':
+       return 0, 80
+    if element.tag == 'separator':
+        posx = pos_x+1    
+
+    if element.tag == 'filter':
+        self.draw_element(pos_x, pos_y, self.sizes[-1][1], height, 'shape - '+element.tag, {},label)
+        posx = pos_x+4    
+    if element.tag == 'group':
+        label = element.attrib.get('string','')
+        if label == "Extended Filters...":
+             self.draw_element(pos_x, 20, self.sizes[-1][1] , height, None, {}, label)    
+
+        if element.tag=='field':
+            field_name = element.attrib.get('name')
+            attr = self.view['fields'][field_name]
+            attr.update(element.attrib)
+            if attr.get('required',0):
+                attrs['fill_colour'] = "#DDDDFF"
+            if attr.get('readonly',0):
+                attrs['fill_colour'] = "#EEEEEE"
+
+            nolabel = int(attr.get('nolabel',0))
+            if not nolabel:
+                posx+=1
+                labelspan = 1
+                if attr.get('colspan', 0):
+                    colspan = int(attr.get('colspan', 0)) - 1
+            if not label:
+                label = self.view['fields'][field_name]['string']
+            if nolabel:
+                label = ""
+            if field_name in self.defaults and len(self.defaults):
+                default = self.defaults[field_name]
+                
+            shape_type = self.view['fields'][field_name]['type']
+            if shape_type == 'many2one':
+                if self.view['fields'][field_name].has_key('widget'):
+                    shape_type = self.view['fields'][field_name]['widget']
+            shape = self.shapes.get(shape_type,'shape - '+shape_type)
+            height = self.fields.get(shape_type, {}).get('height', 2)
+            label = label and label + ' : '
+            attrs['text_alignment'] =self.fields.get(shape_type, {}).get('style',{}).get('text_alignment',1)
+
+            attrs['text'] = label
+
+            colsize = self.sizes[-1][1] / float(self.sizes[-1][0])
+            if colspan == 0:
+            colspan = 1
+            size = colsize * colspan
+
+            #if posx+colspan > self.sizes[-1][0]:
+          #  posx = labelspan
+          #  posy = self.sizes[-1][-1]
+            self.sizes[-1][-1] = max(self.sizes[-1][-1], posy + height)
+
+            pos_x = posx * colsize  + self.sizes[-1][2]
+            pos_y = posy
+            if self.attrs.get(element.tag, {}).get('display', True):
+            self.draw_element(posx, posy, size, height, shape, attrs, default)
+
+            posx += len(label)/2+4
+
+        if element.tag in self.attrs:
+            col = int(element.attrib.get('col',6))
+            self.sizes.append([col, self.sizes[-1][1], pos_x, pos_y, pos_y+height])
+            posx2 = pos_x+2
+            posy2 = posy + height
+            for e in element.getchildren():
+                posx2,posy2 = self.process_search(e, posx2, posy2)
+            self.sizes[-2][-1] = max(self.sizes[-2][-1],  self.sizes[-1][-1])
+        return posx, posy
+   
+
     def process_tree(self, element, posx=0, posy=0):
         label = element.attrib.get('string','')
         attrs = {
@@ -319,14 +407,15 @@ class display(object):
         if element.tag=='tree':
             attrs['text_colour'] =  "#000000"
             self.draw_element(pos_x, pos_y, self.sizes[-1][1], height, shape, attrs)
-            self.draw_element(0, pos_y + height, self.sizes[-1][1], 25, 'shape - list', {})
-           
+            self.draw_element(0, pos_y + height, self.sizes[-1][1], 2, 'shape - list', {})
+            self.draw_element(0, 9, self.sizes[-1][1], 15, 'shape - o2m_m2m', {})
+            self.draw_element(3, 9, self.sizes[-1][1], 15, None, attrs, label)
         elif element.tag=='field':
             field_name = element.attrib.get('name')
             label = self.view['fields'][field_name]['string']
             attrs['text_alignment'] = 0
             attrs['text_height'] = 0
-            self.draw_element(pos_x, 20, self.sizes[-1][1] , height, None, attrs, label)
+            self.draw_element(pos_x, 11, self.sizes[-1][1] , height, None, attrs, label)
             posx = posx + len(label)/2
             
         if element.tag in self.attrs:
@@ -348,25 +437,28 @@ class display(object):
             self.process_node(self.etree, 0, 5)
         if type == 'tree':
             self.process_tree(self.etree, 0, 5)
-            
+        if type == 'search':
+            self.process_search(self.etree, 0, 5)
         if 'toolbar' in self.view:
             y = 6
             for data in ('print', 'action', 'relate'):
                 if not self.view['toolbar'][data]:
                     continue
-                self.draw_element(49, y, 11, 1.8 , 'shape - right_toolbar_header', {
+                self.draw_element(52, y, 11, 1.8 , 'shape - right_toolbar_header', {
                     'text': data.upper(),
                     'text_alignment': 0,
-                    'text_colour': "#FFFFFF",
+                    'text_colour': "#000000",
                 })
-                y += 2
+                y += 1.8
                 for relate in self.view['toolbar'][data] :
-                     self.draw_element(49, y, 11, 1.8 , 'shape - right_toolbar_text', {
+                     self.draw_element(52, y, 11, 1.8 , 'shape - right_toolbar_text', {
                         'text': relate['string'],
                         'text_alignment': 0
                      })
-                     y += 2
-
+                     y += 1.6
+            self.draw_element(52, y, 11, 35.8 , 'shape - right_toolbar_bottom', {
+                'text_alignment': 0
+                })
         self.data.active_layer.update_extents()
 
 def main(data=True, flags=True, draw=True):
@@ -377,7 +469,7 @@ def main(data=True, flags=True, draw=True):
         uid, db, password, server = result
         _url = server + '/object'
         sock = xmlrpclib.ServerProxy(_url)
-        ids = sock.execute(db, uid, password, 'ir.ui.view', 'search', [('inherit_id','=',False),('type','in',('form','tree'))])
+        ids = sock.execute(db, uid, password, 'ir.ui.view', 'search', [('inherit_id','=',False),('type','in',('form','tree','search'))])
         views = sock.execute(db, uid, password, 'ir.ui.view', 'read', ids, ['name','type','model'])
         view_lst = map(lambda x: (x['name'],x['model'],x['type'],x['id']), views)
         win = window2(view_lst)
@@ -412,5 +504,4 @@ def main2(data, flags):
 dia.register_callback ("Load Open ERP View", 
                        "<Display>/Tools/Load Open ERP View", 
                        main)
-
 

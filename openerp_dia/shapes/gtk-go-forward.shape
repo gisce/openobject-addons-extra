@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<shape xmlns="http://www.daa.com.au/~james/dia-shape-ns" xmlns:svg="http://www.w3.org/2000/svg">
+  <name>shape - gtk-go-forward</name>
+  <description>gtk-go-forward</description>
+  <icon>gtk-go-forward.png</icon>
+  <aspectratio type="free"/>
+  <svg:svg>
+  <svg:image x="0" y="0" width="5" height="5" href="gtk-go-forward.png"/>
+  </svg:svg>
+</shape>

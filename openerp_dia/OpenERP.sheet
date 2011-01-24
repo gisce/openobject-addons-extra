@@ -48,6 +48,9 @@
 <object name="shape - notebook_path">
 <description>Notebook</description>
 </object>
+<object name="shape - o2m_m2m">
+<description>List One2many</description>
+</object>
 <object name="shape - separator">
 <description>Separator</description>
 </object>
@@ -89,6 +92,18 @@
 </object>
 <object name="shape - one2many_list">
 <description>one2many_list</description>
+</object>
+<object name="shape - search_view_top">
+<description>Header (Search View)</description>
+</object>
+<object name="shape - search_view_top">
+<description>Header (Search View)</description>
+</object>
+<object name="shape - search_view_botton">
+<description>Bottom (Search View)</description>
+</object>
+<object name="shape - filter">
+<description>Filter (Search View)</description>
 </object>
 </contents>
 </sheet>

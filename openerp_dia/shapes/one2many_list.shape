@@ -6,6 +6,6 @@
   <aspectratio type="free"/>
         <textbox x1="1" y1="0.5" x2="35" y2="2"/> 
   <svg:svg>
-    <svg:image x="0" y="0" width="38.9" height="8" href="one2many_list_real.png"/>
+    <svg:image x="0" y="0" width="38.9" height="8" href="o2m_m2m.png"/>
   </svg:svg>
 </shape>
