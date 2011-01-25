@@ -77,12 +77,23 @@ class window(object):
         while True:
             res = self.dia.run()
             if res==gtk.RESPONSE_OK:
+                if self.server.get_text().strip() == '':
+                        warning('Invalid Server Name !')
+                        continue
                 _url = self.server.get_text() + '/common'
                 sock = xmlrpclib.ServerProxy(_url)
                 try:
                     db = self.database.get_text()
                     pa = self.password.get_text()
-                    uid = sock.login(db, self.login.get_text(), pa)
+                    if pa in [None,''] or db.strip() in [None,'']:
+                        warning('Authentication error !\nBad Database name or Password.')
+                        continue
+                    uid = None
+                    try:
+                        uid = sock.login(db, self.login.get_text(), pa)
+                    except:
+                        warning('Authentication error !\nInvalid User.')
+                        continue
                     return uid, db, pa, self.server.get_text()
                 except Exception, e:
                     warning('Unable to connect to the server')
@@ -489,8 +500,11 @@ def main(data=True, flags=True, draw=True):
         uid, db, password, server = result
         _url = server + '/object'
         sock = xmlrpclib.ServerProxy(_url)
-        ids = sock.execute(db, uid, password, 'ir.ui.view', 'search', [('inherit_id','=',False),('type','in',('form','tree','search'))])
-        views = sock.execute(db, uid, password, 'ir.ui.view', 'read', ids, ['name','type','model'])
+        try:
+            ids = sock.execute(db, uid, password, 'ir.ui.view', 'search', [('inherit_id','=',False),('type','in',('form','tree','search'))])
+            views = sock.execute(db, uid, password, 'ir.ui.view', 'read', ids, ['name','type','model'])
+        except Exception, e:
+            warning('Error!\nPlease Check the server configuration again.')
         view_lst = map(lambda x: (x['name'],x['model'],x['type'],x['id']), views)
         win = window2(view_lst)
         result = win.run()
