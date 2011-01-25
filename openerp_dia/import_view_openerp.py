@@ -78,22 +78,23 @@ class window(object):
             res = self.dia.run()
             if res==gtk.RESPONSE_OK:
                 if self.server.get_text().strip() == '':
-                        warning('Invalid Server Name !')
-                        continue
+                     warning('Invalid Server Name !')
+                     continue
                 _url = self.server.get_text() + '/common'
                 sock = xmlrpclib.ServerProxy(_url)
                 try:
                     db = self.database.get_text()
                     pa = self.password.get_text()
                     if pa in [None,''] or db.strip() in [None,'']:
-                        warning('Authentication error !\nBad Database name or Password.')
-                        continue
+                         warning('Authentication error !\nBad Database name or Password.')
+                         continue
                     uid = None
                     try:
                         uid = sock.login(db, self.login.get_text(), pa)
                     except:
                         warning('Authentication error !\nInvalid User.')
                         continue
+
                     return uid, db, pa, self.server.get_text()
                 except Exception, e:
                     warning('Unable to connect to the server')
@@ -195,7 +196,7 @@ class display(object):
         self.attrs = {
             'form': {'group': True, 'label': False, 'colspan':4, 'height': 4},
             'tree': {'colspan':4},
-	        'search': {'group': True, 'label': False, 'colspan':16, 'height': 2},
+            'search': {'group': True, 'label': False, 'colspan':16, 'height': 2},
             'group': {'group': True, 'display':False, 'label':False, 'height': 0},
             'notebook': {'group': True, 'display':False, 'label':False, 'height': 0, 'colspan':4},
             'page': {'group': True, 'label':False, 'height': 2, 'colspan':4},
@@ -296,7 +297,17 @@ class display(object):
         pos_x = posx * colsize  + self.sizes[-1][2]
         pos_y = posy
         if self.attrs.get(element.tag, {}).get('display', True):
-             self.draw_element(pos_x, pos_y, size, height, shape, attrs, default)
+             if element.tag == 'button':
+                element_icon = element.attrib.get('icon',False)
+                attrs['text_alignment'] = 1
+                if element_icon.startswith("terp"):
+                      element_icon = element_icon[5:]  
+                self.draw_element(pos_x, pos_y, size, height, shape, attrs, default)
+                if element_icon:
+                    shape_icon = self.shapes.get(element_icon,'shape - '+ element_icon) 
+                    self.draw_element(pos_x, pos_y+0.5, 1, 1, shape_icon, {})
+             else:
+                self.draw_element(pos_x, pos_y, size, height, shape, attrs, default)
 
         posx += colspan
 
@@ -332,22 +343,21 @@ class display(object):
             posy = pos_y
             
         if element.tag=='newline':
-
             posx = 0
             posy += 2
-            
         if element.tag == 'separator':
             posx = pos_x+1
             posy = pos_y
 
         if element.tag == 'filter':
-            fname = element.attrib.get('icon',False)
+            icon = element.attrib.get('icon',False)
             self.draw_element(pos_x-2, pos_y, self.sizes[-1][1], height, 'shape - '+element.tag, {},label)
-            
-#           TODO:Code to find the Icon name and adding icon to the Filter button            
-#            if self.view['fields'][field_name].has_key('icon'):
-#                print "---------->>",self.view['fields'][field_name]['icon']
-#            self.draw_element(pos_x, pos_y, 0.6, 0.6, 'shape - personal', {})
+            if icon: 
+                if icon.startswith("terp"):
+                      icon = icon[5:]     
+                shape_icon = self.shapes.get(icon,'shape - '+icon) 
+                self.draw_element(pos_x-0.5, pos_y, 0.8, 0.8, shape_icon, {})
+
             posx = pos_x+4
             posy = pos_y
         
@@ -358,7 +368,7 @@ class display(object):
                 posx += 0
                 posy += 2
             if label == "Group By...":
-                self.draw_element(0, pos_y+0.5, self.sizes[-1][1] , 1.4, 'shape - search_group', {}, label)	
+                self.draw_element(0, pos_y+0.5, self.sizes[-1][1] , 1.4, 'shape - search_group', {}, label)    
                 posx += 0
                 posy += 2
                 
@@ -491,7 +501,6 @@ class display(object):
                 'text_alignment': 0
                 })
         self.data.active_layer.update_extents()
-
 def main(data=True, flags=True, draw=True):
     win = window()
     result = win.run()
@@ -504,7 +513,7 @@ def main(data=True, flags=True, draw=True):
             ids = sock.execute(db, uid, password, 'ir.ui.view', 'search', [('inherit_id','=',False),('type','in',('form','tree','search'))])
             views = sock.execute(db, uid, password, 'ir.ui.view', 'read', ids, ['name','type','model'])
         except Exception, e:
-            warning('Error!\nPlease Check the server configuration again.')
+            warning('Error!\nPlease Check the server configuration again.')            
         view_lst = map(lambda x: (x['name'],x['model'],x['type'],x['id']), views)
         win = window2(view_lst)
         result = win.run()
@@ -513,6 +522,7 @@ def main(data=True, flags=True, draw=True):
             model, view_id, view_type = result
             views = sock.execute(db, uid, password, model, 'fields_view_get', view_id, view_type, {}, True)
             fields = views['fields']
+                                                                               
             for field in fields:
                 default = sock.execute(db, uid, password, model, 'default_get',[field])
                 if len(default) and default[field]:
@@ -520,7 +530,7 @@ def main(data=True, flags=True, draw=True):
                         val = sock.execute(db, uid, password, fields[field]['relation'], 'read', default[field], ['name'])['name']
                         default[field] = val
                     defaults.update(default)
-                        
+                                    
             d = display(views, defaults)
             if draw:
                 d.draw(data, flags,views['type'])
