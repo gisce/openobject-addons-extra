@@ -93,8 +93,7 @@ class window(object):
                         uid = sock.login(db, self.login.get_text(), pa)
                     except:
                         warning('Authentication error !\nInvalid User.')
-                        continue
-
+                        continue                    
                     return uid, db, pa, self.server.get_text()
                 except Exception, e:
                     warning('Unable to connect to the server')
@@ -163,9 +162,6 @@ class window2(object):
                     res3 = model.get_value(iter,2)
                     self.destroy()
                     return res2, res, res3
-                else:
-                    warning('You must select a ressource !')
-                    continue
             self.destroy()
             break
         return False
@@ -247,7 +243,7 @@ class display(object):
         height = self.attrs.get(element.tag, {}).get('height', 2)
         if element.tag=='newline':
            return 0, self.sizes[-1][-1]
-            
+        shape = False
         if element.tag=='field':
             field_name = element.attrib.get('name')
             attr = self.view['fields'][field_name]
@@ -432,6 +428,7 @@ class display(object):
                 posy=posy2 
             self.sizes[-2][-1] = max(self.sizes[-2][-1],  self.sizes[-1][-1])
         return posx, posy
+
    
     def process_tree(self, element, posx=0, posy=0):
         label = element.attrib.get('string','')
@@ -446,16 +443,14 @@ class display(object):
         attrs['text'] = label
         if element.tag=='tree':
             attrs['text_colour'] =  "#000000"
-            self.draw_element(pos_x, pos_y, self.sizes[-1][1], height, shape, attrs)
-            self.draw_element(0, pos_y + height, self.sizes[-1][1], 2, 'shape - list', {})
-            self.draw_element(0, 9, self.sizes[-1][1], 15, 'shape - o2m_m2m', {})
-            self.draw_element(3, 9, self.sizes[-1][1], 15, None, attrs, label)
+            self.draw_element(0, pos_y+4, self.sizes[-1][1], 15, 'shape - o2m_m2m', {})
+            self.draw_element(3, pos_y+4, self.sizes[-1][1], 15, None, attrs, label)
         elif element.tag=='field':
             field_name = element.attrib.get('name')
             label = self.view['fields'][field_name]['string']
             attrs['text_alignment'] = 0
             attrs['text_height'] = 0
-            self.draw_element(pos_x, 11, self.sizes[-1][1] , height, None, attrs, label)
+            self.draw_element(pos_x, pos_y+4, self.sizes[-1][1] , height, None, attrs, label)
             posx = posx + len(label)/2
             
         if element.tag in self.attrs:
@@ -469,39 +464,58 @@ class display(object):
                 
         return posx,posy
     
-    def draw(self, data, flags, type):
+    def draw(self, data, flags, type, x=0, y=0):
         self.data = data
         self.flags = flags
         self.draw_element(0, 0, 60, 5, 'shape - head_logo', {})
         if type == 'form':
-            self.process_node(self.etree, 0, 5)
+            self.process_node(self.etree, x, y)
         if type == 'tree':
-            self.process_tree(self.etree, 0, 5)
+            self.process_tree(self.etree, x, y)
         if type == 'search':
-            x, y = self.process_search(self.etree, 0, 5)
+            x, y = self.process_search(self.etree, 0,5)
             self.draw_element(0, y+2.2, 30, 2, 'shape - search_view_botton', {})
         if 'toolbar' in self.view:
-            y = 6
+            k = 6
             for data in ('print', 'action', 'relate'):
                 if not self.view['toolbar'][data]:
                     continue
-                self.draw_element(52, y, 11, 1.8 , 'shape - right_toolbar_header', {
+                self.draw_element(52, k, 11, 1.8 , 'shape - right_toolbar_header', {
                     'text': data.upper(),
                     'text_alignment': 0,
                     'text_colour': "#000000",
                 })
-                y += 1.8
+                k += 1.8
                 for relate in self.view['toolbar'][data] :
-                     self.draw_element(52, y, 11, 1.8 , 'shape - right_toolbar_text', {
+                     self.draw_element(52, k, 11, 1.8 , 'shape - right_toolbar_text', {
                         'text': relate['string'],
                         'text_alignment': 0
                      })
-                     y += 1.6
-            self.draw_element(52, y, 11, 35.8 , 'shape - right_toolbar_bottom', {
+                     k += 1.6
+            self.draw_element(52, k, 11, 35.8 , 'shape - right_toolbar_bottom', {
                 'text_alignment': 0
                 })
         self.data.active_layer.update_extents()
+        return x,y
+
+def view_get(sock,db, uid, password, model, type, domain):
+    try:
+        ids = sock.execute(db, uid, password, model, type, domain)                               
+        views = sock.execute(db, uid, password, 'ir.ui.view', 'read', ids, ['name','type','model'])
+    except Exception, e:
+        warning('Error!\nPlease Check the server configuration again.') 
+    view_lst = map(lambda x: (x['name'],x['model'],x['type'],x['id']), views)
+    win = window2(view_lst)
+    result = win.run()
+    s_views = None
+    if result:
+        model, view_id, view_type = result            
+        s_views = sock.execute(db, uid, password, model, 'fields_view_get', view_id, view_type, {}, True)
+    return s_views
+
+
 def main(data=True, flags=True, draw=True):
+    posx, posy = 0,5
     win = window()
     result = win.run()
     win.destroy()
@@ -509,31 +523,27 @@ def main(data=True, flags=True, draw=True):
         uid, db, password, server = result
         _url = server + '/object'
         sock = xmlrpclib.ServerProxy(_url)
-        try:
-            ids = sock.execute(db, uid, password, 'ir.ui.view', 'search', [('inherit_id','=',False),('type','in',('form','tree','search'))])
-            views = sock.execute(db, uid, password, 'ir.ui.view', 'read', ids, ['name','type','model'])
-        except Exception, e:
-            warning('Error!\nPlease Check the server configuration again.')            
-        view_lst = map(lambda x: (x['name'],x['model'],x['type'],x['id']), views)
-        win = window2(view_lst)
-        result = win.run()
+        views = view_get(sock,db, uid, password, 'ir.ui.view', 'search', [('inherit_id','=',False),('type','in',('form','tree','search'))])
         defaults ={}
-        if result:
-            model, view_id, view_type = result
-            views = sock.execute(db, uid, password, model, 'fields_view_get', view_id, view_type, {}, True)
+        if views:
             fields = views['fields']
-                                                                               
             for field in fields:
-                default = sock.execute(db, uid, password, model, 'default_get',[field])
+                default = sock.execute(db, uid, password, views.get('model', False), 'default_get',[field])
                 if len(default) and default[field]:
                     if fields[field]['type'] == 'many2one':
                         val = sock.execute(db, uid, password, fields[field]['relation'], 'read', default[field], ['name'])['name']
                         default[field] = val
                     defaults.update(default)
-                                    
+            if views.get('type', False) == 'tree':
+                search_views = view_get(sock, db, uid, password, 'ir.ui.view', 'search',  [('model','=', views.get('model',False)),('type','=','search')])
+                if search_views:
+                    d = display(search_views, defaults)
+                    if draw:
+                       posx, posy =  d.draw(data, flags,search_views.get('type', False), posx, posx)
             d = display(views, defaults)
             if draw:
-                d.draw(data, flags,views['type'])
+                d.draw(data, flags,views.get('type', False), posx,posy)
+
 
 if __name__=='__main__':
     main(draw =False)
