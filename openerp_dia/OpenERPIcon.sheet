@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
     <sheet xmlns="http://www.lysator.liu.se/~alla/dia/dia-sheet-ns">
-    <name>Open ERP Button Icons</name>
-        <description>Design Open ERP Button Using this Icons sets</description>
+    <name>Open ERP Icon Pack</name>
+        <description>OpenERP icon pack to be used with the Buttons and Search View</description>
             <contents>
 
         <object name="shape - translate">
