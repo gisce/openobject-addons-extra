@@ -266,9 +266,9 @@ class training_subscription(osv.osv):
             # Delete duplicate subscripcions
             if website.duplicate_subscription:
                 for line in subscription_order['lines']:
-                    subscription_line_ids = self.pool.get('training.subscription.line').search(cr, uid, [('session_id','=',line['session_id']),('subscription_state','=','draft')])
+                    subscription_line_ids = self.pool.get('training.subscription.line').search(cr, uid, [('partner_id','=',subscription_order['partner_id']),('session_id','=',line['session_id']),('subscription_state','=','draft')])
                     for subscription_line_id in subscription_line_ids:
-                        subscription_id = self.pool.get('training.subscription').search(cr, uid, [('subscription_line_ids','=',subscription_line_id),('state','=','draft')])
+                        subscription_id = self.pool.get('training.subscription').search(cr, uid, [('partner_id','=',subscription_order['partner_id']),('subscription_line_ids','=',subscription_line_id),('state','=','draft')])
                         if subscription_id:
                             # Cancel Subscription
                             wf_service = netsvc.LocalService('workflow')
