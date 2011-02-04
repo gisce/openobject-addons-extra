@@ -1,12 +1,8 @@
 # -*- coding: utf-8 -*-
 ##############################################################################
 #
-# Copyright (c) Camptocamp SA
-# Author: Arnaud WÃŒst
-#
-#
-#    This file is part of the c2c_report_tools module.
-#
+# Copyright (c) 2010 Camtocamp SA
+# @author Joël Grand-Guillaume
 #
 # WARNING: This program as such is intended to be used by professional
 # programmers who take the whole responsability of assessing all potential
@@ -30,36 +26,6 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #
 ##############################################################################
-###
-#
-# Provide a replacement method for the _() call for 4.2 versions
-#
-###
-
-
-import inspect
-import tools
-from tools.translate import _
-
-class GettextAlias_42(object):
-    """provide a replacement method _() to use "code" translations 
-       _() works only where 'cr' and 'context['lang']' are available in local context. 
-       in short: use this method only in code run by users' actions, not in code run when the server start (because there is no lang defined at this moment...)
-       
-       in PythonReport objects, use self._() instead when cr and context are not available in local context
-    """
-    
-    def __call__(self, source):
-        frame = inspect.stack()[1][0]
-        cr = frame.f_locals.get('cr')
-        lang = frame.f_locals.get('context', {}).get('lang', False)
-        filename= frame.f_code.co_filename
-        if not (lang and cr):
-            result = source
-        else:
-            result = tools.translate(cr, filename, 'code', lang, source) or source
-        return result
-        
-
-
-_ = GettextAlias_42()
+import account_analytic_line
+import analytic
+import analytic_analysis
