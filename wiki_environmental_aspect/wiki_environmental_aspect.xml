@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+      <record id="wiki_environmental_aspect" model="wiki.wiki">
+        <field name="name">Environmental Aspect</field>
+        <field name="tags">environemental aspect</field>
+        <field name="minor_edit">0</field>
+        <field name="toc">1</field>
+        <field name="review">1</field>
+        <field name="section">2</field>
+        <field name="summary">Environmental aspect template</field>
+        <field name="text_area">
+=Activity=
+
+=Environmental Aspect=
+
+=Environmental Impact=
+
+=Laws and Regulations=
+
+=Operational Control=
+
+=Responsibilities=
+
+=Objectives=
+
+=Programs=
+        </field>
+      </record>
+      <record id="wiki_group_environmental_aspect" model="wiki.groups">
+        <field name="name">Environmental Aspect</field>
+        <field name="section">2</field>
+        <field name="home" ref="wiki_environmental_aspect"/>
+      </record>
+    </data>
+    <data>
+      <record id="wiki_environmental_aspect" model="wiki.wiki">
+        <field name="group_id" ref="wiki_group_environmental_aspect"/>
+      </record>
+    </data>
+</openerp>

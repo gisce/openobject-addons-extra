@@ -18,27 +18,4 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.     
 #
 ##############################################################################
-{
-    "name" : "Environment Management System",
-    "version" : "0.1",
-    "author" : "Savoir-faire Linux",
-    "website" : "http://www.savoirfairelinux.com",
-    "license" : "GPL-3",
-    "category" : "Management System",
-    "description": """
-	This module enables you to manage your environment management system, including :
-            * Environment Manual
-            * Audits
-            * Procedures
-            * Nonconformities
-            * Actions
-    """,
-    "depends" : ['mgmtsystem_audit','wiki_environment_manual','wiki_environmental_aspect'],
-    "init_xml" : [],
-    "update_xml" : [],
-    "demo_xml" : [],
-    "installable" : True,
-    "certificate" : ''
-}
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
-

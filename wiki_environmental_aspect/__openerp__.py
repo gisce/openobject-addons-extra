@@ -19,23 +19,17 @@
 #
 ##############################################################################
 {
-    "name" : "Environment Management System",
+    "name" : "Document Management - Wiki - Environmental Aspects",
     "version" : "0.1",
     "author" : "Savoir-faire Linux",
     "website" : "http://www.savoirfairelinux.com",
     "license" : "GPL-3",
-    "category" : "Management System",
-    "description": """
-	This module enables you to manage your environment management system, including :
-            * Environment Manual
-            * Audits
-            * Procedures
-            * Nonconformities
-            * Actions
+    "category" : "Generic Modules/Others",
+    "description": """Environmental Aspects Template, useful for Environment Management System
     """,
-    "depends" : ['mgmtsystem_audit','wiki_environment_manual','wiki_environmental_aspect'],
+    "depends" : ['wiki'],
     "init_xml" : [],
-    "update_xml" : [],
+    "update_xml" : ['wiki_environmental_aspect.xml'],
     "demo_xml" : [],
     "installable" : True,
     "certificate" : ''
