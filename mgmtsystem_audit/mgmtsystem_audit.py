@@ -63,6 +63,7 @@ class mgmtsystem_verification_line(osv.osv):
         'id': fields.integer('ID', readonly=True),
 	'name': fields.char('Question',size=300, required=True),
         'audit_id': fields.many2one('mgmtsystem.audit', 'Audit', ondelete='cascade', select=True),
+        'procedure_id': fields.many2one('wiki.wiki', 'Procedure', ondelete='cascade', select=True),
 	'is_conformed': fields.boolean('Is conformed'),
 	'comments': fields.text('Comments'),
     }
