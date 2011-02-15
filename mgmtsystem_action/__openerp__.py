@@ -36,6 +36,7 @@
     "init_xml" : [],
     "update_xml" : [
 	'mgmtsystem_action.xml',
+	'action_sequence.xml',
 	'board_mgmtsystem_action.xml',
     ],
     "demo_xml" : [

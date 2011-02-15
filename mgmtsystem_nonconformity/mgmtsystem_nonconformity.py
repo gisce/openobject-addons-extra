@@ -61,9 +61,10 @@ class mgmtsystem_nonconformity(osv.osv):
 
     _columns = {
         'id': fields.integer('ID', readonly=True),
+        'ref': fields.char('Reference', size=64, required=True, readonly=True),
         'date': fields.date('Date', required=True),
         'partner_id': fields.many2one('res.partner', 'Partner', required=True),
-        'reference': fields.char('Reference', size=50),
+        'reference': fields.char('Related to', size=50),
         'responsible_user_id': fields.many2one('res.users','Responsible', required=True),
         'manager_user_id': fields.many2one('res.users','Manager', required=True),
         'author_user_id': fields.many2one('res.users','Filled in by', required=True),
@@ -81,7 +82,15 @@ class mgmtsystem_nonconformity(osv.osv):
         'date': lambda *a: time.strftime('%Y-%m-%d'),
         'state': 'o',
         'author_user_id': lambda cr, uid, id, c={}: id,
+        'ref': 'NEW',
     }
+
+    def create(self, cr, uid, vals, context=None):
+        vals.update({
+            'ref': self.pool.get('ir.sequence').get(cr, uid, 'mgmtsystem.nonconformity')
+        })
+        return super(mgmtsystem_nonconformity, self).create(cr, uid, vals, context)
+
 
     def button_close(self, cr, uid, ids, context=None):
         return self.write(cr, uid, ids, {'state': 'c'})
