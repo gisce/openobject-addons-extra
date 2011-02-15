@@ -35,6 +35,7 @@
     ],
     "init_xml" : [],
     "update_xml" : [
+        'security/ir.model.access.csv',
 	'mgmtsystem_nonconformity.xml',
         'nonconformity_sequence.xml',
 	'board_mgmtsystem_nonconformity.xml',

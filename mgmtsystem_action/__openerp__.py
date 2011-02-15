@@ -35,6 +35,7 @@
     "depends" : ['mgmtsystem','crm_claim'],
     "init_xml" : [],
     "update_xml" : [
+        'security/ir.model.access.csv',
 	'mgmtsystem_action.xml',
 	'action_sequence.xml',
 	'board_mgmtsystem_action.xml',

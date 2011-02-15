@@ -34,6 +34,7 @@
 	'audit_sequence.xml',
     ],
     "update_xml" : [
+        'security/ir.model.access.csv',
 	'mgmtsystem_audit.xml',
 	'report/audit_report.xml',
 	'report/verification_list.xml',
