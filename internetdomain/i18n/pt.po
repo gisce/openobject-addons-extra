@@ -1,16 +1,16 @@
-# Translation of OpenERP Server.
-# This file contains the translation of the following modules:
-# 	* internetdomain
+# Portuguese translation for openobject-addons
+# Copyright (c) 2011 Rosetta Contributors and Canonical Ltd 2011
+# This file is distributed under the same license as the openobject-addons package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2011.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: OpenERP Server 5.0.6\n"
-"Report-Msgid-Bugs-To: support@openerp.com\n"
+"Project-Id-Version: openobject-addons\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2010-02-25 14:39+0000\n"
-"PO-Revision-Date: 2011-02-15 20:23+0000\n"
-"Last-Translator: Jordi Esteve (www.zikzakmedia.com) "
-"<jesteve@zikzakmedia.com>\n"
-"Language-Team: \n"
+"PO-Revision-Date: 2011-02-15 14:19+0000\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: Portuguese <pt@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -28,30 +28,30 @@ msgstr "dominio"
 msgid ""
 "The Object name must start with x_ and not contain any special character !"
 msgstr ""
-"¡El nombre del objeto debe empezar con x_ y no contener ningún carácter "
-"especial!"
+"O nome do Objecto deve começar com x_ e não pode conter nenhum caracter "
+"especial !"
 
 #. module: internetdomain
 #: field:internetdomain.domain,network_id:0
 msgid "Network"
-msgstr "Red"
+msgstr "Network"
 
 #. module: internetdomain
 #: model:ir.module.module,shortdesc:internetdomain.module_meta_information
 #: view:res.company:0
 msgid "Internet Domain"
-msgstr "Gestión de dominios"
+msgstr "Dominio de Internet"
 
 #. module: internetdomain
 #: field:internetdomain.domain,date_create:0
 msgid "Create"
-msgstr "Fecha alta"
+msgstr "Criado"
 
 #. module: internetdomain
 #: wizard_view:internetdomain.renewal.make_invoice,init:0
 #: wizard_button:internetdomain.renewal.make_invoice,init,invoice:0
 msgid "Create invoices"
-msgstr "Crear facturas"
+msgstr "Facturas criados"
 
 #. module: internetdomain
 #: model:ir.module.module,description:internetdomain.module_meta_information
@@ -66,12 +66,12 @@ msgid ""
 "    "
 msgstr ""
 "\n"
-"Organiza sus dominios de internet y servicios:\n"
+"Organize os seus dominios e serviços\n"
 "* Dominios\n"
-"* Renovaciones\n"
-"* Productos\n"
-"* Red\n"
-"* Envío de correo mediante Acciones Planificadas y Power Email\n"
+"* Renovações\n"
+"* Produtos/Serviços\n"
+"* Rede\n"
+"* Enviar email de expiração do dominio com Ação Agendada e Power Email\n"
 "    "
 
 #. module: internetdomain
@@ -80,58 +80,58 @@ msgstr ""
 #: view:internetdomain.renewal:0
 #: field:internetdomain.renewal,comments:0
 msgid "Comments"
-msgstr "Notas"
+msgstr "Comentários"
 
 #. module: internetdomain
 #: wizard_view:internetdomain.renewal.make_invoice,init:0
 msgid "Select product do you create invoice lines:"
-msgstr "Seleccione el producto para las líneas de factura"
+msgstr "Selecione o produto que quer criar as linhas de factura:"
 
 #. module: internetdomain
 #: field:internetdomain.domain,warning_expire:0
 msgid "Warning expired"
-msgstr "Advertencia de vencimento"
+msgstr "Aviso de validade"
 
 #. module: internetdomain
 #: field:internetdomain.domain,date_expire:0
 msgid "Date expired"
-msgstr "Fecha vencimiento"
+msgstr "Data de validade"
 
 #. module: internetdomain
 #: constraint:ir.actions.act_window:0
 msgid "Invalid model name in the action definition."
-msgstr "Nombre de modelo no válido en la definición de acción."
+msgstr "Nome do modelo inválido para a definição da acção."
 
 #. module: internetdomain
 #: view:internetdomain.renewal:0
 #: model:ir.actions.act_window,name:internetdomain.action_internetdomain_renewal_action
 msgid "renewals"
-msgstr "renovaciones"
+msgstr "renovações"
 
 #. module: internetdomain
 #: model:ir.model,name:internetdomain.model_internetdomain_domain
 msgid "internetdomain.domain"
-msgstr "dominiointernet.dominio"
+msgstr "internetdomain.domain"
 
 #. module: internetdomain
 #: field:internetdomain.domain,registrator_website:0
 msgid "Website"
-msgstr "Web"
+msgstr "Website"
 
 #. module: internetdomain
 #: field:internetdomain.domain,dns4:0
 msgid "DNS Secundary (3)"
-msgstr "DNS Secundario (3)"
+msgstr "DNS Secundário (3)"
 
 #. module: internetdomain
 #: wizard_field:internetdomain.renewal.make_invoice,init,product_id:0
 msgid "Product"
-msgstr "Producto"
+msgstr "Produto"
 
 #. module: internetdomain
 #: field:res.company,intdomain_alert_expire:0
 msgid "Alert Expire"
-msgstr "Alertas vencimiento"
+msgstr "Alerta de Expiração"
 
 #. module: internetdomain
 #: field:internetdomain.domain,company_id:0
@@ -141,32 +141,32 @@ msgstr "Empresa"
 #. module: internetdomain
 #: field:internetdomain.domain,dns3:0
 msgid "DNS Secundary (2)"
-msgstr "DNS Secundario (2)"
+msgstr "DNS Secundário (2)"
 
 #. module: internetdomain
 #: field:internetdomain.renewal,date_renewal:0
 msgid "Date"
-msgstr "Fecha"
+msgstr "Data"
 
 #. module: internetdomain
 #: field:res.company,intdomain_template:0
 msgid "Template"
-msgstr "Plantilla"
+msgstr "Modelo"
 
 #. module: internetdomain
 #: view:res.company:0
 msgid "Configuration"
-msgstr "Configuración"
+msgstr "Configuração"
 
 #. module: internetdomain
 #: constraint:ir.cron:0
 msgid "Invalid arguments"
-msgstr "Argumentos no válidos"
+msgstr "Argumentos inválidos"
 
 #. module: internetdomain
 #: constraint:ir.ui.view:0
 msgid "Invalid XML for View Architecture!"
-msgstr "¡XML inválido para la definición de la vista!"
+msgstr "XML Inválido para a Arquitectura de Vista!"
 
 #. module: internetdomain
 #: field:internetdomain.domain,registrator_id:0
@@ -177,7 +177,7 @@ msgstr "Registrador"
 #. module: internetdomain
 #: field:internetdomain.domain,name:0
 msgid "Name"
-msgstr "Nombre"
+msgstr "Nome"
 
 #. module: internetdomain
 #: field:internetdomain.domain,IP:0
@@ -187,12 +187,12 @@ msgstr "IP"
 #. module: internetdomain
 #: help:res.company,intdomain_alert_expire:0
 msgid "Days notice of expire (separated with comma. Ex. 30,15,10)"
-msgstr "Días de aviso de vencimiento (separados con coma. Por ej. 30,15,10)"
+msgstr "Dias de aviso de validade (separado com virgula.Ex. 30,15,10)"
 
 #. module: internetdomain
 #: field:internetdomain.domain,dns1:0
 msgid "DNS Primary"
-msgstr "DNS Primario"
+msgstr "DNS Primário"
 
 #. module: internetdomain
 #: field:internetdomain.domain,active:0
@@ -203,7 +203,7 @@ msgstr "Activo"
 #: view:internetdomain.domain:0
 #: field:internetdomain.domain,product_ids:0
 msgid "Products"
-msgstr "Productos"
+msgstr "Produto"
 
 #. module: internetdomain
 #: model:ir.actions.report.xml,name:internetdomain.internetdomain_domain
@@ -213,7 +213,7 @@ msgstr "Dominios"
 #. module: internetdomain
 #: model:ir.actions.wizard,name:internetdomain.wizard_internetdomain_renewal_make_invoice
 msgid "Make invoice"
-msgstr "Crear Factura"
+msgstr "Fazer factura"
 
 #. module: internetdomain
 #: field:internetdomain.renewal,domain_id:0
@@ -225,42 +225,42 @@ msgstr "Dominio"
 #. module: internetdomain
 #: field:internetdomain.domain,dns2:0
 msgid "DNS Secundary"
-msgstr "DNS Secundario"
+msgstr "DNS Secundário"
 
 #. module: internetdomain
 #: field:internetdomain.domain,partner_address_id:0
 msgid "Partner Contact"
-msgstr "Contacto"
+msgstr "Contacto de Terceiro"
 
 #. module: internetdomain
 #: view:internetdomain.domain:0
 msgid "General"
-msgstr "General"
+msgstr "Geral"
 
 #. module: internetdomain
 #: wizard_field:internetdomain.renewal.make_invoice,init,account_id:0
 msgid "Analytic Account"
-msgstr "Cuenta analítica"
+msgstr "Conta Analítica"
 
 #. module: internetdomain
 #: field:internetdomain.renewal,date_expire:0
 msgid "Expire"
-msgstr "Vencimiento"
+msgstr "Expira"
 
 #. module: internetdomain
 #: field:internetdomain.renewal,price_unit:0
 msgid "Unit Price"
-msgstr "Precio"
+msgstr "Preço Unitário"
 
 #. module: internetdomain
 #: wizard_button:internetdomain.renewal.make_invoice,init,end:0
 msgid "Cancel"
-msgstr "Cancela"
+msgstr "Cancelar"
 
 #. module: internetdomain
 #: field:internetdomain.domain,partner_id:0
 msgid "Partner"
-msgstr "Empresa"
+msgstr "Terceiro"
 
 #. module: internetdomain
 #: view:internetdomain.domain:0
@@ -269,9 +269,9 @@ msgstr "Empresa"
 #: model:ir.model,name:internetdomain.model_internetdomain_renewal
 #: model:ir.ui.menu,name:internetdomain.menu_internetdomain_renewal
 msgid "Renewals"
-msgstr "Renovaciones"
+msgstr "Renovações"
 
 #. module: internetdomain
 #: wizard_field:internetdomain.renewal.make_invoice,init,price:0
 msgid "Price"
-msgstr "Precio"
+msgstr "Preço"
