@@ -289,7 +289,7 @@ class display(object):
             posx = labelspan
             posy = self.sizes[-1][-1]
         self.sizes[-1][-1] = max(self.sizes[-1][-1], posy + height)
-
+            
         pos_x = posx * colsize  + self.sizes[-1][2]
         pos_y = posy
         if self.attrs.get(element.tag, {}).get('display', True):
@@ -314,12 +314,15 @@ class display(object):
                 posx2 = 0
                 posy2 = posy + height
                 for e in element.getchildren():
-                    posx2,posy2 = self.process_node(e, posx2, posy2)
+                    try:
+                        posx2,posy2 = self.process_node(e, posx2, posy2)
+                    except:
+                        pass    
                 self.sizes[-2][-1] = max(self.sizes[-2][-1],  self.sizes[-1][-1])
                 self.sizes.pop()
-
+            
         return posx,posy
-        
+            
     def process_search(self, element, posx=0, posy=0):
         label = element.attrib.get('string','')
         attrs = {
@@ -423,7 +426,10 @@ class display(object):
             posx2 = pos_x+2
             posy2 = posy + height
             for e in element.getchildren():
-                posx2,posy2 = self.process_search(e, posx2, posy2)
+                try:
+                    posx2,posy2 = self.process_search(e, posx2, posy2)
+                except:
+                    pass    
                 posx=posx2
                 posy=posy2 
             self.sizes[-2][-1] = max(self.sizes[-2][-1],  self.sizes[-1][-1])
@@ -459,7 +465,10 @@ class display(object):
             posx2 = 0
             posy2 = posy + height
             for e in element.getchildren():
-                posx2,posy2 = self.process_tree(e, posx2, posy2)
+                try:
+                    posx2,posy2 = self.process_tree(e, posx2, posy2)
+                except:
+                    pass    
             self.sizes[-2][-1] = max(self.sizes[-2][-1],  self.sizes[-1][-1])
                 
         return posx,posy
@@ -558,4 +567,3 @@ def main2(data, flags):
 dia.register_callback ("Load Open ERP View", 
                        "<Display>/Tools/Load Open ERP View", 
                        main)
-
