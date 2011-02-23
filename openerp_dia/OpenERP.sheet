@@ -108,5 +108,15 @@
 <object name="shape - search_view_top">
 <description>Header (Search View)</description>
 </object>
+<object name="shape - process_view_jump_node">
+<description>Process view Jump Node</description>
+</object>
+<object name="shape - process_view_simple_node">
+<description>Process view Simple Node</description>
+</object>
+<object name="shape - process_view_transition">
+<description>Process view transition</description>
+</object>
+
 </contents>
 </sheet>
