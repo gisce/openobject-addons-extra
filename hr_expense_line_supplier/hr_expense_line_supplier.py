@@ -51,16 +51,10 @@ class hr_expense_expense(osv.osv):
                     if not acc:
                         acc = l.product_id.categ_id.property_account_expense_categ
                     tax_tmp = [x.id for x in l.product_id.supplier_taxes_id]
-
-                    tmp_dict = {}
-                    for i in l.partner_id.property_account_position.tax_ids:
-                        tmp_dict[i.tax_src_id.id] = i.tax_dest_id.id
-
-                    for y in tax_tmp:
-                        if y in tmp_dict.keys():
-                            tax_id.append(tmp_dict[y])
-                        else:
-                            tax_id.append(y)
+                    for tx in l.partner_id.property_account_position.tax_ids:
+                        tax_id = [(y if y != tx.tax_src_id.id else tx.tax_dest_id.id) for y in tax_tmp]
+                    else:
+                        tax_id = tax_tmp
                 else:
                     acc = property_obj.get(cr, uid, 'property_account_expense_categ', 'product.category')
                     if not acc:
