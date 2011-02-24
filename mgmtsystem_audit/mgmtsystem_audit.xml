@@ -80,7 +80,7 @@
             <field name="arch" type="xml">
                 <search string="Audits">
                     <group>
-                        <filter icon="terp-document-new" domain="[('state','=','o')]" string="Open" help="Open Audits"/>
+                        <filter name="current" icon="terp-document-new" domain="[('state','=','o')]" string="Open" help="Open Audits"/>
                         <filter icon="terp-camera_test" domain="[('state','=','c')]" string="Closed" help="Closed Audits"/>
                         <separator orientation="vertical"/>
                         <field name="name"/>
@@ -151,7 +151,9 @@
             <field name="res_model">mgmtsystem.audit</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form,calendar</field>
+            <field name="view_id" ref="view_mgmtsystem_audit_tree"/>
             <field name="search_view_id" ref="view_mgmtsystem_audit_filter"/>
+            <field name="context">{"search_default_current":1}</field>
         </record>
 
         <menuitem id="menu_open_audit" 

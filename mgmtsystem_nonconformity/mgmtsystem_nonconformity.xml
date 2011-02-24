@@ -30,11 +30,12 @@
             <field name="arch" type="xml">
                 <search string="Nonconformity">
                     <group>
-                        <filter icon="terp-document-new" domain="[('state','=','o')]" string="Open" help="Open Nonconformities"/>
+                        <filter name="current" icon="terp-document-new" domain="[('state','=','o')]" string="Open" help="Open Nonconformities"/>
                         <filter icon="terp-camera_test" domain="[('state','=','c')]" string="Closed" help="Closed Nonconformities"/>
                         <separator orientation="vertical"/>
                         <field name="ref"/>
-                        <field name="date" select='1'/>
+                        <field name="date"/>
+                        <field name="author_user_id"/>
                     </group>
                     <newline />
                     <group expand="0" string="Group By...">
@@ -102,7 +103,9 @@
             <field name="res_model">mgmtsystem.nonconformity</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="view_mgmtsystem_nonconformity_tree"/>
             <field name="search_view_id" ref="view_mgmtsystem_nonconformity_filter"/>
+            <field name="context">{"search_default_current":1,"search_default_author_user_id":uid}</field>
         </record>
 
         <menuitem id="menu_open_nonconformity" 

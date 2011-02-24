@@ -23,11 +23,12 @@
             <field name="arch" type="xml">
                 <search string="Action">
                     <group>
-                        <filter icon="terp-document-new" domain="[('state','in',('draft','open','pending'))]" string="Open" help="Open Actions"/>
+                        <filter name="current" icon="terp-document-new" domain="[('state','in',('draft','open','pending'))]" string="Open" help="Open Actions"/>
                         <filter icon="terp-camera_test" domain="[('state','in',('cancelled','closed'))]" string="Closed" help="Closed Actions"/>
                         <separator orientation="vertical"/>
                         <field name="reference"/>
                         <field name="date" select='1'/>
+                        <field name="user_id"/>
                     </group>
                     <newline />
                     <group expand="0" string="Group By...">
@@ -117,6 +118,9 @@
             <field name="res_model">mgmtsystem.action</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="view_mgmtsystem_action_tree"/>
+            <field name="search_view_id" ref="view_mgmtsystem_action_filter"/>
+            <field name="context">{"search_default_current":1,"search_default_user_id":uid}</field>
         </record>
 
         <menuitem id="menu_open_action" 
