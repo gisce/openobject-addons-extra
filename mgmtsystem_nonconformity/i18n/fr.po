@@ -222,7 +222,7 @@ msgstr "Fermer"
 #: view:mgmtsystem.nonconformity:0
 #: selection:mgmtsystem.nonconformity,state:0
 msgid "Open"
-msgstr "Ouvrir"
+msgstr "Ouverte"
 
 #. module: mgmtsystem_nonconformity
 #: model:ir.actions.act_window,name:mgmtsystem_nonconformity.open_mgmtsystem_nonconformity_cause_list

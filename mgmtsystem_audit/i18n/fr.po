@@ -195,7 +195,7 @@ msgstr "Confidentialité : Interne"
 #: view:mgmtsystem.audit:0
 #: selection:mgmtsystem.audit,state:0
 msgid "Open"
-msgstr "Ouvrir"
+msgstr "Ouvert"
 
 #. module: mgmtsystem_audit
 #: report:mgmtsystem.audit.report:0

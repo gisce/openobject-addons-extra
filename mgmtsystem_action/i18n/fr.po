@@ -165,7 +165,7 @@ msgstr "Téléphone"
 #. module: mgmtsystem_action
 #: view:board.board:0
 msgid "Open Actions"
-msgstr "Actions en cours"
+msgstr "Actions ouvertes"
 
 #. module: mgmtsystem_action
 #: view:mgmtsystem.action:0
