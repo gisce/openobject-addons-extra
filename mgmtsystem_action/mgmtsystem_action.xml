@@ -122,18 +122,6 @@
             <field name="search_view_id" ref="view_mgmtsystem_action_filter"/>
             <field name="context">{"search_default_current":1,"search_default_user_id":uid}</field>
         </record>
-        
-        <record id="mgmtsystem_action_create_send_email" model="ir.actions.server">
-            <field name="name">Notify the person in charge of the new action</field>
-            <field name="model_id" ref="model_mgmtsystem_action"/>
-            <field name="state">email</field>
-            <field name="email">object.user_id.user_email</field>
-            <field name="subject">object.name</field>
-            <field name="message">Hello, A new action has been assigned to you. Thank you. OpenERP</field>
-            <field name="sequence" eval="5"/>
-            <field name="condition" eval="True"/>
-            
-        </record>
 
         <menuitem id="menu_open_action" 
             action="open_mgmtsystem_action_list" 
