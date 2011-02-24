@@ -28,8 +28,8 @@ class mgmtsystem_action(osv.osv):
     _inherit = "crm.claim"
     _columns = {
         'reference': fields.char('Reference', size=64, required=True, readonly=True),
-	'type_action': fields.selection([('immediate','Immediate Action'),('correction','Corrective Action'),('prevention','Preventive Action'),('improvement','Improvement Opportunity')], 'Action Type'),
-        'message_ids': fields.one2many('mailgate.message', 'res_id', 'Messages', domain=[('model','=',_name)]),
+	    'type_action': fields.selection([('immediate','Immediate Action'),('correction','Corrective Action'),('prevention','Preventive Action'),('improvement','Improvement Opportunity')], 'Action Type'),
+        'message_ids': fields.one2many('mailgate.message', 'res_id', 'Messages', domain=[('model','=',_name)]),       
     }
 
     _defaults = {
@@ -40,7 +40,12 @@ class mgmtsystem_action(osv.osv):
         vals.update({
             'reference': self.pool.get('ir.sequence').get(cr, uid, 'mgmtsystem.action')
         })
-        return super(mgmtsystem_action, self).create(cr, uid, vals, context)
+        import pdb;pdb.set_trace()
+        mgmtsystemaction = super(mgmtsystem_action, self).create(cr, uid, vals, context)
+        context['active_model'] = 'mgmtsystem.action'
+        context['active_id'] = mgmtsystemaction
+        serveraction = self.pool.get('ir.actions.server').run(cr, uid, [201], context)
+        return mgmtsystemaction
 
 mgmtsystem_action()
 
