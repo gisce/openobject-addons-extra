@@ -6,7 +6,7 @@
   <aspectratio type="free"/>
   <textbox x1="2" y1="-10" x2="100" y2="50"/> 
   <svg:svg>
-     <svg:rect x="0" y="5" width="150" height="50" fill="default" stroke="#777777" stroke-width="0.2"/>
+     <svg:rect x="0" y="5" width="150" height="50" fill="default"  stroke-width="0.2"/>
   </svg:svg>
 </shape>
 

@@ -108,14 +108,26 @@
 <object name="shape - search_view_top">
 <description>Header (Search View)</description>
 </object>
-<object name="shape - process_view_jump_node">
-<description>Process view Jump Node</description>
+
+<object name="shape - process_view_node">
+<description>Process view Node</description>
 </object>
+<object name="shape - process_view_node_current">
+<description>Process view Current Node</description>
+</object>
+<object name="shape - process_view_node_gray">
+<description>Process view gray Node</description>
+</object>
+<object name="shape - process_view_subflow_node">
+<description>Process view subflow Node</description>
+</object>
+
+<object name="shape - process_view_node_subflow_gray">
+<description>Process view subflow gray Node</description>
+</object>
+
 <object name="shape - process_view_simple_node">
 <description>Process view Simple Node</description>
-</object>
-<object name="shape - process_view_transition">
-<description>Process view transition</description>
 </object>
 
 </contents>
