@@ -7,18 +7,21 @@ msgstr ""
 "Project-Id-Version: OpenERP Server 6.1-dev\n"
 "Report-Msgid-Bugs-To: support@openerp.com\n"
 "POT-Creation-Date: 2011-02-24 05:28+0000\n"
-"PO-Revision-Date: 2011-02-24 05:28+0000\n"
+"PO-Revision-Date: 2011-02-25 17:17+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: \n"
-"Plural-Forms: \n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2011-02-26 05:12+0000\n"
+"X-Generator: Launchpad (build 12351)\n"
 
 #. module: purchase_pricelist_type_menu
 #: model:ir.module.module,description:purchase_pricelist_type_menu.module_meta_information
-msgid "\n"
-"        This module adds a menu for product pricelists types in purchases configuration menu\n"
+msgid ""
+"\n"
+"        This module adds a menu for product pricelists types in purchases "
+"configuration menu\n"
 "     "
 msgstr ""
 
@@ -37,4 +40,3 @@ msgstr ""
 #: view:product.pricelist.type:0
 msgid "Pricelist Type"
 msgstr ""
-
