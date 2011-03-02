@@ -104,8 +104,8 @@ class base_partner_merge(osv.osv_memory):
         return formxml, update_fields, update_values, columns
 
 
-    def fields_view_get(self, cr, uid, view_id=None, view_type='form', context=None, toolbar=False):
-        res = super(base_partner_merge, self).fields_view_get(cr, uid, view_id, view_type, context=context, toolbar=toolbar)
+    def fields_view_get(self, cr, uid, view_id=None, view_type='form', context=None, toolbar=False,submenu=False):
+        res = super(base_partner_merge, self).fields_view_get(cr, uid, view_id, view_type, context=context, toolbar=toolbar,submenu=False)
         partner_ids = context.get('active_ids') or []
         if not len(partner_ids) == 2:
             return res
