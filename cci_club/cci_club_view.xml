@@ -1,0 +1,395 @@
+<?xml version="1.0"?>
+<openerp>
+	<data>
+
+	<!-- CCI CLUBS  -->
+		<menuitem name="Club Management" id="menu_cci_club_main" />
+
+	<!-- CCI CLUBS/CONFIGURATION/CLUB TYPE -->
+		<record model="ir.ui.view" id="view_cci_club_type_form">
+			<field name="name">Club Type</field>
+			<field name="model">cci_club.club_type</field>
+			<field name="type">form</field>
+			<field name="arch" type="xml">
+				<form string="Club Type">
+					<field name="name" select="1"/>
+				</form>
+			</field>
+		</record>
+
+		<record model="ir.ui.view" id="view_cci_club_type_tree">
+			<field name="name">Club Type</field>
+			<field name="model">cci_club.club_type</field>
+			<field name="type">tree</field>
+			<field name="arch" type="xml">
+				<tree string="Club Type">
+					<field name="name"/>
+				</tree>
+			</field>
+		</record>
+
+		<record model="ir.actions.act_window" id="action_cci_club_type">
+			<field name="res_model">cci_club.club_type</field>
+			<field name="view_type">form</field>
+		</record>
+		<menuitem name="Configuration" id="menu_cci_club_config" parent="menu_cci_club_main" />
+		<menuitem name="Club Type" id="menu_cci_club_type" action="action_cci_club_type" parent="menu_cci_club_config"/>
+
+	<!-- CCI CLUBS/CONFIGURATION/LEVEL -->
+		<record model="ir.ui.view" id="view_cci_club_level_form">
+			<field name="name">Level of knowledge</field>
+			<field name="model">cci_club.level</field>
+			<field name="type">form</field>
+			<field name="arch" type="xml">
+				<form string="Level of knowldege">
+					<field name="name" select="1"/>
+                    <field name="sequence"/>
+                    <field name="description" colspan="4"/>
+				</form>
+			</field>
+		</record>
+
+		<record model="ir.ui.view" id="view_cci_club_level_tree">
+			<field name="name">Level of knowledge</field>
+			<field name="model">cci_club.level</field>
+			<field name="type">tree</field>
+			<field name="arch" type="xml">
+				<tree string="Level of knowledge">
+					<field name="name"/>
+                    <field name="sequence" />
+				</tree>
+			</field>
+		</record>
+
+		<record model="ir.actions.act_window" id="action_cci_club_level">
+			<field name="res_model">cci_club.level</field>
+			<field name="view_type">form</field>
+		</record>
+		<menuitem name="Level of knowledge" id="menu_cci_club_level" action="action_cci_club_level" parent="menu_cci_club_config"/>
+
+	<!-- CCI CLUBS/CONFIGURATION/LANGUAGE -->
+		<record model="ir.ui.view" id="view_cci_club_language_form">
+			<field name="name">Language</field>
+			<field name="model">cci_club.language</field>
+			<field name="type">form</field>
+			<field name="arch" type="xml">
+				<form string="Language">
+					<field name="name" select="1"/>
+				</form>
+			</field>
+		</record>
+
+		<record model="ir.ui.view" id="view_cci_club_language_tree">
+			<field name="name">Language</field>
+			<field name="model">cci_club.language</field>
+			<field name="type">tree</field>
+			<field name="arch" type="xml">
+				<tree string="Language">
+					<field name="name"/>
+				</tree>
+			</field>
+		</record>
+
+		<record model="ir.actions.act_window" id="action_cci_club_language">
+			<field name="res_model">cci_club.language</field>
+			<field name="view_type">form</field>
+		</record>
+		<menuitem name="Language" id="menu_cci_club_language" action="action_cci_club_language" parent="menu_cci_club_config"/>
+
+	<!-- CCI CLUBS/CONFIGURATION/PARTICIPATION STATE -->
+		<record model="ir.ui.view" id="view_cci_club_participation_state_form">
+			<field name="name">Participation State</field>
+			<field name="model">cci_club.participation_state</field>
+			<field name="type">form</field>
+			<field name="arch" type="xml">
+				<form string="Participation State">
+					<field name="name" select="1"/>
+                    <field name="current"/>
+                    <field name="description" colspan="4"/>
+				</form>
+			</field>
+		</record>
+
+		<record model="ir.ui.view" id="view_cci_club_participation_state_tree">
+			<field name="name">Participation State</field>
+			<field name="model">cci_club.participation_state</field>
+			<field name="type">tree</field>
+			<field name="arch" type="xml">
+				<tree string="Participation State">
+					<field name="name"/>
+				</tree>
+			</field>
+		</record>
+
+		<record model="ir.actions.act_window" id="action_cci_club_participation_state">
+			<field name="res_model">cci_club.participation_state</field>
+			<field name="view_type">form</field>
+		</record>
+		<menuitem name="Participation State" id="menu_cci_club_participation_state" action="action_cci_club_participation_state" parent="menu_cci_club_config"/>
+
+	<!-- CCI CLUBS/CONFIGURATION/SESSION STATE -->
+		<record model="ir.ui.view" id="view_cci_club_session_state_form">
+			<field name="name">Session State</field>
+			<field name="model">cci_club.session_state</field>
+			<field name="type">form</field>
+			<field name="arch" type="xml">
+				<form string="Session State">
+					<field name="name" select="1"/>
+				</form>
+			</field>
+		</record>
+
+		<record model="ir.ui.view" id="view_cci_club_session_state_tree">
+			<field name="name">Session State</field>
+			<field name="model">cci_club.session_state</field>
+			<field name="type">tree</field>
+			<field name="arch" type="xml">
+				<tree string="Session State">
+					<field name="name"/>
+				</tree>
+			</field>
+		</record>
+
+		<record model="ir.actions.act_window" id="action_cci_club_session_state">
+			<field name="res_model">cci_club.session_state</field>
+			<field name="view_type">form</field>
+		</record>
+		<menuitem name="Session State" id="menu_cci_club_session_state" action="action_cci_club_session_state" parent="menu_cci_club_config"/>
+
+	<!-- CCI CLUBS/CONFIGURATION/ATTENDANCE STATE -->
+		<record model="ir.ui.view" id="view_cci_club_attendance_state_form">
+			<field name="name">Attendance State</field>
+			<field name="model">cci_club.attendance_state</field>
+			<field name="type">form</field>
+			<field name="arch" type="xml">
+				<form string="Attendance State">
+					<field name="name" select="1"/>
+                    <field name="checks_valid"/>
+				</form>
+			</field>
+		</record>
+
+		<record model="ir.ui.view" id="view_cci_club_attendance_state_tree">
+			<field name="name">Attendance State</field>
+			<field name="model">cci_club.attendance_state</field>
+			<field name="type">tree</field>
+			<field name="arch" type="xml">
+				<tree string="Attendance State">
+					<field name="name"/>
+				</tree>
+			</field>
+		</record>
+
+		<record model="ir.actions.act_window" id="action_cci_club_attendance_state">
+			<field name="res_model">cci_club.attendance_state</field>
+			<field name="view_type">form</field>
+		</record>
+		<menuitem name="Attendance State" id="menu_cci_club_attendance_state" action="action_cci_club_attendance_state" parent="menu_cci_club_config"/>
+
+	<!-- CCI CLUBS/CLUB -->
+		<record model="ir.ui.view" id="view_cci_club_form">
+			<field name="name">Club</field>
+			<field name="model">cci_club.club</field>
+			<field name="type">form</field>
+			<field name="arch" type="xml">
+				<form string="Club">
+					<field name="name" select="1"/>
+                    <field name="code" select="1"/>
+                    <field name="type_id" select="1"/>
+                    <field name="responsible_id" select="1"/>
+                    <notebook colspan="4">
+                    <page string="Main">
+                        <field name="date_begin"/>
+                        <field name="date_end"/>
+                        <field name="waiting_club"/>
+                        <field name="product_id"/>
+					    <separator string="Description" colspan="4"/>
+                        <field name="description" colspan="4" nolabel="1"/>
+                        <field name="participation_ids" colspan="4" nolabel="1"/>
+					    <separator string="Features" colspan="4"/>
+                        <field name="day" select="2"/>
+                        <field name="hours" select="2"/>
+                    </page>
+                    <page string="Sessions">
+                        <field name="session_ids" colspan="4" nolabel="1"/>
+                    </page>
+                    <page string="More information">
+                        <field name="agreement_nbr"/>
+                        <field name="session_count_by_invoice"/>
+                        <field name="checks_type" select="2"/>
+                        <field name="checks_max"/>
+                        <field name="feder" select="2"/>
+                        <field name="liege" select="2"/>
+                        <field name="namur" select="2"/>
+                        <field name="level_id" select="2"/>
+                        <separator string="Externals" colspan="4"/>
+                        <field name="school_id" select="2"/>
+                        <field name="formative_id" select="2"/>
+                        <field name="host_id" select="2"/>
+                    </page>
+                    </notebook>
+				</form>
+			</field>
+		</record>
+
+		<record model="ir.ui.view" id="view_cci_club_tree">
+			<field name="name">Club</field>
+			<field name="model">cci_club.club</field>
+			<field name="type">tree</field>
+			<field name="arch" type="xml">
+				<tree string="Club">
+					<field name="name"/>
+                    <field name="code"/>
+                    <field name="type_id"/>
+                    <field name="responsible_id"/>
+                    <field name="date_begin"/>
+                    <field name="date_end"/>
+                    <field name="school_id"/>
+                    <field name="formative_id"/>
+                    <field name="day"/>
+                    <field name="hours"/>
+				</tree>
+			</field>
+		</record>
+
+		<record model="ir.actions.act_window" id="action_cci_club_club">
+			<field name="res_model">cci_club.club</field>
+			<field name="view_type">form</field>
+		</record>
+		<menuitem name="Club" id="menu_cci_club_club" action="action_cci_club_club" parent="menu_cci_club_main"/>
+
+	<!-- CCI CLUBS/PARTICIPATION -->
+		<record model="ir.ui.view" id="view_cci_club_participation_form">
+			<field name="name">Participation</field>
+			<field name="model">cci_club.participation</field>
+			<field name="type">form</field>
+			<field name="arch" type="xml">
+				<form string="Participation">
+					<field name="group_id" select="1" colspan="4"/>
+                    <field name="partner_id" select="1"/>
+                    <field name="contact_id" select="1"/>
+                    <field name="date_registration"/>
+                    <field name="date_in" select="2"/>
+                    <field name="date_out" select="2"/>
+                    <field name="order_id"/>
+                    <field name="provided_turnover"/>
+                    <field name="final_turnover"/>
+                    <field name="salesman" select="1"/>
+                    <field name="membership" select="2"/>
+                    <separator string="Status" colspan="4"/>
+                    <field name="state_id" select="1"/>
+                    <field name="continuation" select="2"/>
+                    <separator string="Language" colspan="4"/>
+                    <field name="language_id" select="2"/>
+                    <field name="level_id" select="2"/>
+                    <field name="availability" colspan="4"/>
+                    <field name="attendance_ids" nolabel="1" colspan="4"/>
+                    <separator string="Checks" colspan="4"/>
+                    <field name="checks" nolabel="1" colspan="4"/>
+                    <separator string="Internal Note" colspan="4"/>
+                    <field name="note" nolabel="1" colspan="4"/>
+				</form>
+			</field>
+		</record>
+
+		<record model="ir.ui.view" id="view_cci_club_participation_tree">
+			<field name="name">Participation</field>
+			<field name="model">cci_club.participation</field>
+			<field name="type">tree</field>
+			<field name="arch" type="xml">
+				<tree string="Participation">
+					<field name="group_id"/>
+                    <field name="partner_id"/>
+                    <field name="contact_id"/>
+                    <field name="order_id"/>
+                    <field name="provided_turnover"/>
+                    <field name="final_turnover"/>
+                    <field name="salesman"/>
+                    <field name="state_id"/>
+                    <field name="language_id"/>
+                    <field name="level_id"/>
+				</tree>
+			</field>
+		</record>
+
+		<record model="ir.actions.act_window" id="action_cci_club_participation">
+			<field name="res_model">cci_club.participation</field>
+			<field name="view_type">form</field>
+		</record>
+		<menuitem name="Participation" id="menu_cci_club_participation" action="action_cci_club_participation" parent="menu_cci_club_main"/>
+
+	<!-- CCI CLUBS/SESSION -->
+		<record model="ir.ui.view" id="view_cci_club_session_form">
+			<field name="name">Session</field>
+			<field name="model">cci_club.session</field>
+			<field name="type">form</field>
+			<field name="arch" type="xml">
+				<form string="Session">
+					<field name="date" select="1"/>
+                    <field name="group_id" select="1"/>
+                    <field name="number"/>
+                    <field name="state_id"/>
+                    <field name="attendance_ids" colspan="4" nolabel="1"/>
+                    <separator string="Comments" colspan="4"/>
+                    <field name="comments" colspan="4" nolabel="1"/>
+ 				</form>
+			</field>
+		</record>
+
+		<record model="ir.ui.view" id="view_cci_club_session_tree">
+			<field name="name">Session</field>
+			<field name="model">cci_club.session</field>
+			<field name="type">tree</field>
+			<field name="arch" type="xml">
+				<tree string="Session">
+					<field name="date"/>
+					<field name="group_id"/>
+					<field name="number"/>
+                    <field name="state_id"/>
+				</tree>
+			</field>
+		</record>
+
+		<record model="ir.actions.act_window" id="action_cci_club_session">
+			<field name="res_model">cci_club.session</field>
+			<field name="view_type">form</field>
+		</record>
+		<menuitem name="Session" id="menu_cci_club_session" action="action_cci_club_session" parent="menu_cci_club_main"/>
+
+	<!-- CCI CLUBS/ATTENDANCE -->
+		<record model="ir.ui.view" id="view_cci_club_attendance_form">
+			<field name="name">Attendance</field>
+			<field name="model">cci_club.attendance</field>
+			<field name="type">form</field>
+			<field name="arch" type="xml">
+				<form string="Attendance">
+					<field name="participation_id" select="1"/>
+                    <field name="session_id" select="1"/>
+                    <field name="state" select="1"/>
+                    <separator string="Comments" colspan="4"/>
+                    <field name="comments" colspan="4" nolabel="1"/>
+ 				</form>
+			</field>
+		</record>
+
+		<record model="ir.ui.view" id="view_cci_club_attendance_tree">
+			<field name="name">Attendance</field>
+			<field name="model">cci_club.attendance</field>
+			<field name="type">tree</field>
+			<field name="arch" type="xml">
+				<tree string="Attendance">
+					<field name="participation_id"/>
+					<field name="session_id"/>
+					<field name="state"/>
+				</tree>
+			</field>
+		</record>
+
+		<record model="ir.actions.act_window" id="action_cci_club_attendance">
+			<field name="res_model">cci_club.attendance</field>
+			<field name="view_type">form</field>
+		</record>
+		<menuitem name="Attendance" id="menu_cci_club_attendance" action="action_cci_club_attendance" parent="menu_cci_club_main"/>
+
+	</data>
+</openerp>

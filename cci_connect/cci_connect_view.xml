@@ -1,0 +1,70 @@
+<?xml version="1.0"?>
+<openerp>
+	<data>
+
+	<!-- DELAYED PARTNER -->
+		<record model="ir.ui.view" id="view_delayed_partner_form">
+			<field name="name">Delayed Changes</field>
+			<field name="model">cci_connect.delayed_partner</field>
+			<field name="type">form</field>
+			<field name="arch" type="xml">
+				<form string="Delayed Changes">
+                    <field name="partner_id" select="1"/>
+                    <field name="address_id" select="1"/>
+                    <field name="partner_name"/>
+					<field name="final_partner_name"/>
+                    <field name="partner_title"/>
+					<field name="final_partner_title"/>
+					<field name="website"/>
+					<field name="final_website"/>
+					<field name="vat"/>
+					<field name="final_vat"/>
+					<field name="searching"/>
+					<field name="final_searching"/>
+					<field name="selling"/>
+					<field name="final_selling"/>
+					<field name="address_name"/>
+					<field name="final_address_name"/>
+					<field name="street"/>
+					<field name="final_street"/>
+					<field name="street2"/>
+					<field name="final_street2"/>
+					<field name="zip_id"/>
+					<field name="final_zip_id"/>
+					<field name="country_id"/>
+					<field name="final_country_id"/>
+					<field name="email"/>
+					<field name="final_email"/>
+					<field name="phone"/>
+					<field name="final_phone"/>
+					<field name="fax"/>
+					<field name="final_fax"/>
+					<field name="asker_id"/>
+					<field name="state"/>
+					<field name="state_changed"/>
+				</form>
+			</field>
+		</record>
+
+		<record model="ir.ui.view" id="view_delayed_partner_tree">
+			<field name="name">Delayed Changes</field>
+			<field name="model">cci_connect.delayed_partner</field>
+			<field name="type">tree</field>
+			<field name="arch" type="xml">
+				<tree string="Delayed Changes">
+                    <field name="partner_id"/>
+                    <field name="address_id"/>
+					<field name="state"/>
+					<field name="state_changed"/>
+				</tree>
+			</field>
+		</record>
+
+		<record model="ir.actions.act_window" id="action_delayed_partner">
+			<field name="res_model">cci_connect.delayed_partner</field>
+			<field name="view_type">form</field>
+		</record>
+		<menuitem name="Delayed Changes" id="menu_delayed_partner" action="action_delayed_partner" parent="base.menu_base_partner"/>
+
+	</data>
+</openerp>

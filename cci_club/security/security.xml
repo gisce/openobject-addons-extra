@@ -1,0 +1,61 @@
+<?xml version="1.0"?>
+<openerp>
+<data noupdate="1">
+
+	<!-- Users Groups -->
+    <record model="res.groups" id="group_cci_club_user">
+        <field name="name">CCI Club User</field>
+    </record>
+    
+    <record model="res.groups" id="group_cci_club_manager">
+        <field name="name">CCI Club Manager</field>
+    </record>
+    
+    <record model="res.groups" id="group_cci_club_supervisor">
+        <field name="name">CCI Club Supervisor</field>
+    </record>
+
+    <record model="res.groups" id="group_cci_club_formative">
+        <field name="name">CCI Club Formative</field>
+    </record>
+
+	<!-- Menu accesses -->
+	<record model="ir.ui.menu" id="menu_cci_club_main">
+		<field name="groups_id" eval="[(6,0, [ref('group_cci_club_user'), ref('group_cci_club_manager'), ref('group_cci_club_supervisor'), ref('group_cci_club_formative')])]"/>
+	</record>
+	<record model="ir.ui.menu" id="menu_cci_club_config">
+		<field name="groups_id" eval="[(6,0, [ref('group_cci_club_manager')])]"/>
+	</record>
+	<record model="ir.ui.menu" id="menu_cci_club_type">
+		<field name="groups_id" eval="[(6,0, [ref('group_cci_club_manager')])]"/>
+	</record>
+	<record model="ir.ui.menu" id="menu_cci_club_level">
+		<field name="groups_id" eval="[(6,0, [ref('group_cci_club_manager')])]"/>
+	</record>
+	<record model="ir.ui.menu" id="menu_cci_club_language">
+		<field name="groups_id" eval="[(6,0, [ref('group_cci_club_manager')])]"/>
+	</record>
+	<record model="ir.ui.menu" id="menu_cci_club_participation_state">
+		<field name="groups_id" eval="[(6,0, [ref('group_cci_club_manager')])]"/>
+	</record>
+	<record model="ir.ui.menu" id="menu_cci_club_session_state">
+		<field name="groups_id" eval="[(6,0, [ref('group_cci_club_manager')])]"/>
+	</record>
+	<record model="ir.ui.menu" id="menu_cci_club_attendance_state">
+		<field name="groups_id" eval="[(6,0, [ref('group_cci_club_manager')])]"/>
+	</record>
+	<record model="ir.ui.menu" id="menu_cci_club_club">
+		<field name="groups_id" eval="[(6,0, [ref('group_cci_club_user'), ref('group_cci_club_manager'), ref('group_cci_club_supervisor'), ref('group_cci_club_formative')])]"/>
+	</record>
+	<record model="ir.ui.menu" id="menu_cci_club_participation">
+		<field name="groups_id" eval="[(6,0, [ref('group_cci_club_user'), ref('group_cci_club_manager'), ref('group_cci_club_supervisor'), ref('group_cci_club_formative')])]"/>
+	</record>
+	<record model="ir.ui.menu" id="menu_cci_club_session">
+		<field name="groups_id" eval="[(6,0, [ref('group_cci_club_user'), ref('group_cci_club_manager'), ref('group_cci_club_supervisor'), ref('group_cci_club_formative')])]"/>
+	</record>
+	<record model="ir.ui.menu" id="menu_cci_club_attendance">
+		<field name="groups_id" eval="[(6,0, [ref('group_cci_club_user'), ref('group_cci_club_manager'), ref('group_cci_club_supervisor'), ref('group_cci_club_formative')])]"/>
+	</record>
+</data>
+</openerp>
+

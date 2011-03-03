@@ -1,0 +1,41 @@
+"id","name","model_id:id","group_id:id","perm_read","perm_write","perm_create","perm_unlink"
+"access_club_type_user","club_type User","cci_club.model_cci_club_club_type","group_cci_club_user",1,0,0,0
+"access_club_type_manager","club_type Manager","cci_club.model_cci_club_club_type","group_cci_club_manager",1,1,1,1
+"access_club_type_supervisor","club_type Supervisor","cci_club.model_cci_club_club_type","group_cci_club_supervisor",1,0,0,0
+"access_club_type_formative","club_type Formative","cci_club.model_cci_club_club_type","group_cci_club_formative",1,0,0,0
+"access_club_user","club User","cci_club.model_cci_club_club","group_cci_club_user",1,1,1,1
+"access_club_manager","club Manager","cci_club.model_cci_club_club","group_cci_club_manager",1,1,1,1
+"access_club_supervisor","club Supervisor","cci_club.model_cci_club_club","group_cci_club_supervisor",1,0,0,0
+"access_club_formative","club Formative","cci_club.model_cci_club_club","group_cci_club_formative",1,0,0,0
+"access_club_level_user","club level User","cci_club.model_cci_club_level","group_cci_club_user",1,0,0,0
+"access_club_level_manager","club level Manager","cci_club.model_cci_club_level","group_cci_club_manager",1,1,1,1
+"access_club_level_supervisor","club level Supervisor","cci_club.model_cci_club_level","group_cci_club_supervisor",1,0,0,0
+"access_club_level_formative","club level Formative","cci_club.model_cci_club_level","group_cci_club_formative",1,0,0,0
+"access_club_language_user","club_language User","cci_club.model_cci_club_language","group_cci_club_user",1,0,0,0
+"access_club_language_manager","club_language Manager","cci_club.model_cci_club_language","group_cci_club_manager",1,1,1,1
+"access_club_language_supervisor","club_language Supervisor","cci_club.model_cci_club_language","group_cci_club_supervisor",1,0,0,0
+"access_club_language_formative","club_language Formative","cci_club.model_cci_club_language","group_cci_club_formative",1,0,0,0
+"access_club_participation_state_user","club_participation State User","cci_club.model_cci_club_participation_state","group_cci_club_user",1,0,0,0
+"access_club_participation_state_manager","club_participation State Manager","cci_club.model_cci_club_participation_state","group_cci_club_manager",1,1,1,1
+"access_club_participation_state_supervisor","club_participation State Supervisor","cci_club.model_cci_club_participation_state","group_cci_club_supervisor",1,0,0,0
+"access_club_participation_state_formative","club_participation State Formative","cci_club.model_cci_club_participation_state","group_cci_club_formative",1,0,0,0
+"access_club_participation_user","club_participation User","cci_club.model_cci_club_participation","group_cci_club_user",1,1,1,1
+"access_club_participation_manager","club_participation Manager","cci_club.model_cci_club_participation","group_cci_club_manager",1,1,1,1
+"access_club_participation_supervisor","club_participation Supervisor","cci_club.model_cci_club_participation","group_cci_club_supervisor",1,0,0,0
+"access_club_participation_formative","club_participation Formative","cci_club.model_cci_club_participation","group_cci_club_formative",1,0,0,0
+"access_club_session_state_user","club_session State User","cci_club.model_cci_club_session_state","group_cci_club_user",1,0,0,0
+"access_club_session_state_manager","club_session State Manager","cci_club.model_cci_club_session_state","group_cci_club_manager",1,1,1,1
+"access_club_session_state_supervisor","club_session State Supervisor","cci_club.model_cci_club_session_state","group_cci_club_supervisor",1,0,0,0
+"access_club_session_state_formative","club_session State Formative","cci_club.model_cci_club_session_state","group_cci_club_formative",1,0,0,0
+"access_club_session_user","club_session User","cci_club.model_cci_club_session","group_cci_club_user",1,1,1,1
+"access_club_session_manager","club_session Manager","cci_club.model_cci_club_session","group_cci_club_manager",1,1,1,1
+"access_club_session_supervisor","club_session Supervisor","cci_club.model_cci_club_session","group_cci_club_supervisor",1,0,0,0
+"access_club_session_formative","club_session Formative","cci_club.model_cci_club_session","group_cci_club_formative",1,0,0,0
+"access_club_attendance_state_user","club_attendance State User","cci_club.model_cci_club_attendance_state","group_cci_club_user",1,0,0,0
+"access_club_attendance_state_manager","club_attendance State Manager","cci_club.model_cci_club_attendance_state","group_cci_club_manager",1,1,1,1
+"access_club_attendance_state_supervisor","club_attendance State Supervisor","cci_club.model_cci_club_attendance_state","group_cci_club_supervisor",1,0,0,0
+"access_club_attendance_state_formative","club_attendance State Formative","cci_club.model_cci_club_attendance_state","group_cci_club_formative",1,0,0,0
+"access_club_attendance_user","club_attendance User","cci_club.model_cci_club_attendance","group_cci_club_user",1,1,1,1
+"access_club_attendance_manager","club_attendance Manager","cci_club.model_cci_club_attendance","group_cci_club_manager",1,1,1,1
+"access_club_attendance_supervisor","club_attendance Supervisor","cci_club.model_cci_club_attendance","group_cci_club_supervisor",1,0,0,0
+"access_club_attendance_formative","club_attendance Formative","cci_club.model_cci_club_attendance","group_cci_club_formative",1,1,1,1

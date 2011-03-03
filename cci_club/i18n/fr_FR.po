@@ -1,0 +1,505 @@
+# Translation of OpenERP Server.
+# This file contains the translation of the following modules:
+#	* cci_club
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: OpenERP Server 5.0.12\n"
+"Report-Msgid-Bugs-To: support@openerp.com\n"
+"POT-Creation-Date: 2011-01-10 16:51:21+0000\n"
+"PO-Revision-Date: 2011-01-10 16:51:21+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: cci_club
+#: field:cci_club.club,liege:0
+msgid "Liege"
+msgstr "Liege"
+
+#. module: cci_club
+#: view:cci_club.attendance:0
+#: field:cci_club.attendance,comments:0
+#: view:cci_club.session:0
+#: field:cci_club.session,comments:0
+msgid "Comments"
+msgstr "Commentaires"
+
+#. module: cci_club
+#: field:cci_club.club,waiting_club:0
+msgid "Waiting Club"
+msgstr "Club d'attente"
+
+#. module: cci_club
+#: help:cci_club.club,session_count_by_invoice:0
+msgid "Number of session by attendance to calculate the monthly revenue"
+msgstr "Nombre de sessions par participation pour pouvoir en calculer le revenu mensuel"
+
+#. module: cci_club
+#: field:cci_club.club,formative_id:0
+msgid "Formative"
+msgstr "Formateur"
+
+#. module: cci_club
+#: constraint:ir.actions.act_window:0
+msgid "Invalid model name in the action definition."
+msgstr "Invalid model name in the action definition."
+
+#. module: cci_club
+#: help:cci_club.attendance_state,checks_valid:0
+msgid "Indicate that we can charge formative checks for this kind of attendance"
+msgstr "Indique que nous pouvons demander des chèques formations pour ce type de présence"
+
+#. module: cci_club
+#: model:ir.model,name:cci_club.model_cci_club_session
+msgid "A session to a club"
+msgstr "Une session d'un club"
+
+#. module: cci_club
+#: selection:cci_club.club,day:0
+msgid "Friday"
+msgstr "Vendredi"
+
+#. module: cci_club
+#: field:cci_club.club,host_id:0
+msgid "Host"
+msgstr "Hôte"
+
+#. module: cci_club
+#: field:cci_club.club,day:0
+msgid "Day"
+msgstr "Jour"
+
+#. module: cci_club
+#: field:cci_club.participation,order_id:0
+msgid "Sale Order"
+msgstr "Bon de Commande"
+
+#. module: cci_club
+#: field:cci_club.participation,final_turnover:0
+msgid "Final turnover"
+msgstr "CA réel"
+
+#. module: cci_club
+#: view:cci_club.participation_state:0
+#: model:ir.ui.menu,name:cci_club.menu_cci_club_participation_state
+msgid "Participation State"
+msgstr "Etat du participant"
+
+#. module: cci_club
+#: view:cci_club.club_type:0
+#: model:ir.ui.menu,name:cci_club.menu_cci_club_type
+msgid "Club Type"
+msgstr "Type de Club"
+
+#. module: cci_club
+#: field:cci_club.participation,partner_id:0
+msgid "Partner"
+msgstr "Partenaire"
+
+#. module: cci_club
+#: field:cci_club.participation,availability:0
+msgid "Availability"
+msgstr "Disponibilité(s)"
+
+#. module: cci_club
+#: model:ir.module.module,description:cci_club.module_meta_information
+msgid "\n"
+"        Specific module for managing registrations and attendances\n"
+"         to many kinds of clubs : \n"
+"            'tables de conversation',\n"
+"            'partage d'experience'\n"
+"    "
+msgstr "\n"
+"        Specific module for managing registrations and attendances\n"
+"         to many kinds of clubs : \n"
+"            'tables de conversation',\n"
+"            'partage d'experience'\n"
+"    "
+
+#. module: cci_club
+#: view:cci_club.attendance:0
+#: model:ir.ui.menu,name:cci_club.menu_cci_club_attendance
+msgid "Attendance"
+msgstr "Présence"
+
+#. module: cci_club
+#: field:cci_club.club,school_id:0
+msgid "School"
+msgstr "Ecole"
+
+#. module: cci_club
+#: help:cci_club.participation,continuation:0
+msgid "Check if this participation is the followup of another one"
+msgstr "Cochez si cette participation est la suite d'une autre"
+
+#. module: cci_club
+#: field:cci_club.attendance,state:0
+#: field:cci_club.participation,state_id:0
+#: field:cci_club.session,state_id:0
+msgid "State"
+msgstr "Etat"
+
+#. module: cci_club
+#: field:cci_club.club,type_id:0
+msgid "Type"
+msgstr "Type"
+
+#. module: cci_club
+#: view:cci_club.participation:0
+#: model:ir.ui.menu,name:cci_club.menu_cci_club_participation
+msgid "Participation"
+msgstr "Participation"
+
+#. module: cci_club
+#: view:cci_club.level:0
+msgid "Level of knowldege"
+msgstr "Niveau"
+
+#. module: cci_club
+#: field:cci_club.club,hours:0
+msgid "Hours"
+msgstr "Heures"
+
+#. module: cci_club
+#: model:ir.ui.menu,name:cci_club.menu_cci_club_main
+msgid "Club Management"
+msgstr "Gestion de club"
+
+#. module: cci_club
+#: help:cci_club.club,description:0
+msgid "For internal use"
+msgstr "Pour usage interne"
+
+#. module: cci_club
+#: model:ir.ui.menu,name:cci_club.menu_cci_club_config
+msgid "Configuration"
+msgstr "Configuration"
+
+#. module: cci_club
+#: constraint:ir.ui.view:0
+msgid "Invalid XML for View Architecture!"
+msgstr "Invalid XML for View Architecture!"
+
+#. module: cci_club
+#: field:cci_club.attendance_state,checks_valid:0
+msgid "Valid for Checks"
+msgstr "Valide pour des Chèques"
+
+#. module: cci_club
+#: field:cci_club.participation,note:0
+msgid "Internal note"
+msgstr "Note interne"
+
+#. module: cci_club
+#: model:ir.model,name:cci_club.model_cci_club_level
+msgid "Level of knowledge of this participant"
+msgstr "Niveau de connaissance de ce participant"
+
+#. module: cci_club
+#: selection:cci_club.club,day:0
+msgid "Tuesday"
+msgstr "Mardi"
+
+#. module: cci_club
+#: field:cci_club.attendance,session_id:0
+#: view:cci_club.session:0
+#: model:ir.ui.menu,name:cci_club.menu_cci_club_session
+msgid "Session"
+msgstr "Session"
+
+#. module: cci_club
+#: field:cci_club.participation,salesman:0
+msgid "Salesman"
+msgstr "Commercial"
+
+#. module: cci_club
+#: field:cci_club.attendance,participation_id:0
+#: field:cci_club.participation,contact_id:0
+msgid "Participer"
+msgstr "Participant"
+
+#. module: cci_club
+#: model:ir.model,name:cci_club.model_cci_club_attendance
+msgid "The attendance of a person in a club's session"
+msgstr "La participation d'une personne à une session d'un club"
+
+#. module: cci_club
+#: view:cci_club.club:0
+msgid "Externals"
+msgstr "Externes"
+
+#. module: cci_club
+#: field:cci_club.participation,date_in:0
+msgid "Beginning Date"
+msgstr "Date de début"
+
+#. module: cci_club
+#: help:cci_club.participation_state,current:0
+msgid "Indicate if a participation with this state must be considered as 'current' in the club"
+msgstr "Indique si la participation avec cet état peut être considérée comme 'courante' dans le club"
+
+#. module: cci_club
+#: field:cci_club.club,checks:0
+#: view:cci_club.participation:0
+#: field:cci_club.participation,checks:0
+msgid "Checks"
+msgstr "Chèques"
+
+#. module: cci_club
+#: view:cci_club.session_state:0
+#: model:ir.ui.menu,name:cci_club.menu_cci_club_session_state
+msgid "Session State"
+msgstr "Etat de Session"
+
+#. module: cci_club
+#: field:cci_club.participation,level_id:0
+msgid "Level of Knowledge"
+msgstr "Niveau"
+
+#. module: cci_club
+#: view:cci_club.participation:0
+msgid "Status"
+msgstr "Etat"
+
+#. module: cci_club
+#: field:cci_club.club,participation_ids:0
+msgid "Participers"
+msgstr "Participants"
+
+#. module: cci_club
+#: selection:cci_club.club,day:0
+msgid "Monday"
+msgstr "Lundi"
+
+#. module: cci_club
+#: help:cci_club.club,waiting_club:0
+msgid "Check this box if this club is not a real club but a club for waiting registrations"
+msgstr "Cochez cette case si ce club n'est pas un vrai club mais un club d'attente enregistrant des demandes de participations"
+
+#. module: cci_club
+#: field:cci_club.club,product_id:0
+msgid "Associated product"
+msgstr "Produit associé"
+
+#. module: cci_club
+#: field:cci_club.session,date:0
+msgid "Date"
+msgstr "Date"
+
+#. module: cci_club
+#: model:ir.model,name:cci_club.model_cci_club_session_state
+msgid "The state of a session for managing the supplier invoices"
+msgstr "L'état d'une session pmour pouvoir gérer les factures des fournisseurs"
+
+#. module: cci_club
+#: view:cci_club.participation:0
+msgid "Internal Note"
+msgstr "Note interne"
+
+#. module: cci_club
+#: field:cci_club.participation,date_to_invoice:0
+msgid "Date to invoice"
+msgstr "Date à laquelle facturer"
+
+#. module: cci_club
+#: view:cci_club.language:0
+#: view:cci_club.participation:0
+#: field:cci_club.participation,language_id:0
+#: model:ir.ui.menu,name:cci_club.menu_cci_club_language
+msgid "Language"
+msgstr "Langue"
+
+#. module: cci_club
+#: selection:cci_club.club,day:0
+msgid "Wednesday"
+msgstr "Mercredi"
+
+#. module: cci_club
+#: field:cci_club.participation,provided_turnover:0
+msgid "Provided turnover"
+msgstr "CA prévu"
+
+#. module: cci_club
+#: model:ir.model,name:cci_club.model_cci_club_participation_state
+msgid "State of this participation"
+msgstr "Etat de cette participation"
+
+#. module: cci_club
+#: field:cci_club.club,date_end:0
+msgid "End date"
+msgstr "Date de fin"
+
+#. module: cci_club
+#: field:cci_club.club,code:0
+msgid "Code"
+msgstr "Code"
+
+#. module: cci_club
+#: view:cci_club.club:0
+msgid "Features"
+msgstr "Caractéristiques"
+
+#. module: cci_club
+#: field:cci_club.participation,continuation:0
+msgid "Continuation"
+msgstr "Continuïté"
+
+#. module: cci_club
+#: field:cci_club.session,number:0
+msgid "Number"
+msgstr "Nombre"
+
+#. module: cci_club
+#: model:ir.model,name:cci_club.model_cci_club_club
+msgid "Club/Group"
+msgstr "Club/Groupe"
+
+#. module: cci_club
+#: field:cci_club.club,responsible_id:0
+msgid "Internal club responsible"
+msgstr "Responsable interne du club"
+
+#. module: cci_club
+#: field:cci_club.club,date_begin:0
+msgid "Beginning date"
+msgstr "Date de début"
+
+#. module: cci_club
+#: view:cci_club.level:0
+#: model:ir.ui.menu,name:cci_club.menu_cci_club_level
+msgid "Level of knowledge"
+msgstr "Niveau"
+
+#. module: cci_club
+#: field:cci_club.participation,date_registration:0
+msgid "Registration date"
+msgstr "Date d'inscription"
+
+#. module: cci_club
+#: constraint:ir.model:0
+msgid "The Object name must start with x_ and not contain any special character !"
+msgstr "The Object name must start with x_ and not contain any special character !"
+
+#. module: cci_club
+#: field:cci_club.club,session_count_by_invoice:0
+msgid "Number of sessions"
+msgstr "Nombre de sessions"
+
+#. module: cci_club
+#: model:ir.module.module,shortdesc:cci_club.module_meta_information
+msgid "CCI Club"
+msgstr "CCI Club"
+
+#. module: cci_club
+#: selection:cci_club.club,day:0
+msgid "Thursday"
+msgstr "Jeudi"
+
+#. module: cci_club
+#: field:cci_club.participation_state,current:0
+msgid "Current"
+msgstr "Courante"
+
+#. module: cci_club
+#: field:cci_club.participation,attendance_ids:0
+#: field:cci_club.session,attendance_ids:0
+msgid "Attendances"
+msgstr "Présences"
+
+#. module: cci_club
+#: view:cci_club.club:0
+#: field:cci_club.club,description:0
+#: field:cci_club.level,description:0
+#: field:cci_club.participation_state,description:0
+msgid "Description"
+msgstr "Description"
+
+#. module: cci_club
+#: field:cci_club.club,session_ids:0
+msgid "Sessions"
+msgstr "Sessions"
+
+#. module: cci_club
+#: view:cci_club.club:0
+#: field:cci_club.participation,group_id:0
+#: field:cci_club.session,group_id:0
+#: model:ir.ui.menu,name:cci_club.menu_cci_club_club
+msgid "Club"
+msgstr "Club"
+
+#. module: cci_club
+#: field:cci_club.club,agreement_nbr:0
+msgid "Agreement Nbr"
+msgstr "N° d'agrément"
+
+#. module: cci_club
+#: field:cci_club.club,feder:0
+msgid "Feder supported"
+msgstr "Soutenue par le Feder"
+
+#. module: cci_club
+#: field:cci_club.participation,date_out:0
+msgid "End Date"
+msgstr "Date de fin"
+
+#. module: cci_club
+#: field:cci_club.club,namur:0
+msgid "Namur"
+msgstr "Namur"
+
+#. module: cci_club
+#: field:cci_club.attendance_state,name:0
+#: field:cci_club.club,name:0
+#: field:cci_club.club_type,name:0
+#: field:cci_club.language,name:0
+#: field:cci_club.level,name:0
+#: field:cci_club.participation_state,name:0
+#: field:cci_club.session_state,name:0
+msgid "Name"
+msgstr "Nom"
+
+#. module: cci_club
+#: model:ir.model,name:cci_club.model_cci_club_language
+msgid "Language of the course for this participation"
+msgstr "Langue de ce groupe pour cette participation"
+
+#. module: cci_club
+#: model:ir.model,name:cci_club.model_cci_club_club_type
+msgid "Type of clubs"
+msgstr "Type de clubs"
+
+#. module: cci_club
+#: view:cci_club.attendance_state:0
+#: model:ir.ui.menu,name:cci_club.menu_cci_club_attendance_state
+msgid "Attendance State"
+msgstr "Etat de présence"
+
+#. module: cci_club
+#: field:cci_club.level,sequence:0
+msgid "Sequence"
+msgstr "Séquence"
+
+#. module: cci_club
+#: model:ir.model,name:cci_club.model_cci_club_attendance_state
+msgid "State of attendance"
+msgstr "Etat de présence"
+
+#. module: cci_club
+#: help:cci_club.participation,membership:0
+msgid "Indicate that this attendance came from a membership deal"
+msgstr "Indique que cette inscription provient d'un contrat de membership"
+
+#. module: cci_club
+#: field:cci_club.participation,membership:0
+msgid "From membership"
+msgstr "Issu du membership"
+
+#. module: cci_club
+#: model:ir.model,name:cci_club.model_cci_club_participation
+msgid "Participation of a person in a club/group"
+msgstr "Participation d'une personne dans un club"
+
