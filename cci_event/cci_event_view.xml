@@ -19,6 +19,7 @@
                         <field name="date_end" select="2"/>
                         <field name="register_min" select="2"/>
                         <field name="register_max" select="2"/>
+                        <field name="site_name"/>
                         <field name="budget_id"/>
                         <field name="product_id" required="1"/>
                         <separator string="Tasks management" colspan="4"/>
@@ -91,6 +92,8 @@
                     <field name="fse_code" />
                     <field name="fse_hours" />
                     <field name="signet_type" select="2"/>
+                    <newline/>
+                    <field name="name_on_site"/>
                     <newline/>
                     <field name="agreement_nbr"/>
                     <field name="check_type"/>

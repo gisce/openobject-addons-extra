@@ -116,6 +116,7 @@ class event(osv.osv):
             'signet_type':fields.selection(_group_names, 'Signet type'),
             'localisation':fields.char('Localisation',size=20),
             'check_type': fields.many2one('event.check.type','Check Type'),
+            'name_on_site': fields.char('Name on Site',size=128),
             }
 event()
 
