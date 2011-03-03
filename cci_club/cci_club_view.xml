@@ -283,11 +283,21 @@
                     <field name="language_id" select="2"/>
                     <field name="level_id" select="2"/>
                     <field name="availability" colspan="4"/>
-                    <field name="attendance_ids" nolabel="1" colspan="4"/>
-                    <separator string="Checks" colspan="4"/>
-                    <field name="checks" nolabel="1" colspan="4"/>
-                    <separator string="Internal Note" colspan="4"/>
-                    <field name="note" nolabel="1" colspan="4"/>
+                    <notebook colspan="4">
+                    <page string="Attendances">
+                        <field name="attendance_ids" nolabel="1" colspan="4"/>
+                    </page>
+                    <page string="Checks">
+                        <field name="validChecksA" select="2"/>
+                        <field name="validChecksB" select="2"/>
+                        <field name="checksA" nolabel="1" colspan="2"/>
+                        <field name="checksB" nolabel="1" colspan="2"/>
+                    </page>
+                    <page string="Internal">
+                        <separator string="Internal Note" colspan="4"/>
+                        <field name="note" nolabel="1" colspan="4"/>
+                    </page>
+                    </notebook>
 				</form>
 			</field>
 		</record>
@@ -297,13 +307,13 @@
 			<field name="model">cci_club.participation</field>
 			<field name="type">tree</field>
 			<field name="arch" type="xml">
-				<tree string="Participation">
+				<tree string="Participation" colors="blue:state_id==1;darkred:state_id==2">
 					<field name="group_id"/>
                     <field name="partner_id"/>
                     <field name="contact_id"/>
                     <field name="order_id"/>
-                    <field name="provided_turnover"/>
-                    <field name="final_turnover"/>
+                    <field name="provided_turnover" sum="Provided turnover"/>
+                    <field name="final_turnover" sum="Final Turnover"/>
                     <field name="salesman"/>
                     <field name="state_id"/>
                     <field name="language_id"/>
