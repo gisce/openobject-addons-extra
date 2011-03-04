@@ -14,17 +14,15 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2011-01-18 05:22+0000\n"
-"X-Generator: Launchpad (build 12177)\n"
+"X-Launchpad-Export-Date: 2011-03-04 05:09+0000\n"
+"X-Generator: Launchpad (build 12351)\n"
 
 #. module: account_coda
 #: help:account.coda,journal_id:0
 #: field:account.coda.import,journal_id:0
 msgid "Bank Journal"
-msgstr ""
+msgstr "Diário de Banco"
 
-#. module: account_coda
-#: constraint:ir.model:0
 msgid ""
 "The Object name must start with x_ and not contain any special character !"
 msgstr ""
@@ -44,7 +42,7 @@ msgstr ""
 #. module: account_coda
 #: field:account.coda,name:0
 msgid "Coda file"
-msgstr ""
+msgstr "Arquivo CODA"
 
 msgid "Clic on 'New' to select your file :"
 msgstr ""
@@ -52,8 +50,6 @@ msgstr ""
 msgid "Import Coda File"
 msgstr ""
 
-#. module: account_coda
-#: constraint:ir.actions.act_window:0
 msgid "Invalid model name in the action definition."
 msgstr ""
 
@@ -80,7 +76,7 @@ msgstr ""
 #. module: account_coda
 #: view:account.coda:0
 msgid "Coda import"
-msgstr ""
+msgstr "Importação CODA"
 
 #. module: account_coda
 #: view:account.coda:0
@@ -88,15 +84,13 @@ msgstr ""
 msgid "User"
 msgstr "Usuário"
 
-#. module: account_coda
-#: constraint:ir.ui.view:0
 msgid "Invalid XML for View Architecture!"
 msgstr ""
 
 #. module: account_coda
 #: model:ir.model,name:account_coda.model_account_coda
 msgid "coda for an Account"
-msgstr ""
+msgstr "CODA para uma Conta"
 
 #. module: account_coda
 #: field:account.coda.import,def_payable:0
@@ -109,7 +103,7 @@ msgstr ""
 #. module: account_coda
 #: model:ir.ui.menu,name:account_coda.menu_account_coda_import
 msgid "Import Coda Statements"
-msgstr ""
+msgstr "Importar Extrato em Formato CODA"
 
 msgid "_Ok"
 msgstr ""
@@ -118,7 +112,7 @@ msgstr ""
 #: view:account.coda.import:0
 #: model:ir.actions.act_window,name:account_coda.action_account_coda_import
 msgid "Import Coda Statement"
-msgstr ""
+msgstr "Importar Extrato em Formato CODA"
 
 #. module: account_coda
 #: field:account.bank.statement,coda_id:0
@@ -128,13 +122,13 @@ msgstr "Coda"
 #. module: account_coda
 #: view:account.coda.import:0
 msgid "Results :"
-msgstr "Resultados :"
+msgstr "Resultados:"
 
 #. module: account_coda
 #: field:account.coda.import,coda:0
 #: model:ir.actions.act_window,name:account_coda.act_account_payment_account_bank_statement
 msgid "Coda File"
-msgstr ""
+msgstr "Arquivo CODA"
 
 #. module: account_coda
 #: help:account.coda,date:0

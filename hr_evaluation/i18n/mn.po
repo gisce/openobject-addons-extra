@@ -14,47 +14,30 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2011-01-18 05:21+0000\n"
-"X-Generator: Launchpad (build 12177)\n"
+"X-Launchpad-Export-Date: 2011-03-04 05:08+0000\n"
+"X-Generator: Launchpad (build 12351)\n"
 
-#. module: hr_evaluation
-#: view:hr_evaluation.type:0
-#: field:hr_evaluation.type,info:0
 msgid "Information"
 msgstr "Мэдээлэл"
 
-#. module: hr_evaluation
-#: constraint:ir.model:0
 msgid ""
 "The Object name must start with x_ and not contain any special character !"
 msgstr ""
 "Объектын нэрний эхлэл x_ байх ёстой бөгөөд бусад тусгай тэмдэгтийг агуулж "
 "болохгүй!"
 
-#. module: hr_evaluation
-#: view:hr_evaluation.evaluation:0
 msgid "Schedule next evaluation"
 msgstr "Дараагийн үнэлгээний хуваарь"
 
-#. module: hr_evaluation
-#: view:hr_evaluation.evaluation:0
-#: field:hr_evaluation.evaluation,info_bad:0
 msgid "Bad Points"
 msgstr "Муу цэгүүд"
 
-#. module: hr_evaluation
-#: model:ir.actions.act_window,name:hr_evaluation.open_view_employee_evaluation_next_my_list
 msgid "My Next Evaluation"
 msgstr "Миний дараагийн үнэлгээ"
 
-#. module: hr_evaluation
-#: field:hr_evaluation.type,value_ids:0
 msgid "Values"
 msgstr "Утгууд"
 
-#. module: hr_evaluation
-#: view:hr_evaluation.evaluation:0
-#: field:hr_evaluation.evaluation,info_good:0
 msgid "Good Points"
 msgstr "Сайн цэгүүд"
 
@@ -67,11 +50,6 @@ msgstr "Сайн цэгүүд"
 msgid "State"
 msgstr "Төлөв"
 
-#. module: hr_evaluation
-#: field:hr_evaluation.evaluation,score:0
-#: field:hr_evaluation.quote,score:0
-#: field:hr_evaluation.type,score:0
-#: field:hr_evaluation.type.value,score:0
 msgid "Score"
 msgstr "Оноо"
 
@@ -81,13 +59,9 @@ msgstr "Оноо"
 msgid "Draft"
 msgstr "Ноорог"
 
-#. module: hr_evaluation
-#: view:hr_evaluation.evaluation:0
 msgid "Informal Data"
 msgstr "Албан ёсны өгөгдөл"
 
-#. module: hr_evaluation
-#: constraint:ir.actions.act_window:0
 msgid "Invalid model name in the action definition."
 msgstr "Үйлдлийн тодорхойлолтод буруу моделийн нэр байна."
 
@@ -100,9 +74,6 @@ msgstr "Үйлдлийн тодорхойлолтод буруу моделий�
 msgid "Employee"
 msgstr "Ажилтан"
 
-#. module: hr_evaluation
-#: view:hr_evaluation.evaluation:0
-#: field:hr_evaluation.evaluation,info_improve:0
 msgid "To Improve"
 msgstr "Сайжруулах"
 
@@ -112,43 +83,27 @@ msgstr "Сайжруулах"
 msgid "Evaluation"
 msgstr "Үнэлгээ"
 
-#. module: hr_evaluation
-#: field:hr.evaluation.interview,evaluation_id:0
 msgid "Evaluation Type"
 msgstr "Үнэлгээний төрөл"
 
-#. module: hr_evaluation
-#: view:hr_evaluation.evaluation:0
 msgid "Status"
 msgstr "Төлөв"
 
-#. module: hr_evaluation
-#: view:hr_evaluation.type:0
 msgid "Apply to categories"
 msgstr "Хүсэлт гаргах зэрэглэл"
 
-#. module: hr_evaluation
-#: model:ir.module.module,description:hr_evaluation.module_meta_information
 msgid "Ability to create employees evaluation."
 msgstr "Ажилтны үнэлгээ үүсгэх боломж"
 
-#. module: hr_evaluation
-#: field:hr_evaluation.quote,name:0
 msgid "Quote"
 msgstr "Квот"
 
-#. module: hr_evaluation
-#: field:hr_evaluation.type,category_ids:0
 msgid "Appliable Role"
 msgstr "Тохирох дүр"
 
-#. module: hr_evaluation
-#: field:hr_evaluation.evaluation,user_id:0
 msgid "Evaluation User"
 msgstr "Хэрэглэгчийн үнэлгээ"
 
-#. module: hr_evaluation
-#: view:hr_evaluation.type:0
 msgid "Choices Results"
 msgstr "Сонголтын үр дүн"
 
@@ -164,44 +119,27 @@ msgstr "Огноо"
 msgid "Evaluations"
 msgstr "Үнэлгээнүүд"
 
-#. module: hr_evaluation
-#: model:ir.ui.menu,name:hr_evaluation.menu_eval_config
 msgid "Configuration"
 msgstr "Тохируулга"
 
-#. module: hr_evaluation
-#: model:ir.ui.menu,name:hr_evaluation.menu_open_view_employee_evaluation_next_list
 msgid "Next Evaluations"
 msgstr "Дараагийн үнэлгээнүүд"
 
-#. module: hr_evaluation
-#: constraint:ir.ui.view:0
 msgid "Invalid XML for View Architecture!"
 msgstr "Дэлгэцийн XML алдаатай!"
 
-#. module: hr_evaluation
-#: model:ir.ui.menu,name:hr_evaluation.menu_open_view_evaluation_type_form
 msgid "Evaluation Criterions"
 msgstr "Үнэлгээний шалгуур"
 
-#. module: hr_evaluation
-#: model:ir.ui.menu,name:hr_evaluation.menu_open_view_employee_my_old_evaluation_list
 msgid "My Preceeding Evaluations"
 msgstr "Миний урьдчилсан үнэлгээ"
 
-#. module: hr_evaluation
-#: model:ir.ui.menu,name:hr_evaluation.menu_resp_hr
 msgid "HR Responsible"
 msgstr "Хариуцлагатай HR"
 
-#. module: hr_evaluation
-#: field:hr_evaluation.quote,value_id:0
-#: field:hr_evaluation.type.value,name:0
 msgid "Value"
 msgstr "Утга"
 
-#. module: hr_evaluation
-#: field:hr_evaluation.evaluation,name:0
 msgid "Summary"
 msgstr "Дүгнэлт"
 
@@ -220,39 +158,24 @@ msgstr "Тэмдэглэл"
 msgid "Employee Evaluation"
 msgstr "Ажилтаны үнэлгээ"
 
-#. module: hr_evaluation
-#: model:ir.model,name:hr_evaluation.model_hr_evaluation_type
 msgid "Employee Evaluation Type"
 msgstr "Ажилтаны үнэлгээний төрөл"
 
-#. module: hr_evaluation
-#: view:hr_evaluation.evaluation:0
 msgid "Quotations"
 msgstr "Үнийн санал"
 
-#. module: hr_evaluation
-#: model:ir.actions.act_window,name:hr_evaluation.open_view_employee_evaluation_next_list
 msgid "Next Employee Evaluation"
 msgstr "Дараагийн ажилтаны үнэлгээ"
 
-#. module: hr_evaluation
-#: field:hr_evaluation.quote,type_id:0
 msgid "Type"
 msgstr "Төрөл"
 
-#. module: hr_evaluation
-#: view:hr_evaluation.type:0
-#: field:hr_evaluation.type,name:0
 msgid "Evaluation Criterion"
 msgstr "Үнэлгээний хэмжүүр"
 
-#. module: hr_evaluation
-#: model:ir.ui.menu,name:hr_evaluation.menu_open_view_employee_evaluation_next_my_list
 msgid "My Next Evaluations"
 msgstr "Миний дарагийн үнэлгээ"
 
-#. module: hr_evaluation
-#: view:hr_evaluation.quote:0
 msgid "Evalution Quote"
 msgstr "Үнэлгээний квот"
 
@@ -261,8 +184,6 @@ msgstr "Үнэлгээний квот"
 msgid "Human Resources Evaluation"
 msgstr "Хүний нөөцийн үнэлгээ"
 
-#. module: hr_evaluation
-#: field:hr_evaluation.evaluation,quote_ids:0
 msgid "Quotes"
 msgstr "Квотууд"
 
@@ -274,18 +195,11 @@ msgstr "Квотууд"
 msgid "Done"
 msgstr "Хийсэн"
 
-#. module: hr_evaluation
-#: model:ir.model,name:hr_evaluation.model_hr_evaluation_quote
 msgid "Employee Evaluation Quote"
 msgstr "Ажилчдыг үнэлэх квот"
 
-#. module: hr_evaluation
-#: view:hr_evaluation.evaluation:0
-#: field:hr_evaluation.evaluation,info_employee:0
 msgid "Employee Response"
 msgstr "Ажилчдын хариулт"
 
-#. module: hr_evaluation
-#: model:ir.model,name:hr_evaluation.model_hr_evaluation_type_value
 msgid "Evaluation Type Value"
 msgstr "Үнэлгээний төрлийн утга"

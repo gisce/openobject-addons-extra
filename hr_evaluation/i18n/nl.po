@@ -14,46 +14,29 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2011-01-18 05:21+0000\n"
-"X-Generator: Launchpad (build 12177)\n"
+"X-Launchpad-Export-Date: 2011-03-04 05:08+0000\n"
+"X-Generator: Launchpad (build 12351)\n"
 
-#. module: hr_evaluation
-#: view:hr_evaluation.type:0
-#: field:hr_evaluation.type,info:0
 msgid "Information"
 msgstr "Informatie"
 
-#. module: hr_evaluation
-#: constraint:ir.model:0
 msgid ""
 "The Object name must start with x_ and not contain any special character !"
 msgstr ""
 "De objectnaam moet beginnen met x_ en mag geen speciale tekens bevatten!"
 
-#. module: hr_evaluation
-#: view:hr_evaluation.evaluation:0
 msgid "Schedule next evaluation"
 msgstr "Volgende evaluatie inplannen"
 
-#. module: hr_evaluation
-#: view:hr_evaluation.evaluation:0
-#: field:hr_evaluation.evaluation,info_bad:0
 msgid "Bad Points"
 msgstr "Slechte punten"
 
-#. module: hr_evaluation
-#: model:ir.actions.act_window,name:hr_evaluation.open_view_employee_evaluation_next_my_list
 msgid "My Next Evaluation"
 msgstr "Mijn volgende evaluatie"
 
-#. module: hr_evaluation
-#: field:hr_evaluation.type,value_ids:0
 msgid "Values"
 msgstr "Waarden"
 
-#. module: hr_evaluation
-#: view:hr_evaluation.evaluation:0
-#: field:hr_evaluation.evaluation,info_good:0
 msgid "Good Points"
 msgstr "Goede punten"
 
@@ -66,11 +49,6 @@ msgstr "Goede punten"
 msgid "State"
 msgstr "Status"
 
-#. module: hr_evaluation
-#: field:hr_evaluation.evaluation,score:0
-#: field:hr_evaluation.quote,score:0
-#: field:hr_evaluation.type,score:0
-#: field:hr_evaluation.type.value,score:0
 msgid "Score"
 msgstr "Score"
 
@@ -80,13 +58,9 @@ msgstr "Score"
 msgid "Draft"
 msgstr "Concept"
 
-#. module: hr_evaluation
-#: view:hr_evaluation.evaluation:0
 msgid "Informal Data"
 msgstr "Informele gegevens"
 
-#. module: hr_evaluation
-#: constraint:ir.actions.act_window:0
 msgid "Invalid model name in the action definition."
 msgstr "Ongeldige modelnaam in de definitie van de actie."
 
@@ -99,9 +73,6 @@ msgstr "Ongeldige modelnaam in de definitie van de actie."
 msgid "Employee"
 msgstr "Medewerker"
 
-#. module: hr_evaluation
-#: view:hr_evaluation.evaluation:0
-#: field:hr_evaluation.evaluation,info_improve:0
 msgid "To Improve"
 msgstr "Te verbeteren"
 
@@ -111,43 +82,27 @@ msgstr "Te verbeteren"
 msgid "Evaluation"
 msgstr "Beoordeling"
 
-#. module: hr_evaluation
-#: field:hr.evaluation.interview,evaluation_id:0
 msgid "Evaluation Type"
 msgstr "Beoordelingsoort"
 
-#. module: hr_evaluation
-#: view:hr_evaluation.evaluation:0
 msgid "Status"
 msgstr "Status"
 
-#. module: hr_evaluation
-#: view:hr_evaluation.type:0
 msgid "Apply to categories"
 msgstr "Toepassen op categorieën"
 
-#. module: hr_evaluation
-#: model:ir.module.module,description:hr_evaluation.module_meta_information
 msgid "Ability to create employees evaluation."
 msgstr "Mogelijkheid om werknemersevaluatie aan te maken"
 
-#. module: hr_evaluation
-#: field:hr_evaluation.quote,name:0
 msgid "Quote"
 msgstr "Citaat"
 
-#. module: hr_evaluation
-#: field:hr_evaluation.type,category_ids:0
 msgid "Appliable Role"
 msgstr "Toekenbare rol"
 
-#. module: hr_evaluation
-#: field:hr_evaluation.evaluation,user_id:0
 msgid "Evaluation User"
 msgstr "Evaluatie werknemer"
 
-#. module: hr_evaluation
-#: view:hr_evaluation.type:0
 msgid "Choices Results"
 msgstr "Keuzes Resultaten"
 
@@ -163,44 +118,27 @@ msgstr "Datum"
 msgid "Evaluations"
 msgstr "Beoordelingen"
 
-#. module: hr_evaluation
-#: model:ir.ui.menu,name:hr_evaluation.menu_eval_config
 msgid "Configuration"
 msgstr "Configuratie"
 
-#. module: hr_evaluation
-#: model:ir.ui.menu,name:hr_evaluation.menu_open_view_employee_evaluation_next_list
 msgid "Next Evaluations"
 msgstr "Volgende Evaluaties"
 
-#. module: hr_evaluation
-#: constraint:ir.ui.view:0
 msgid "Invalid XML for View Architecture!"
 msgstr "Ongeldige XML, kan overzicht niet weergeven!"
 
-#. module: hr_evaluation
-#: model:ir.ui.menu,name:hr_evaluation.menu_open_view_evaluation_type_form
 msgid "Evaluation Criterions"
 msgstr "Evaluatiecriteria"
 
-#. module: hr_evaluation
-#: model:ir.ui.menu,name:hr_evaluation.menu_open_view_employee_my_old_evaluation_list
 msgid "My Preceeding Evaluations"
 msgstr "Mijn vorige evaluaties"
 
-#. module: hr_evaluation
-#: model:ir.ui.menu,name:hr_evaluation.menu_resp_hr
 msgid "HR Responsible"
 msgstr "HR verantwoordelijke"
 
-#. module: hr_evaluation
-#: field:hr_evaluation.quote,value_id:0
-#: field:hr_evaluation.type.value,name:0
 msgid "Value"
 msgstr "Waarde"
 
-#. module: hr_evaluation
-#: field:hr_evaluation.evaluation,name:0
 msgid "Summary"
 msgstr "Samenvatting"
 
@@ -219,39 +157,24 @@ msgstr "Notities"
 msgid "Employee Evaluation"
 msgstr "Beoordeling medewerker"
 
-#. module: hr_evaluation
-#: model:ir.model,name:hr_evaluation.model_hr_evaluation_type
 msgid "Employee Evaluation Type"
 msgstr "Evaluatietype werknemer"
 
-#. module: hr_evaluation
-#: view:hr_evaluation.evaluation:0
 msgid "Quotations"
 msgstr "Citaaten"
 
-#. module: hr_evaluation
-#: model:ir.actions.act_window,name:hr_evaluation.open_view_employee_evaluation_next_list
 msgid "Next Employee Evaluation"
 msgstr "Volgende evaluatie werknemer"
 
-#. module: hr_evaluation
-#: field:hr_evaluation.quote,type_id:0
 msgid "Type"
 msgstr "Type"
 
-#. module: hr_evaluation
-#: view:hr_evaluation.type:0
-#: field:hr_evaluation.type,name:0
 msgid "Evaluation Criterion"
 msgstr "Evaluatie criteria"
 
-#. module: hr_evaluation
-#: model:ir.ui.menu,name:hr_evaluation.menu_open_view_employee_evaluation_next_my_list
 msgid "My Next Evaluations"
 msgstr "Mijn volgende evaluaties"
 
-#. module: hr_evaluation
-#: view:hr_evaluation.quote:0
 msgid "Evalution Quote"
 msgstr "Citaat evaluatie"
 
@@ -260,8 +183,6 @@ msgstr "Citaat evaluatie"
 msgid "Human Resources Evaluation"
 msgstr "Personeel beoordeling"
 
-#. module: hr_evaluation
-#: field:hr_evaluation.evaluation,quote_ids:0
 msgid "Quotes"
 msgstr "Citaten"
 
@@ -273,18 +194,11 @@ msgstr "Citaten"
 msgid "Done"
 msgstr "Klaar"
 
-#. module: hr_evaluation
-#: model:ir.model,name:hr_evaluation.model_hr_evaluation_quote
 msgid "Employee Evaluation Quote"
 msgstr "Citaat evaluatie werknemer"
 
-#. module: hr_evaluation
-#: view:hr_evaluation.evaluation:0
-#: field:hr_evaluation.evaluation,info_employee:0
 msgid "Employee Response"
 msgstr "Antwoord werknemer"
 
-#. module: hr_evaluation
-#: model:ir.model,name:hr_evaluation.model_hr_evaluation_type_value
 msgid "Evaluation Type Value"
 msgstr "Waarde evaluatietype"

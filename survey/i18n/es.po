@@ -14,8 +14,8 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2011-01-18 05:27+0000\n"
-"X-Generator: Launchpad (build 12177)\n"
+"X-Launchpad-Export-Date: 2011-03-04 05:14+0000\n"
+"X-Generator: Launchpad (build 12351)\n"
 
 #. module: survey
 #: model:ir.actions.act_window,name:survey.action_survey_form1
@@ -204,7 +204,7 @@ msgid "From"
 msgstr "De"
 
 msgid "Response Type"
-msgstr ""
+msgstr "Tipo respuesta"
 
 #. module: survey
 #: field:survey.name.wiz,transfer:0
@@ -226,13 +226,13 @@ msgid "Send"
 msgstr "Enviar"
 
 msgid "#Response"
-msgstr ""
+msgstr "#Respuesta"
 
 msgid "Response Answer"
 msgstr ""
 
 msgid "Response Summary"
-msgstr ""
+msgstr "Resumen respuesta"
 
 #. module: survey
 #: view:survey.send.invitation:0
@@ -242,13 +242,13 @@ msgstr "Enviar email para nuevo usuario"
 
 #, python-format
 msgid "Error !"
-msgstr ""
+msgstr "¡Error!"
 
 msgid "Skipped Question"
 msgstr ""
 
 msgid "_Ok"
-msgstr ""
+msgstr "_Aceptar"
 
 #. module: survey
 #: selection:survey.response,response_type:0
@@ -256,12 +256,12 @@ msgid "Link"
 msgstr "Vínculo"
 
 msgid "Configuration"
-msgstr ""
+msgstr "Configuración"
 
 #. module: survey
 #: model:ir.model,name:survey.model_survey_question_wiz
 msgid "survey.question.wiz"
-msgstr ""
+msgstr "enquesta.pregunta.asist"
 
 #. module: survey
 #: constraint:ir.ui.view:0
@@ -272,13 +272,13 @@ msgid "Survey Response Answer"
 msgstr ""
 
 msgid "Page :-"
-msgstr ""
+msgstr "Página :-"
 
 msgid "Maximum Response per User"
-msgstr ""
+msgstr "Máximas respuestas por usuario"
 
 msgid "Total Started Survey :-"
-msgstr ""
+msgstr "Total encuestas iniciadas :-"
 
 #. module: survey
 #: field:survey.response.answer,comment_field:0
@@ -287,10 +287,10 @@ msgid "Comment"
 msgstr "Comentario"
 
 msgid "Modify Date"
-msgstr ""
+msgstr "Fecha modificada"
 
 msgid "Answered Question"
-msgstr ""
+msgstr "Pregunta respondida"
 
 #. module: survey
 #: code:addons/survey/wizard/survey_selection.py:134
@@ -304,7 +304,7 @@ msgid "Manually"
 msgstr "Manualmente"
 
 msgid "All Surveys"
-msgstr ""
+msgstr "Todas las encuentas"
 
 #. module: survey
 #: field:survey,users:0
@@ -327,7 +327,7 @@ msgid "Log"
 msgstr "Registro (Log)"
 
 msgid "All Survey Questions"
-msgstr ""
+msgstr "Todas las preguntas de encuestas"
 
 #. module: survey
 #: field:survey,date_close:0
@@ -375,7 +375,7 @@ msgid "Answer"
 msgstr "Respuesta"
 
 msgid "All Survey Pages"
-msgstr ""
+msgstr "Todas páginas de encuesta"
 
 #. module: survey
 #: field:survey.name.wiz,store_ans:0
@@ -406,6 +406,16 @@ msgid ""
 "invitation of the survey\n"
 "    "
 msgstr ""
+"\n"
+"    Este módulo es utilizado para realizar encuestas. Depende de las "
+"respuestas o revisión de alguna preguntas por distintos usuarios\n"
+"    Una encuesta puede tener múltiples páginas. Cada página puede contener "
+"distintas preguntas y cada pregunta puede tener múltiples respuestas.\n"
+"    Distintos usuarios pueden dar distintas respuestas a las preguntas en "
+"función de la encuesta realizada \n"
+"    También se pueden enviar correos a las empresas con nombre de usuario y "
+"password con una invitación a realizar la encuesta.\n"
+"    "
 
 #. module: survey
 #: view:survey:0
@@ -434,13 +444,13 @@ msgid "Groups"
 msgstr "Grupos"
 
 msgid "Response"
-msgstr ""
+msgstr "Respuesta"
 
 msgid "New Survey"
-msgstr ""
+msgstr "Nueva encuesta"
 
 msgid "Survey Management"
-msgstr ""
+msgstr "Gestión de encuestas"
 
 #. module: survey
 #: selection:survey.response.line,state:0
@@ -459,7 +469,7 @@ msgstr "Respuesta encueta"
 
 #, python-format
 msgid "Attention!"
-msgstr ""
+msgstr "¡Atención!"
 
 #. module: survey
 #: model:ir.actions.report.xml,name:survey.report_survey_form
@@ -483,7 +493,7 @@ msgid "Survey"
 msgstr "Encuesta"
 
 msgid "Total Completed Survey :-"
-msgstr ""
+msgstr "Total encuesta completada :-"
 
 #. module: survey
 #: view:survey:0
@@ -504,7 +514,7 @@ msgid "Total Completed Survey"
 msgstr "Total encuestas completadas"
 
 msgid "Response Percentage"
-msgstr ""
+msgstr "Porcentaje respuesta"
 
 #. module: survey
 #: field:survey.question.wiz,name:0
@@ -512,7 +522,7 @@ msgid "Number"
 msgstr "Número"
 
 msgid "Survey Title :-"
-msgstr ""
+msgstr "Título encuesta :-"
 
 #. module: survey
 #: view:survey.request:0
@@ -523,6 +533,8 @@ msgstr "Realizado"
 #, python-format
 msgid "'\" + que_rec[0]['question'] + \"' This question requires an answer."
 msgstr ""
+"Copy text \t\r\n"
+"'\" + que_rec[0]['question'] + \"' Esta pregunta requiere una respuesta"
 
 #. module: survey
 #: view:survey:0
@@ -560,7 +572,7 @@ msgstr ""
 "especial!"
 
 msgid "Survey Response"
-msgstr ""
+msgstr "Respuesta encuesta"
 
 #. module: survey
 #: field:survey.answer,average:0
@@ -595,7 +607,7 @@ msgid "Survey Title"
 msgstr "Titulo de la encuesta"
 
 msgid "%"
-msgstr ""
+msgstr "%"
 
 #. module: survey
 #: field:survey,note:0
@@ -612,7 +624,7 @@ msgid "Select Survey"
 msgstr "Seleccionar encuesta"
 
 msgid "New Survey Page"
-msgstr ""
+msgstr "Nueva página de encuesta"
 
 #. module: survey
 #: view:survey:0
@@ -684,7 +696,7 @@ msgid "Survey Pages"
 msgstr "Páginas encuesta"
 
 msgid "Response Count"
-msgstr ""
+msgstr "Cuenta respuestas"
 
 #. module: survey
 #: field:survey.name.wiz,page:0
