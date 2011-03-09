@@ -98,6 +98,13 @@ class report_account_analytic_planning(osv.osv):
     _columns = {
         'stat_product_ids': fields.one2many('report_account_analytic.planning.stat.product', 'planning_id', 'Planning by Post / Product', readonly=True),
     }
+    
+    def copy(self, cr, uid, id, default=None, context=None):
+        if default is None:
+            default = {}
+        default.update({'stat_product_ids':[]})
+        return super(report_account_analytic_planning, self).copy(cr, uid, id, default, context=context)
+    
 report_account_analytic_planning()
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
 
