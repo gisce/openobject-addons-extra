@@ -429,17 +429,6 @@
       <para style="terp_default_8">[[ repeatIn(invoice_lines(o), 'a') ]]</para>
     </section>
 
-    <blockTable colWidths="4.0,321.0,44.0,21.0,66.0,51.0,19.0" style="Tableau6_bis">
-        <tr>
-          <td><para style="terp_default_Bold_9">Sous-Total</para></td>
-          <td><para style="terp_default_9"></para></td>
-          <td><para style="terp_default_Right_9"></para></td>
-          <td><para style="terp_default_Right_9"></para></td>
-          <td><para style="terp_default_Right_9"></para></td>
-          <td><para style="terp_default_Right_9">[[ a['type']=='subtotal' and ( setTag('para','para',{'fontName':'Helvetica-bold'})) ]][[ o.type in ('out_refund','in_refund') and '-' or '']] [[ a['price_subtotal'] ]]</para></td>
-          <td><para style="terp_default_Right_9">[[a['type']=='line' and removeParentNode('para')]] [[ a['currency'] ]]</para></td>
-        </tr>
-      </blockTable>
     <blockTable colWidths="354.0,33.0,66.0,59.0,25.0" style="Table_Format_2">
       <tr>
         <td><para style="P8"><font color="white"></font></para></td>
