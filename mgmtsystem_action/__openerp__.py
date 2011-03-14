@@ -39,6 +39,7 @@
 	'mgmtsystem_action.xml',
 	'action_sequence.xml',
 	'board_mgmtsystem_action.xml',
+	'workflow_mgmtsystem_action.xml',
     ],
     "demo_xml" : [
 	'demo_action.xml',
