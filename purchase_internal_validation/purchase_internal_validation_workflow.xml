@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <!-- Activities -->
+        <record model="workflow.activity" id="purchase_waiting_internal_validation">
+            <field name="name">Waiting Internal Validation</field>
+            <field name="wkf_id" ref="purchase.purchase_order"/>
+            <field name="kind">dummy</field>
+            <field name="split_mode">XOR</field>
+            <field name="join_mode">XOR</field>
+            <field name="action">wkf_wait_validation_order()</field>
+        </record>
+
+        <!-- Transitions -->
+        <record id="trans_draft_waiting_internal_validation" model="workflow.transition">
+            <field name="act_from" ref="purchase.act_draft"/>
+            <field name="act_to" ref="purchase_waiting_internal_validation"/>
+            <field name="condition">amount_untaxed &gt;= 1000</field>
+            <field name="signal">purchase_approve</field>
+        </record>
+
+        <record id="purchase.trans_draft_confirmed" model="workflow.transition">
+            <field name="condition">amount_untaxed &lt; 1000</field>
+        </record>
+
+        <record id="purchase.trans_waiting_approval_confirmed" model="workflow.transition">
+            <field name="act_from" ref="purchase_waiting_internal_validation"/>
+            <field name="act_to" ref="purchase.act_confirmed"/>
+            <field name="group_id" ref="purchase.group_purchase_manager"/>
+            <field name="signal">purchase_approve</field>
+        </record>
+
+        <record id="purchase.trans_waiting_approval_draft" model="workflow.transition">
+            <field name="act_from" ref="purchase_waiting_internal_validation"/>
+            <field name="act_to" ref="purchase.act_draft"/>
+            <field name="group_id" ref="purchase.group_purchase_manager"/>
+            <field name="signal">purchase_refuse</field>
+        </record>
+
+    </data>
+</openerp>
