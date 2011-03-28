@@ -107,7 +107,7 @@ class stock_picking(osv.osv):
                             additional_move_lines.append(new_move_id)
                             move.product_qty -= 1;
                         
-                        self.pool.get('stock.move').write(cr, uid, move.id, {'state': 'draft'})
+                        self.pool.get('stock.move').write(cr, uid, [move.id], {'state': 'draft'})
                         self.pool.get('stock.move').unlink(cr, uid, [move.id], {})
         
         return result
