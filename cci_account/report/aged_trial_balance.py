@@ -41,8 +41,15 @@ class aged_trial_report(report_sxw.rml_parse):
     def _get_lines(self, form):
         res = []
         account_move_line_obj = pooler.get_pool(self.cr.dbname).get('account.move.line')
+        fiscalyear_obj = pooler.get_pool(self.cr.dbname).get('account.fiscalyear')
+        ctx = {}
+        if not form['fiscalyear']:
+            fiscalyear_ids = fiscalyear_obj.search(self.cr, self.uid, [])
+            ctx['fiscalyear'] = ','.join([str(x) for x in fiscalyear_ids])
+        else:
+            ctx['fiscalyear'] = form['fiscalyear']
         line_query = account_move_line_obj._query_get(self.cr, self.uid, obj='line',
-                context={'fiscalyear': form['fiscalyear']})
+                context=ctx)
         cat = form['category']
         self.acc_type  = (cat == 'Supplier' and "('payable')") or (cat == 'Customer' and "('receivable')") or "'payable', 'receivable'"
         self.cr.execute("SELECT DISTINCT res_partner.id AS id, " \
@@ -115,8 +122,15 @@ class aged_trial_report(report_sxw.rml_parse):
 
     def _get_total(self, fiscalyear, company_id):
         account_move_line_obj = pooler.get_pool(self.cr.dbname).get('account.move.line')
+        fiscalyear_obj = pooler.get_pool(self.cr.dbname).get('account.fiscalyear')
+        ctx = {}
+        if not fiscalyear:
+            fiscalyear_ids = fiscalyear_obj.search(self.cr, self.uid, [])
+            ctx['fiscalyear'] = ','.join([str(x) for x in fiscalyear_ids])
+        else:
+            ctx['fiscalyear'] = fiscalyear
         line_query = account_move_line_obj._query_get(self.cr, self.uid, obj='line',
-                context={'fiscalyear': fiscalyear})
+                context=ctx)
         self.cr.execute("SELECT SUM(debit - credit) " \
                 "FROM account_move_line AS line, account_account " \
                 "WHERE (line.account_id = account_account.id) " \
@@ -132,8 +146,15 @@ class aged_trial_report(report_sxw.rml_parse):
 
     def _get_before(self, date, fiscalyear, company_id):
         account_move_line_obj = pooler.get_pool(self.cr.dbname).get('account.move.line')
+        fiscalyear_obj = pooler.get_pool(self.cr.dbname).get('account.fiscalyear')
+        ctx = {}
+        if not fiscalyear:
+            fiscalyear_ids = fiscalyear_obj.search(self.cr, self.uid, [])
+            ctx['fiscalyear'] = ','.join([str(x) for x in fiscalyear_ids])
+        else:
+            ctx['fiscalyear'] = fiscalyear
         line_query = account_move_line_obj._query_get(self.cr, self.uid, obj='line',
-                context={'fiscalyear': fiscalyear})
+                context=ctx)
         self.cr.execute("SELECT SUM(debit - credit) " \
                 "FROM account_move_line AS line, account_account " \
                 "WHERE (line.account_id = account_account.id) " \
@@ -150,8 +171,15 @@ class aged_trial_report(report_sxw.rml_parse):
 
     def _get_for_period(self, period, fiscalyear, company_id):
         account_move_line_obj = pooler.get_pool(self.cr.dbname).get('account.move.line')
+        fiscalyear_obj = pooler.get_pool(self.cr.dbname).get('account.fiscalyear')
+        ctx = {}
+        if not fiscalyear:
+            fiscalyear_ids = fiscalyear_obj.search(self.cr, self.uid, [])
+            ctx['fiscalyear'] = ','.join([str(x) for x in fiscalyear_ids])
+        else:
+            ctx['fiscalyear'] = fiscalyear
         line_query = account_move_line_obj._query_get(self.cr, self.uid, obj='line',
-                context={'fiscalyear': fiscalyear})
+                context=ctx)
         self.cr.execute("SELECT SUM(debit - credit) " \
                 "FROM account_move_line AS line, account_account " \
                 "WHERE (line.account_id = account_account.id) " \
