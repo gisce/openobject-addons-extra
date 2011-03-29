@@ -17,6 +17,7 @@
 					<field name="awex_eligible" select="2"/>
 					<field name="purchase_order"/>
 					<field name="order_date" select="2"/>
+                    <field name="invoice_id"/>
 					<newline/>
 					<field name="state" select="2"/>
 					<group col="8" colspan="2">
@@ -39,6 +40,7 @@
 					<field name="awex_amount"/>
 					<field name="awex_eligible"/>
 					<field name="state"/>
+                    <field name="invoice_id"/>
 				</tree>
 			</field>
 		</record>
