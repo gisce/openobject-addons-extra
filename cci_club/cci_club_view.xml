@@ -253,10 +253,18 @@
 		</record>
 
 		<record model="ir.actions.act_window" id="action_cci_club_club">
+            <field name="name">Club</field>
 			<field name="res_model">cci_club.club</field>
 			<field name="view_type">form</field>
 		</record>
 		<menuitem name="Club" id="menu_cci_club_club" action="action_cci_club_club" parent="menu_cci_club_main"/>
+		<record model="ir.actions.act_window" id="action_cci_club_club_wo_product">
+            <field name="name">Club without product</field>
+			<field name="res_model">cci_club.club</field>
+			<field name="view_type">form</field>
+            <field name="domain">[('product_id','=',False)]</field>
+		</record>
+		<menuitem name="Club without Product" id="menu_cci_club_club_wo_product" action="action_cci_club_club_wo_product" parent="menu_cci_club_club"/>
 
 	<!-- CCI CLUBS/PARTICIPATION -->
 		<record model="ir.ui.view" id="view_cci_club_participation_form">
@@ -265,9 +273,11 @@
 			<field name="type">form</field>
 			<field name="arch" type="xml">
 				<form string="Participation">
-					<field name="group_id" select="1" colspan="4"/>
-                    <field name="partner_id" select="1"/>
-                    <field name="contact_id" select="1"/>
+					<field name="group_id" select="1" colspan="4" on_change="onchange_group_id(group_id,partner_id)"/>
+                    <field name="partner_id" select="1" on_change="onchange_partner_id(partner_id,group_id)"/>
+                    <field name="contact_id" select="1" domain="[('partner_id','=',partner_id)]"/>
+                    <field name="phone"/>
+                    <field name="email"/>
                     <field name="date_registration"/>
                     <field name="date_in" select="2"/>
                     <field name="date_out" select="2"/>
@@ -288,10 +298,10 @@
                         <field name="attendance_ids" nolabel="1" colspan="4"/>
                     </page>
                     <page string="Checks">
-                        <field name="validChecksA" select="2"/>
-                        <field name="validChecksB" select="2"/>
-                        <field name="checksA" nolabel="1" colspan="2"/>
-                        <field name="checksB" nolabel="1" colspan="2"/>
+                        <field name="valid_checks_a" select="2"/>
+                        <field name="valid_checks_b" select="2"/>
+                        <field name="checks_a" nolabel="1" colspan="2"/>
+                        <field name="checks_b" nolabel="1" colspan="2"/>
                     </page>
                     <page string="Internal">
                         <separator string="Internal Note" colspan="4"/>
@@ -323,10 +333,27 @@
 		</record>
 
 		<record model="ir.actions.act_window" id="action_cci_club_participation">
+            <field name="name">Participation to a club</field>
 			<field name="res_model">cci_club.participation</field>
 			<field name="view_type">form</field>
 		</record>
 		<menuitem name="Participation" id="menu_cci_club_participation" action="action_cci_club_participation" parent="menu_cci_club_main"/>
+
+		<record model="ir.actions.act_window" id="action_cci_club_participation_to_order">
+            <field name="name">Participation to order</field>
+			<field name="res_model">cci_club.participation</field>
+			<field name="view_type">form</field>
+            <field name="domain">[('order_id','=',False),('state_id.name','ilike','active')]</field>
+		</record>
+		<menuitem name="Participation to order" id="menu_cci_club_participation_to_order" action="action_cci_club_participation_to_order" parent="menu_cci_club_participation" sequence="10"/>
+
+		<record model="ir.actions.act_window" id="action_cci_club_participation_to_bill">
+            <field name="name">Participation to invoice</field>
+			<field name="res_model">cci_club.participation</field>
+			<field name="view_type">form</field>
+            <field name="domain">[('order_id','&lt;&gt;',False),('order_id.invoiced','=',False)]</field>
+		</record>
+		<menuitem name="Participation to Invoice" id="menu_cci_club_participation_to_bill" action="action_cci_club_participation_to_bill" parent="menu_cci_club_participation" sequence="20"/>
 
 	<!-- CCI CLUBS/SESSION -->
 		<record model="ir.ui.view" id="view_cci_club_session_form">
@@ -401,5 +428,20 @@
 		</record>
 		<menuitem name="Attendance" id="menu_cci_club_attendance" action="action_cci_club_attendance" parent="menu_cci_club_main"/>
 
+    <!-- Add new page in res.partner.contact notebook -->
+    <record model="ir.ui.view" id="view_partner_contact_form_inherit_club_participation">
+        <field name="name">res.partner.contact.form</field>
+        <field name="model">res.partner.contact</field>
+        <field name="inherit_id" ref="base_contact.view_partner_contact_form"/>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <notebook position="inside">
+                <page string="Participations">
+        		    <separator string="Clubs" colspan="4"/>
+                    <field name="club_participation_ids" nolabel="1"/>
+                </page>
+            </notebook>
+        </field>
+    </record>
 	</data>
 </openerp>

@@ -35,7 +35,7 @@
     "init_xml" : [],
     "demo_xml" : [],
 
-    "update_xml" : ['cci_club_view.xml','security/security.xml','security/ir.model.access.csv'],
+    "update_xml" : ['cci_club_view.xml','cci_club_wizard.xml','security/security.xml','security/ir.model.access.csv'],
     "active": False,
     "installable": True,
 }
