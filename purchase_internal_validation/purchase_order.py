@@ -20,7 +20,7 @@
 ##############################################################################
 
 import netsvc
-
+from tools.translate import _
 from osv import osv, fields
 
 class purchase_order(osv.osv):
@@ -28,7 +28,7 @@ class purchase_order(osv.osv):
 
     STATE_SELECTION = [
         ('draft', 'Request for Quotation'),
-        ('waiting_validation', 'Waiting Validation'),
+        ('wait_valid', 'Waiting for Validation'),
         ('wait', 'Waiting'),
         ('confirmed', 'Waiting Approval'),
         ('approved', 'Approved'),
@@ -38,10 +38,13 @@ class purchase_order(osv.osv):
         ('cancel', 'Cancelled')
     ]
 
+    _columns = {
+        'state': fields.selection(STATE_SELECTION, 'State', readonly=True, help="The state of the purchase order or the quotation request. A quotation is a purchase order in a 'Draft' state. Then the order has to be confirmed by the user, the state switch to 'Confirmed'. Then the supplier must confirm the order to change the state to 'Approved'. When the purchase order is paid and received, the state becomes 'Done'. If a cancel action occurs in the invoice or in the reception of goods, the state becomes in exception.", select=True)
+   } 
+
     #TODO: implement messages system
     def wkf_wait_validation_order(self, cr, uid, ids, context=None):
         todo = []
-        import pdb;pdb.set_trace()
         for po in self.browse(cr, uid, ids, context=context):
             if not po.order_line:
                 raise osv.except_osv(_('Error !'),_('You can not wait for purchase order to be validated without Purchase Order Lines.'))
@@ -52,7 +55,13 @@ class purchase_order(osv.osv):
             self.log(cr, uid, po.id, message)
 #        current_name = self.name_get(cr, uid, ids)[0][1]
         for id in ids:
-            self.write(cr, uid, [id], {'state' : 'waiting_validation'})
+            self.write(cr, uid, [id], {'state' : 'wait_valid'})
+        return True
+
+    #TODO: implement messages system
+    def wkf_draft(self, cr, uid, ids, context=None):
+        for id in ids:
+            self.write(cr, uid, [id], {'state' : 'draft'})
         return True
 
 purchase_order()
