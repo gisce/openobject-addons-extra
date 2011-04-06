@@ -82,11 +82,17 @@
                         </page>
                         <page string="Actions">
                             <group colspan="4">
-                                <field name="immediate_action_id" domain="[('type_action','=','immediate')]" attrs="{'readonly':[('state','=','c')]}"/>
+                                <field name="immediate_action_id" colspan="4" domain="[('type_action','=','immediate')]" attrs="{'readonly':[('state','=','c')]}"/>
                                 <newline/>
-                                <field name="corrective_action_id" domain="[('type_action','=','correction')]" attrs="{'readonly':[('state','=','c')]}"/>
+                                <field name="efficiency_immediate" colspan="4" attrs="{'readonly':[('state','=','c')]}"/>
+                                <separator/>
+                                <field name="corrective_action_id" colspan="4" domain="[('type_action','=','correction')]" attrs="{'readonly':[('state','=','c')]}"/>
                                 <newline/>
-                                <field name="preventive_action_id" domain="[('type_action','=','prevention')]" attrs="{'readonly':[('state','=','c')]}"/>
+                                <field name="efficiency_corrective" colspan="4" attrs="{'readonly':[('state','=','c')]}"/>
+                                <separator/>
+                                <field name="preventive_action_id" colspan="4" domain="[('type_action','=','prevention')]" attrs="{'readonly':[('state','=','c')]}"/>
+                                <newline/>
+                                <field name="efficiency_preventive" colspan="4" attrs="{'readonly':[('state','=','c')]}"/>
                             </group>
                         </page>
                     </notebook>

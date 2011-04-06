@@ -74,8 +74,11 @@ class mgmtsystem_nonconformity(osv.osv):
         'cause_ids': fields.many2many('mgmtsystem.nonconformity.cause','mgmtsystem_nonconformity_cause_rel', 'nonconformity_id', 'cause_id', 'Cause'),
         'analysis': fields.text('Analysis'),
         'immediate_action_id': fields.many2one('mgmtsystem.action', 'Immediate action'),
+        'efficiency_immediate': fields.text('Efficiency of the immediate action'),
         'corrective_action_id': fields.many2one('mgmtsystem.action', 'Corrective action'),
+        'efficiency_corrective': fields.text('Efficiency of the corrective action'),
         'preventive_action_id': fields.many2one('mgmtsystem.action', 'Preventive action'),
+        'efficiency_preventive': fields.text('Efficiency of the preventive action'),
         'state': fields.selection((('o','Open'),('c','Closed')), 'State', size=16, readonly=True),
     }
     _defaults = {
