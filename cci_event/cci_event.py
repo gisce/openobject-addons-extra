@@ -24,6 +24,9 @@ from osv import fields,osv
 from osv import orm
 import netsvc
 import pooler
+import time
+import tools
+from tools.translate import _
 
 class event_meeting_table(osv.osv):
     _name="event.meeting.table"
@@ -242,6 +245,45 @@ class event_registration(osv.osv):
                     'cci_special_reference': cci_special_reference,
                 })
         return self.pool.get('account.invoice.line').create(cr, uid,vals)
+
+    # this method overwrites the parent method to make it more adapted to CCI events
+    def mail_user_confirm(self,cr,uid,ids):
+        reg_ids=self.browse(cr,uid,ids)
+        for reg_id in reg_ids:
+            src = reg_id.event_id.reply_to or False
+            if not reg_id.email_from:
+                raise osv.except_osv(_('Warning!'), _('You should specify Partner Email for registration "%s" !')%(reg_id.name,))
+            dest = [reg_id.email_from]
+            if reg_id.email_cc:
+                dest += [reg_id.email_cc]
+            if dest and src:
+                tools.email_send(src, dest,'Infos pratiques et liste des participants '+( reg_id.event_id.name_on_site and reg_id.event_id.name_on_site or reg_id.event_id.product_id.name ), reg_id.event_id.mail_confirm, tinycrm = str(reg_id.case_id.id),subtype='html')
+
+            if not src:
+                raise osv.except_osv(_('Error!'), _('You must define a reply-to address in order to mail the participant. You can do this in the Mailing tab of your event. Note that this is also the place where you can configure your event to not send emails automaticly while registering'))
+        return False
+
+    # this method overwrites the parent method to make it more adapted to CCI events
+    def mail_user(self,cr,uid,ids):
+        reg_ids=self.browse(cr,uid,ids)
+        for reg_id in reg_ids:
+            flag = ''
+            src = reg_id.event_id.reply_to or False
+            dest = [reg_id.email_from]
+            if reg_id.email_cc:
+                dest += [reg_id.email_cc]
+            if reg_id.event_id.mail_auto_confirm or reg_id.event_id.mail_auto_registr:
+                if not reg_id.email_from:
+                    raise osv.except_osv(_('Warning!'), _('You should specify Partner Email for registration "%s" !')%(reg_id.name,))
+                if dest and src:
+                    if (reg_id.event_id.state in ['confirm','running']) and reg_id.event_id.mail_auto_confirm :
+                        flag = 't'
+                        tools.email_send(src, dest,'Infos pratiques et liste des participants '+( reg_id.event_id.name_on_site and reg_id.event_id.name_on_site or reg_id.event_id.product_id.name ), reg_id.event_id.mail_confirm, tinycrm = str(reg_id.case_id.id),subtype='html')
+                    if reg_id.event_id.state in ['draft', 'fixed', 'open','confirm','running'] and reg_id.event_id.mail_auto_registr and not flag:
+                        tools.email_send(src, dest,'Confirmation inscription '+( reg_id.event_id.name_on_site and reg_id.event_id.name_on_site or reg_id.event_id.product_id.name), reg_id.event_id.mail_registr, tinycrm = str(reg_id.case_id.id),subtype='html')
+                if not src:
+                    raise osv.except_osv(_('Error!'), _('You must define a reply-to address in order to mail the participant. You can do this in the Mailing tab of your event. Note that this is also the place where you can configure your event to not send emails automaticly while registering'))
+        return False
 
     _inherit = 'event.registration'
     _description="event.registration"

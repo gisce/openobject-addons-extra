@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <wizard id="cci_club_get_emails_list" model="cci_club.participation" name="cci_club.get_emails_list" string="Get Emails List"/>
+    </data>
+</openerp>

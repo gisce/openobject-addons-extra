@@ -8,8 +8,8 @@
             <field name="inherit_id" ref="purchase.purchase_order_form"/>
             <field name="arch" type="xml">
                 <field name="state" position="after">
-                    <field name="purchase_refuse" states="waiting_validation" string="Refuse" icon="gtk-cancel"/>
-                    <field name="purchase_confirm" states="waiting_validation" string="Confirm" icon="gtk-go-forward"/>
+                    <button name="purchase_refuse" states="wait_valid" string="Refuse" icon="gtk-cancel"/>
+                    <button name="purchase_confirm" states="wait_valid" string="Confirm" icon="gtk-go-forward"/>
                 </field>
             </field>
         </record>

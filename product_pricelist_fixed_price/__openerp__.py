@@ -1,8 +1,8 @@
 # -*- encoding: utf-8 -*-
 ##############################################################################
-#    
+#
 #    OpenERP, Open Source Management Solution
-#    Copyright (C) 2004-2009 Tiny SPRL (<http://tiny.be>).
+#    Copyright (C) 2011 Domsense s.r.l. (<http://www.domsense.com>).
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -15,9 +15,24 @@
 #    GNU Affero General Public License for more details.
 #
 #    You should have received a copy of the GNU Affero General Public License
-#    along with this program.  If not, see <http://www.gnu.org/licenses/>.     
+#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
 
-# vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
 
+{
+    "name": "Price List Fixed Price",
+    "version": "1.0",
+    'category': 'Generic Modules/Inventory Control',
+    "depends": ["product"],
+    "author": "Agile Business Group & Domsense",
+    "description": """This module allows to specify a fixed price for price list rules. So, if the rule is based on 'fixed price', this price will be used without any computation""",
+    'website': 'http://www.agilebg.com',
+    'init_xml': [],
+    'update_xml': [
+        'pricelist_view.xml',
+        ],
+    'demo_xml': [],
+    'installable': True,
+    'active': False,
+}

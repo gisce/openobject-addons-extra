@@ -106,6 +106,63 @@ class participation_state(osv.osv):
 participation_state()
 
 class participation(osv.osv):
+    def _get_default_phone(self, cr, uid, ids, field_name, arg, context={}):
+        result = {}
+        for rec in self.browse(cr, uid, ids, context):
+            if rec.contact_id and rec.contact_id.job_id and rec.contact_id.job_id.phone:
+                result[rec.id] = rec.contact_id.job_id.phone
+            elif rec.contact_id and rec.contact_id.mobile:
+                result[rec.id] = rec.contact_id.mobile
+            elif rec.contact_id and rec.contact_id.job_id and rec.contact_id.job_id.address_id and rec.contact_id.job_id.address_id.phone:
+                result[rec.id] = rec.contact_id.job_id.address_id.phone
+            else:
+                result[rec.id] = ''
+        return result
+    def _get_default_email(self, cr, uid, ids, field_name, arg, context={}):
+        result = {}
+        for rec in self.browse(cr, uid, ids, context):
+            if rec.contact_id and rec.contact_id.job_id and rec.contact_id.job_id.email:
+                result[rec.id] = rec.contact_id.job_id.email
+            elif rec.contact_id and rec.contact_id.email:
+                result[rec.id] = rec.contact_id.email
+            elif rec.contact_id and rec.contact_id.job_id and rec.contact_id.job_id.address_id and rec.contact_id.job_id.address_id.email:
+                result[rec.id] = rec.contact_id.job_id.address_id.email
+            else:
+                result[rec.id] = ''
+        return result
+    def copy(self, cr, uid, id, default=None, context={}):
+        if not default:
+            default = {}
+        default.update({
+            'order_id': False,
+        })
+        return super(participation, self).copy(cr, uid, id, default, context)
+    def search(self, cr, user, targs, offset=0, limit=None, order=None, context=None, count=False):
+        part_ids = []
+        for targ in targs:
+            if targ[0] == 'contact_id' and targ[1] == 'ilike':
+                contact_obj = self.pool.get('res.partner.contact')
+                search_arg = ['|', ('first_name', 'ilike', targ[2]), ('name', 'ilike', targ[2])]
+                contact_ids = contact_obj.search(cr, user, search_arg, offset=offset, limit=None, order=order, context=context, count=count)
+                if not contact_ids:
+                    if targ[2].count(' ') == 1:
+                        (ename,efirst) = targ[2].split(' ')
+                        search_arg = [('first_name','ilike',efirst),('name','ilike',ename)]
+                        contact_ids = contact_obj.search(cr, user, search_arg, offset=offset, limit=None, order=order, context=context, count=count)
+                        if not contact_ids:
+                            # no results to first search and not exactly one space separator => nothing to find
+                            continue
+                    else:
+                        # no results to first search and not exactly one space separator => nothing to find
+                        continue
+                contacts = contact_obj.browse(cr, user, contact_ids, context=context)
+                for contact in contacts:
+                    part_ids.extend([item.id for item in contact.club_participation_ids])
+        res = super(participation,self).search(cr, user, targs, offset=offset, limit=limit, order=order, context=context, count=count)
+        if part_ids:
+                res = list(set(res + part_ids))
+        return res
+
     _name = "cci_club.participation"
     _description = "Participation of a person in a club/group"
     _columns = {
@@ -125,13 +182,15 @@ class participation(osv.osv):
         'salesman' : fields.many2one('res.users','Salesman'),
         'continuation' : fields.boolean('Continuation',help='Check if this participation is the followup of another one'),
         'state_id' : fields.many2one('cci_club.participation_state','State',required=True),
-        'checksA' : fields.text('Checks Part 1'),
-        'checksB' : fields.text('Checks Part 2'),
-        'validChecksA' : fields.boolean('Valid checks Part 1',help='Check this if the first range of checks is in order'),
-        'validChecksB' : fields.boolean('Valid checks Part 2',help='Check this if the second range of checks is in order'),
+        'checks_a' : fields.text('Checks Part 1'),
+        'checks_b' : fields.text('Checks Part 2'),
+        'valid_checks_a' : fields.boolean('Valid checks Part 1',help='Check this if the first range of checks is in order'),
+        'valid_checks_b' : fields.boolean('Valid checks Part 2',help='Check this if the second range of checks is in order'),
         'note' : fields.text('Internal note'),
         'attendance_ids' : fields.one2many('cci_club.attendance','participation_id','Attendances'),
         'membership' : fields.boolean('From membership',help='Indicate that this attendance came from a membership deal'),
+        'phone': fields.function(_get_default_phone, method=True, string='Phone', type='char',size='30'),
+        'email': fields.function(_get_default_email, method=True, string='Email', type='char',size='240'),
     }
     _defaults = {
         'date_registration': lambda *a:time.strftime('%Y-%m-%d'),
@@ -143,6 +202,37 @@ class participation(osv.osv):
         for part in self.read(cr,uid,ids, ['contact_id','group_id'] ):
             res.append( (part['id'], "%s - %s" % (part['contact_id'][1], part['group_id'][1] ) ) )
         return res
+    def onchange_partner_id(self, cr, uid, ids, partner_id, group_id):
+        warning = False
+        if partner_id:
+            data_partner = self.pool.get('res.partner').browse(cr,uid,partner_id)
+            if data_partner.alert_others:
+                warning = {
+                    'title': "Warning:",
+                    'message': data_partner.alert_explanation or 'Partner is not valid'
+                        }
+        data={}
+        context={}
+        data['salesman']=data['provided_turnover']=False
+        if partner_id:
+            data['salesman']=data_partner.user_id.id
+            if group_id:
+                data_club = self.pool.get('cci_club.club').browse(cr,uid,group_id)
+                if data_club['product_id']:
+                    context.update({'partner_id':data_partner and data_partner.id})
+                    data['provided_turnover']=self.pool.get('product.product').price_get(cr, uid, [data_club.product_id.id],context=context)[data_club.product_id.id]
+        return {'value':data}
+    def onchange_group_id(self, cr, uid, ids, group_id, partner_id):
+        data={}
+        context={}
+        data['provided_turnover']=False
+        if partner_id and group_id:
+            data_partner = self.pool.get('res.partner').browse(cr,uid,partner_id)
+            data_club = self.pool.get('cci_club.club').browse(cr,uid,group_id)
+            if data_club['product_id']:
+                context.update({'partner_id':data_partner and data_partner.id})
+                data['provided_turnover']=self.pool.get('product.product').price_get(cr, uid, [data_club.product_id.id],context=context)[data_club.product_id.id]
+        return {'value':data}
 participation()
 
 class session_state(osv.osv):
@@ -196,4 +286,9 @@ class attendance(osv.osv):
     }
 attendance()
 
-
+class res_partner_contact(osv.osv):
+    _inherit = "res.partner.contact"
+    _columns = {
+        'club_participation_ids': fields.one2many('cci_club.participation','contact_id','Participations to clubs'),
+    }
+res_partner_contact()

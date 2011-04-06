@@ -99,7 +99,7 @@ def _createInvoices(self, cr, uid, data, context):
             cci_special_reference = "translation.folder*" + str(transfolder.id)
 
         inv_id =pool_obj.get('account.invoice.line').create(cr, uid, {
-            'name': transfolder.name,
+            'name': 'Dossier traduction ' + transfolder.order_desc,
             'account_id': val['value']['account_id'],
             'price_unit': transfolder.base_amount,
             'quantity': 1,
@@ -108,7 +108,7 @@ def _createInvoices(self, cr, uid, data, context):
             'product_id': translation_product_id,
             'analytics_id': analytics_id,
             'invoice_line_tax_id': [(6,0,val['value']['invoice_line_tax_id'])],
-            'note': note,
+            'note': transfolder.name + '\n\n' + note,
             'cci_special_reference': cci_special_reference
         })
         inv = {
@@ -121,10 +121,12 @@ def _createInvoices(self, cr, uid, data, context):
             'address_invoice_id':address_invoice,
             'address_contact_id':address_contact,
             'invoice_line': [(6,0,[inv_id])],
+            'user_id': transfolder.partner_id.user_id and transfolder.partner_id.user_id.id or False,
             'currency_id' :transfolder.partner_id.property_product_pricelist.currency_id.id,
             'comment': '',
             'payment_term':transfolder.partner_id.property_payment_term.id,
-            'fiscal_position': transfolder.partner_id.property_account_position.id
+            'fiscal_position': transfolder.partner_id.property_account_position.id,
+            'domiciled': bool(transfolder.partner_id.domiciliation),
         }
 
         inv_obj = pool_obj.get('account.invoice')
