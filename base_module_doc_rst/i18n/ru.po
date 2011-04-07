@@ -13,38 +13,39 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2011-03-04 05:17+0000\n"
-"X-Generator: Launchpad (build 12351)\n"
+"X-Launchpad-Export-Date: 2011-04-07 05:09+0000\n"
+"X-Generator: Launchpad (build 12735)\n"
 
 #. module: base_module_doc_rst
 #: wizard_view:tech.guide.rst,init:0
 msgid "Technical Guide in rst format"
-msgstr ""
+msgstr "Техническое руководство в формате RST"
 
 #. module: base_module_doc_rst
 #: wizard_field:tech.guide.rst,init,name:0
 msgid "filename"
-msgstr ""
+msgstr "имя файла"
 
 #. module: base_module_doc_rst
 #: model:ir.actions.wizard,name:base_module_doc_rst.wiz_tech_guide_rst
 msgid "Create RST Technical Guide"
-msgstr ""
+msgstr "Создать Техническое Руководство в формате RST"
 
 #. module: base_module_doc_rst
 #: wizard_view:tech.guide.rst,init:0
 msgid "Please choose a file where the Technical Guide will be written."
 msgstr ""
+"Пожалуйста, выберите файл, куда будет записано Техническое руководство"
 
 #. module: base_module_doc_rst
 #: wizard_field:tech.guide.rst,init,rst_file:0
 msgid "file"
-msgstr ""
+msgstr "файл"
 
 #. module: base_module_doc_rst
 #: wizard_button:tech.guide.rst,init,end:0
 msgid "Close"
-msgstr ""
+msgstr "Закрыть"
 
 #. module: base_module_doc_rst
 #: model:ir.module.module,shortdesc:base_module_doc_rst.module_meta_information
@@ -54,4 +55,4 @@ msgstr ""
 #. module: base_module_doc_rst
 #: wizard_view:tech.guide.rst,init:0
 msgid "Create Technical Guide in rst format"
-msgstr ""
+msgstr "Создать Техническое Руководство в формате rst"

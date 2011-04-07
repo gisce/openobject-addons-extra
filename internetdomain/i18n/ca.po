@@ -13,8 +13,8 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2011-03-04 05:18+0000\n"
-"X-Generator: Launchpad (build 12351)\n"
+"X-Launchpad-Export-Date: 2011-04-07 05:10+0000\n"
+"X-Generator: Launchpad (build 12735)\n"
 
 #. module: internetdomain
 #: view:internetdomain.domain:0
@@ -36,8 +36,10 @@ msgid "Network"
 msgstr "Xarxa"
 
 #. module: internetdomain
+#: code:addons/internetdomain/internetdomain.py:0
 #: model:ir.module.module,shortdesc:internetdomain.module_meta_information
 #: view:res.company:0
+#, python-format
 msgid "Internet Domain"
 msgstr "Gestió de dominis"
 
@@ -135,7 +137,7 @@ msgstr "Alertes venciment"
 #. module: internetdomain
 #: field:internetdomain.domain,company_id:0
 msgid "Company"
-msgstr "Empresa"
+msgstr "Companyia"
 
 #. module: internetdomain
 #: field:internetdomain.domain,dns3:0
@@ -168,6 +170,7 @@ msgid "Invalid XML for View Architecture!"
 msgstr "XML invàlid per a la definició de la vista!"
 
 #. module: internetdomain
+#: rml:internetdomain.domain:0
 #: field:internetdomain.domain,registrator_id:0
 #: field:internetdomain.renewal,registrator_id:0
 msgid "Registrator"
@@ -215,6 +218,7 @@ msgid "Make invoice"
 msgstr "Crea factura"
 
 #. module: internetdomain
+#: rml:internetdomain.domain:0
 #: field:internetdomain.renewal,domain_id:0
 #: model:ir.ui.menu,name:internetdomain.menu_internetdomain
 #: model:ir.ui.menu,name:internetdomain.menu_internetdomain_domain
@@ -257,6 +261,7 @@ msgid "Cancel"
 msgstr "Cancel·la"
 
 #. module: internetdomain
+#: rml:internetdomain.domain:0
 #: field:internetdomain.domain,partner_id:0
 msgid "Partner"
 msgstr "Empresa"
