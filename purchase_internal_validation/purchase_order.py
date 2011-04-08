@@ -29,6 +29,7 @@ class purchase_order(osv.osv):
     STATE_SELECTION = [
         ('draft', 'Request for Quotation'),
         ('wait_valid', 'Waiting for Validation'),
+        ('wait_correct', 'Waiting for Correction'),
         ('wait', 'Waiting'),
         ('confirmed', 'Waiting Approval'),
         ('approved', 'Approved'),
@@ -59,9 +60,9 @@ class purchase_order(osv.osv):
         return True
 
     #TODO: implement messages system
-    def wkf_draft(self, cr, uid, ids, context=None):
+    def wkf_wait_correction(self, cr, uid, ids, context=None):
         for id in ids:
-            self.write(cr, uid, [id], {'state' : 'draft'})
+            self.write(cr, uid, [id], {'state' : 'wait_correct'})
         return True
 
 purchase_order()
