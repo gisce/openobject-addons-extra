@@ -222,6 +222,7 @@
                         <field name="liege" select="2"/>
                         <field name="namur" select="2"/>
                         <field name="level_id" select="2"/>
+                        <field name="department_id" select="2"/>
                         <separator string="Externals" colspan="4"/>
                         <field name="school_id" select="2"/>
                         <field name="formative_id" select="2"/>

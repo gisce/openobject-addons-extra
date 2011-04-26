@@ -78,6 +78,7 @@ class club(osv.osv):
         'session_count_by_invoice' : fields.integer('Number of sessions',help='Number of session by attendance to calculate the monthly revenue'),
         'checks_max' : fields.integer('Number of checks',help='Maximum number of checks for a participation in this club'),
         'level_id' : fields.many2one('cci_club.level','Average Level of Knowledge of this table'),
+        'department_id' : fields.many2one('hr.department','Department'),
     }
     _defaults = {
         'waiting_club' : lambda *a: False,
