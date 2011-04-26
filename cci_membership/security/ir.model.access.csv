@@ -3,3 +3,5 @@
 "access_membership_membership_line","membership.membership_line","membership.model_membership_membership_line",,1,0,0,0
 "access_report_partner_member_year","report.partner_member.year","membership.model_report_partner_member_year","group_cci_membership_supervisor",1,1,1,1
 "access_report_partner_member_year_new","report.partner_member.year_new","membership.model_report_partner_member_year_new","group_cci_membership_supervisor",1,1,1,1
+"access_membership_membership_check","cci_membership.membership_check","cci_membership.model_cci_membership_membership_check",,1,1,1,1
+

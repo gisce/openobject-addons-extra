@@ -10,6 +10,17 @@
 			type="wizard"
 			id="select_partners_menu" />
 
+<!-- Philmer addition to launch a complete re-calculation of membership state of partners -->
+    <wizard string="Check Membership State"
+			model="res.partner"
+			name="cci_wizard_check_membership"
+			id="cci_membership.cci_wizard_check_membership"
+			menu="False"/>
+
+	<menuitem name="Check Membership State" id="menu_check_membership_state"
+			action="cci_membership.cci_wizard_check_membership" type="wizard"
+			parent="membership.menu_membership" />
+
 	<wizard	string="Total Sold for partners"
 			model="res.partner"
 			name="cci_membership.check_total_sold"
@@ -20,5 +31,10 @@
             name="cci_wizard_invoice_membership"
             id="membership.wizard_invoice_membership" />
 
+    <!-- Philmer addition to launch a manual re-calculation of membership state of some partners -->
+	<wizard string="Check Membership"
+            model="res.partner"
+            name="cci_wizard_valid_membership"
+            id="cci_membership.wizard_check_membership" />
 	</data>
 </openerp>

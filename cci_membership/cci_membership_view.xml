@@ -31,6 +31,37 @@
             </field>
         </record>
 
+        <record model="ir.ui.view" id="cci_membership_check_tree">
+            <field name="name">Membership Check</field>
+            <field name="model">cci_membership.membership_check</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Membership Check">
+                    <field name="name"/>
+                    <field name="count"/>
+                </tree>
+            </field>
+        </record>
 
+        <record model="ir.ui.view" id="cci_membership_check_form">
+            <field name="name">Membership Check</field>
+            <field name="model">cci_membership.membership_check</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Membership Check">
+                    <field name="name"/>
+                    <field name="count"/>
+                    <separator string="Result" colspan="4"/>
+                    <field name="status" nolabel="1" colspan="4"/>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="action_cci_membership_check">
+            <field name="view_type">form</field>
+            <field name="res_model">cci_membership.membership_check</field>
+        </record>
+
+        <menuitem name="Membership Check" parent="membership.menu_conf" id="menu_cci_membership_check" action="action_cci_membership_check"/>
 	</data>
 </openerp>
