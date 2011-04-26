@@ -19,7 +19,7 @@
 #
 ##############################################################################
 import cci_wizard_aged_trial_balance
-import cci_wizard_partner_balance_report
+#import cci_wizard_partner_balance_report
 import cci_wizard_third_party_ledger
 import cci_switched_debit_credit
 import cci_wizard_vcs

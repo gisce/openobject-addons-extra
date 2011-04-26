@@ -25,9 +25,12 @@ import pooler
 form = """<?xml version="1.0"?>
 <form string="Switch Values">
     <label string="Are you sure you want to switch debit-credit for selected entries?"/>
+    <field name="journal_id"/>
 </form>
 """
-fields = {}
+fields = {'journal_id': {'string':'Journal', 'type':'many2one', 'relation':'account.journal', 'required':True},
+
+}
 
 class switch_debit_credit(wizard.interface):
     def _open_lines(self, cr, uid, data, context):
@@ -41,23 +44,23 @@ class switch_debit_credit(wizard.interface):
         data['new_ids']=[]
         result = {}
         move_line_obj = pool_obj.get('account.move.line')
-        for id in data['ids']:
+        move_obj = pool_obj.get('account.move')
+        for id in move_obj.browse(cr, uid, data['ids']):
 
-            ids_lines=pool_obj.get('account.move.line').search(cr,uid,[('move_id','=',id)])
-            move_id=False
-            move_id = obj_move_line=pool_obj.get('account.move').copy(cr,uid,id, {'line_id':{}})
+            move_id = obj_move_line=pool_obj.get('account.move').copy(cr,uid,id.id, {'line_id':{},
+                                                    'journal_id':data['form']['journal_id'],
+},context)
 
-            for line_id in ids_lines:
+            for move_l in id.line_id:
 
-                vals=move_line_obj.read(cr, uid,line_id)
-                new_ids.append(move_line_obj.copy(cr, uid, line_id, {'reconcile_id':False,
+                new_ids.append(move_line_obj.copy(cr, uid, move_l.id, {'reconcile_id':False,
                                                     'reconcile_partial_id':False,
                                                     'blocked':False,
                                                     'move_id':move_id,
                                                     'state':'draft',
-                                                    'debit':vals['credit'],
-                                                    'credit':vals['debit']
-                }))
+                                                    'debit':move_l.credit,
+                                                    'journal_id':data['form']['journal_id'],
+                                                    'credit':move_l.debit},context))
                 new_move_ids.append(move_id)
 
         result= {

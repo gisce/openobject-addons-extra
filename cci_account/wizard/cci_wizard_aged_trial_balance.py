@@ -29,18 +29,16 @@ _aged_trial_form = """<?xml version="1.0"?>
 <form string="Aged Trial Balance">
     <field name="company_id"/>
     <newline/>
-    <field name="fiscalyear"/>
-    <newline/>
     <field name="period_length"/>
     <field name="category"/>
 </form>"""
 
 _aged_trial_fields = {
     'company_id': {'string': 'Company', 'type': 'many2one', 'relation': 'res.company', 'required': True},
+    'period_length': {'string': 'Period length (days)', 'type': 'integer', 'required': True, 'default': lambda *a:30},
     'fiscalyear': {'string': 'Fiscal year', 'type': 'many2one', 'relation': 'account.fiscalyear',
         'help': 'Keep empty for all open fiscal year'},
-    'period_length': {'string': 'Period length (days)', 'type': 'integer', 'required': True, 'default': lambda *a:30},
-    'category' : {'string' : 'Partner Category', 'type' : 'selection', 'selection' : [('Customer','Customers'),('Supplier','Suppliers'),('both','Customers and Suppliers')], 'required':True,'default' : lambda *a:'Customer' },
+    'category' : {'string' : 'Account Category', 'type' : 'selection', 'selection' : [('Customer','Customers'),('Supplier','Suppliers'),('both','Customers and Suppliers')], 'required':True,'default' : lambda *a:'Customer' },
 }
 
 def _calc_dates(self, cr, uid, data, context):
@@ -49,10 +47,11 @@ def _calc_dates(self, cr, uid, data, context):
     if period_length<=0:
         raise wizard.except_wizard('UserError', 'You must enter a period length that cannot be 0 or below !')
     start = now()
-    for i in range(5)[::-1]:
+    res['4'] = {'name':'not yet due','stop':now().strftime('%Y-%m-%d'),'start':now().strftime('%Y-%m-%d')}
+    for i in range(4)[::-1]:
         stop = start-RelativeDateTime(days=period_length)
         res[str(i)] = {
-            'name' : 'over '+str((5-i)*period_length)+' days',
+            'name' : 'over '+str((4-i)*period_length)+' days',
             'stop': start.strftime('%Y-%m-%d'),
             'start' : stop.strftime('%Y-%m-%d'),
         }
@@ -61,9 +60,6 @@ def _calc_dates(self, cr, uid, data, context):
 
 class wizard_report(wizard.interface):
     def _get_defaults(self, cr, uid, data, context):
-        fiscalyear_obj = pooler.get_pool(cr.dbname).get('account.fiscalyear')
-        data['form']['fiscalyear'] = fiscalyear_obj.find(cr, uid)
-
         user = pooler.get_pool(cr.dbname).get('res.users').browse(cr, uid, uid, context=context)
         if user.company_id:
             company_id = user.company_id.id

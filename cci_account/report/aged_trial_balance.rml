@@ -126,7 +126,7 @@
     <para style="terp_default_space">
       <font color="white"> </font>
     </para>
-    <blockTable colWidths="235.0,76.0,76.0,76.0,76.0,76.0,76.0,92.0" style="Tableau1">
+    <blockTable colWidths="235.0,76.0,76.0,76.0,76.0,76.0,80.0,88.0" style="Tableau1">
       <tr>
         <td>
           <para style="terp_tblheader_Details">Partners</para>
@@ -202,7 +202,7 @@
           <para style="terp_tblheader_Details">Account total</para>
         </td>
         <td>
-          <para style="terp_default_9">[[ '%.2f' % get_for_period(data['form']['4'], data['form']['fiscalyear'], data['form']['company_id']) ]]</para>
+          <para style="terp_default_9">[[ '%.2f' % get_not_yet_due(data['form']['4']['start'], data['form']['fiscalyear'], data['form']['company_id']) ]]</para>
         </td>
         <td>
           <para style="terp_default_9">[[ '%.2f' % get_for_period(data['form']['3'], data['form']['fiscalyear'], data['form']['company_id']) ]]</para>

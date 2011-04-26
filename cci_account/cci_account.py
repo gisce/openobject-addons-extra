@@ -286,7 +286,7 @@ class account_bank_statement_line(osv.osv):
                 return False
         return True
 
-    _constraints = [(_check_account, u"Can not register this line without partner", ('name',))]
+ #   _constraints = [(_check_account, u"Can not register this line without partner", ('name',))]
 
 account_bank_statement_line()
 

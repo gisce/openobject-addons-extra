@@ -19,7 +19,7 @@
 #
 ##############################################################################
 import aged_trial_balance
-import partner_balance
+#import partner_balance
 import third_party_ledger
 import cci_draft_invoice_info
 import cci_vcs_report
