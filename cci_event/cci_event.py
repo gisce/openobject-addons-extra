@@ -201,7 +201,7 @@ class event_registration(osv.osv):
     def cci_event_reg_open(self, cr, uid, ids, *args):
         self.write(cr, uid, ids, {'state':'open',})
         for registration in self.browse(cr, uid, ids, {}):
-            if registration.event_id.mail_auto_confirm:
+            if registration.event_id.mail_auto_confirm or registration.event_id.mail_auto_registr:
                 self.pool.get('event.registration').mail_user(cr,uid,ids)
         self.pool.get('event.registration')._history(cr, uid, ids, 'Open', history=True)
         return True
@@ -251,11 +251,13 @@ class event_registration(osv.osv):
         reg_ids=self.browse(cr,uid,ids)
         for reg_id in reg_ids:
             src = reg_id.event_id.reply_to or False
-            if not reg_id.email_from:
-                raise osv.except_osv(_('Warning!'), _('You should specify Partner Email for registration "%s" !')%(reg_id.name,))
-            dest = [reg_id.email_from]
-            if reg_id.email_cc:
-                dest += [reg_id.email_cc]
+            #if not reg_id.email_from:
+            #    raise osv.except_osv(_('Warning!'), _('You should specify Partner Email for registration "%s" !')%(reg_id.name,))
+            dest = []
+            if reg_id.email_from:
+                dest += [reg_id.email_from]
+                if reg_id.email_cc:
+                    dest += [reg_id.email_cc]
             if dest and src:
                 tools.email_send(src, dest,'Infos pratiques et liste des participants '+( reg_id.event_id.name_on_site and reg_id.event_id.name_on_site or reg_id.event_id.product_id.name ), reg_id.event_id.mail_confirm, tinycrm = str(reg_id.case_id.id),subtype='html')
 
@@ -269,12 +271,14 @@ class event_registration(osv.osv):
         for reg_id in reg_ids:
             flag = ''
             src = reg_id.event_id.reply_to or False
-            dest = [reg_id.email_from]
-            if reg_id.email_cc:
-                dest += [reg_id.email_cc]
+            dest = []
+            if reg_id.email_from:
+                dest += [reg_id.email_from]
+                if reg_id.email_cc:
+                    dest += [reg_id.email_cc]
             if reg_id.event_id.mail_auto_confirm or reg_id.event_id.mail_auto_registr:
-                if not reg_id.email_from:
-                    raise osv.except_osv(_('Warning!'), _('You should specify Partner Email for registration "%s" !')%(reg_id.name,))
+                #if not reg_id.email_from:
+                #    raise osv.except_osv(_('Warning!'), _('You should specify Partner Email for registration "%s" !')%(reg_id.name,))
                 if dest and src:
                     if (reg_id.event_id.state in ['confirm','running']) and reg_id.event_id.mail_auto_confirm :
                         flag = 't'
