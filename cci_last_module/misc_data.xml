@@ -72,6 +72,7 @@
 								<field name="function_code_label"/>
                                                                 <field name="magazine_subscription"/>
                                                                 <field name="magazine_subscription_source"/>
+                                                                <field name="sequence_yearbook"/>
 			                            	</group>
 			                            	<group string="Communication" colspan="2" col="2">
 			                                	<field name="phone" on_change="on_change_phone_num(phone)"/>
