@@ -781,6 +781,18 @@ TODO: revoir la vue tree aussi
 		</field>
 	</record>
 
+	<record model="ir.ui.view" id="view_partner_job_form_inherit1">
+		<field name="name">res.partner.job.form.inherit1</field>
+		<field name="model">res.partner.job</field>
+		<field name="inherit_id" ref="base_contact.view_partner_job_form"/>
+		<field name="type">form</field>
+		<field name="arch" type="xml">
+			<field name="sequence_partner" position="after">
+				<field name="sequence_yearbook"/>
+			</field>
+		</field>
+	</record>
+
         <!--
 	=====================
 	Partner Address

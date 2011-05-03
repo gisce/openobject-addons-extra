@@ -28,7 +28,7 @@ import time
 from tools.translate import _
 
 form = '''<?xml version="1.0"?>
-<form string="Export Partners">
+<form string="Export Partners for SUMO">
     <separator string="Export partners data for SUMO software" colspan="4"/>
     <newline/>
     <!--field name="date_from" colspan="4"/>
@@ -43,12 +43,12 @@ form_extract = '''<?xml version="1.0"?>
 
 
 view_form_finish="""<?xml version="1.0"?>
-<form string="Export Progenus Number">
+<form string="Export Partners for SUMO">
     <image name="gtk-dialog-info" colspan="2"/>
     <group colspan="2" col="4">
         <separator string="Export done" colspan="4"/>
         <field name="data" colspan="3" readonly="1" filename="file_name"/>
-        <label align="0.0" string="Save this document to a .xsl file and open it with\n your favorite spreadsheet software. The file\n encoding is UTF-8." colspan="4"/>
+        <label align="0.0" string="Save this document to a .xls file and open it with\n your favorite spreadsheet software. The file\n encoding is UTF-8." colspan="4"/>
     </group>
 </form>"""
 
@@ -70,6 +70,7 @@ def _make_calculation(self, cr, uid, data, context):
     part_photo_obj = pool.get('res.partner.photo')
     cr.execute('select id from res_partner_photo order by date desc limit 1')
     last_photo_id = cr.fetchone()
+    print last_photo_id
     last_photo_id = last_photo_id and last_photo_id[0] or False
     part_address_obj = pool.get('res.partner.address')
     part_lost_obj = pool.get('res.partner.address.lost')
@@ -80,12 +81,14 @@ def _make_calculation(self, cr, uid, data, context):
     address_def = []
     list_lost_out = []
     photo_id = part_photo_obj.create(cr, uid, {})
+    print "before"
     for partner in partner_obj.browse(cr, uid, partner_ids):
         postal_addr = [x.id for x in partner.address if x.magazine_subscription in ('postal','personal')]
         if not len(postal_addr):
             for address in partner.address:
-                never_addr = [x.id for x in partner.address if x.state in ('never')]
-                if not never_addr and address.type=='default':
+                #never_addr = [x.id for x in partner.address if x.state in ('never')]
+                #if not never_addr and address.type=='default':
+                if address.magazine_subscription <> 'never' and address.type=='default':
                     part_address_new_obj.create(cr, uid, {'code':partner.ref,
                                                         'name':partner.id,
                                                         'address':(address.street or '')+ ' ' + (address.zip or '')+ '  ' + (address.city or ''),
@@ -95,6 +98,7 @@ def _make_calculation(self, cr, uid, data, context):
                     })
                     part_address_obj.write(cr, uid, [address.id],{'magazine_subscription':'postal'})
     if last_photo_id:
+        print "lost parners"
         """
         Create entries for losts partners
         """
@@ -142,7 +146,7 @@ def _make_calculation(self, cr, uid, data, context):
         cr.execute("select id from res_partner_address where magazine_subscription = 'postal' and id not in (select address_id from res_partner_address_new where address_id is not null)")
         for item in cr.dictfetchall():
             address_id = part_address_obj.browse(cr, uid, item['id'])
-            if address_id.partner_id.state_id.id in (1):
+            if address_id.partner_id and address_id.partner_id.state_id and address_id.partner_id.state_id.id in (1,):
                 address_zip =  address_id.zip_id and address_id.zip_id.city or ''
                 part_address_new_obj.create(cr, uid, {'name': address_id.partner_id.id,
                                                     'address_id': address_id.id,
@@ -263,7 +267,7 @@ def _make_excel_file(self, cr, uid, data, context):
     file=StringIO.StringIO()
     out=workBookDocument.save(file)
     out=base64.encodestring(file.getvalue())
-    return {'data': out , 'file_name':'export_sumo_file%s.xsl'%time.strftime('%Y-%m-%d')}
+    return {'data': out , 'file_name':'export_sumo_file%s.xls'%time.strftime('%Y-%m-%d')}
 
 class wizard_export_partner(wizard.interface):
     states = {
@@ -273,7 +277,7 @@ class wizard_export_partner(wizard.interface):
         },
         'compare': {
             'actions': [_make_calculation],
-            'result': {'type':'form', 'arch':form_extract, 'fields':fields, 'state':[('end','Cancel'),('extract','Extract last last data in Excel File')]}
+            'result': {'type':'form', 'arch':form_extract, 'fields':fields, 'state':[('end','Cancel'),('extract','Extract last data in Excel File')]}
         },
         'extract': {
             'actions': [_make_excel_file],

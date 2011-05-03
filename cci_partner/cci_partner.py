@@ -422,21 +422,23 @@ class res_partner_job(osv.osv):
 
     _inherit = 'res.partner.job'
     _columns = {
-        'function_label':fields.char('Function Label',size=128),
+        'function_label':fields.char('Function Label',size=1024),
         'function_code_label':fields.char('Codes',size=128,),
         'date_start':fields.date('Date start'),
         'date_end':fields.date('Date end'),
-        'canal_id':fields.many2one('res.partner.canal','Canal',help='favorite chanel for communication'),
+        'canal_id':fields.many2one('res.partner.canal','Canal',help='favorite channel for communication'),
         'active':fields.boolean('Active'),
         'who_presence':fields.boolean('In Whos Who'),
         'dir_presence':fields.boolean('In Directory'),
         'department': fields.char('Department',size=20),
+        'sequence_yearbook': fields.integer('Sequence Yearbook'),
     }
 
     _defaults = {
         'who_presence' : lambda *a: True,
         'dir_presence' : lambda *a: True,
         'active' : lambda *a: True,
+        'sequence_yearbook' : lambda *a: 0,
     }
 
 res_partner_job()
