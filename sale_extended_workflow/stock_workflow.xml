@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record id="act_picking_reserved" model="workflow.activity">
+            <field name="wkf_id" ref="stock.wkf_picking"/>
+            <field name="name">reserved</field>
+        </record>
+
+        <record id="trans_draft_reserved_picking" model="workflow.transition">
+            <field name="act_from" ref="stock.act_draft"/>
+            <field name="act_to" ref="act_picking_reserved"/>
+            <field name="signal">button_reserve</field>
+        </record>
+
+        <record id="trans_reserved_picking_confirm" model="workflow.transition">
+            <field name="act_from" ref="act_picking_reserved"/>
+            <field name="act_to" ref="stock.act_confirmed"/>
+            <field name="signal">button_confirm_reserved</field>
+        </record>
+
+    </data>
+</openerp>
