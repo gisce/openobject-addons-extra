@@ -56,6 +56,9 @@
 	<record model="ir.ui.menu" id="menu_cci_club_attendance">
 		<field name="groups_id" eval="[(6,0, [ref('group_cci_club_user'), ref('group_cci_club_manager'), ref('group_cci_club_supervisor'), ref('group_cci_club_formative')])]"/>
 	</record>
+	<record model="ir.ui.menu" id="menu_cci_club_particpation_log">
+		<field name="groups_id" eval="[(6,0, [ref('group_cci_club_manager')])]"/>
+	</record>
 </data>
 </openerp>
 

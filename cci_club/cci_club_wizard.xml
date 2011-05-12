@@ -1,6 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
     <data>
-        <wizard id="cci_club_get_emails_list" model="cci_club.participation" name="cci_club.get_emails_list" string="Get Emails List"/>
+        <wizard id="cci_club_get_emails_list" 
+                model="cci_club.participation" 
+                name="cci_club.get_emails_list" 
+                string="Get Emails List"/>
+
+        <wizard
+            string="State Changes"
+            model="cci_club.participation"
+            name="wizard_cci_club_participation_log"
+            id="wizard_cci_club_participation_log"/>
+
+        <wizard
+            string="Send Email"
+            model="cci_club.participation"
+            name="wizard_cci_club_participation_send_mail"
+            id="wizard_cci_club_participation_send_mail"/>
+
+        <wizard
+            string="Contacts"
+            model="cci_club.participation"
+            name="wizard_cci_club_access_contacts"
+            id="wizard_cci_club_acces_contacts"/>
+
+        <wizard
+            string="Active Participations"
+            model="cci_club.club"
+            name="wizard_cci_club_active_participations"
+            id="wizard_cci_club_active_participations"/>
     </data>
 </openerp>

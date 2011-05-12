@@ -29,12 +29,12 @@ import os
 _result_form = '''<?xml version="1.0"?>
 <form string="Get Emails List">
     <separator string="Emails" colspan="4"/>
-    <field name="chained_emails" widget="text" colspan="4" nolabel="1"/>
+    <field name="chained_emails" widget="text" colspan="4" nolabel="1" width="640" height="200"/>
     <label string="This list is placed is the clipboard. You can paste it with a Ctrl-C in your regular email client." colspan="4"/>
 </form>'''
 
 _fields = {
-    'chained_emails': {'string':'List', 'type':'char','readonly':True},
+    'chained_emails': {'string':'List', 'type':'text'},
 }
 
 def _get_result(self, cr, uid, data, context):

@@ -21,6 +21,10 @@
 ##############################################################################
 
 import get_emails_list
+import participation_logs
+import participation_send_email
+import participation_access_contacts
+import club_active_participations
 
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
 
