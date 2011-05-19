@@ -76,7 +76,7 @@ class club(osv.osv):
             res[club.id] = count
         return res
     def write(self, cr, uid, ids,vals,context=None):
-        self._get_active_participation_ids(cr, uid, ids, None, None, context)
+        self._get_active_participations(cr, uid, ids, None, None, context)
         return super(osv.osv,self).write(cr, uid, ids,vals, context)
 
     _name = "cci_club.club"

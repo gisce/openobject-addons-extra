@@ -281,7 +281,7 @@
                     <field name="contact_id" select="1"  on_change="onchange_contact(contact_id,partner_id)" domain="[('partner_id','=',partner_id)]"/>
                     <field name="phone"/>
                     <field name="email"/>
-                    <field name="date_registration"/>
+                    <field name="date_registration" select="2"/>
                     <field name="date_in" select="2"/>
                     <field name="date_out" select="2"/>
                     <field name="order_id"/>
