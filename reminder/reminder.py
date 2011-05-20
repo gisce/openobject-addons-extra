@@ -134,6 +134,7 @@ class reminder_reminder_line(osv.osv):
     _name = 'reminder.reminder.line'
     _description = 'Reminder Conditions'
     
+    _order = 'sequence'    
     _columns = {
         'reminder_id':fields.many2one('reminder.reminder', 'Model', required=False),
         'name':fields.char('Condition', size=256, required=True, readonly=False),
