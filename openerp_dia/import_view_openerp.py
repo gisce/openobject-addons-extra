@@ -35,6 +35,7 @@ def warning(msg, type=gtk.MESSAGE_INFO):
     dialog.run()
     return dialog.destroy()
 
+
 class window(object):
     def __init__(self):
         self.dia = gtk.Dialog(
@@ -42,7 +43,6 @@ class window(object):
             None,
             gtk.DIALOG_MODAL|gtk.DIALOG_DESTROY_WITH_PARENT
         )
-
         self.but_cancel = self.dia.add_button(gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL)
         self.but_ok = self.dia.add_button(gtk.STOCK_OK, gtk.RESPONSE_OK)
 
@@ -56,7 +56,6 @@ class window(object):
         self.login.set_text('admin')
         self.password = gtk.Entry()
         self.password.set_visibility(False)
-        
         col = 0
         for widget in [
             gtk.Label('Server URL: '), self.server,
@@ -106,7 +105,7 @@ class window(object):
         self.dia.destroy()
 
 class window2(object):
-    def __init__(self, views):
+    def __init__(self, views, items):
         self.dia = gtk.Dialog(
             'Open ERP View',
             None,
@@ -117,6 +116,7 @@ class window2(object):
         self.but_cancel = self.dia.add_button(gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL)
         self.but_ok = self.dia.add_button(gtk.STOCK_OK, gtk.RESPONSE_OK)
         self.views = views
+        self.items = items
         self.treeview = gtk.TreeView()
         cell = gtk.CellRendererText()
         tvcolumn = gtk.TreeViewColumn('View Name', cell, text=0)
@@ -136,22 +136,48 @@ class window2(object):
         self.treeview.append_column(tvcolumn)
         views.sort()
         views.sort()
-        self.liststore = gtk.ListStore(str,str,str, int)
+        self.liststore = gtk.ListStore(str,str,str,int)
         for v in views:
             self.liststore.append(v)
-        self.treeview.set_model(self.liststore)
-
+        self.treeview.set_model(self.liststore)    
+            
         sw = gtk.ScrolledWindow()
         sw.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_ALWAYS)
         sw.set_shadow_type(gtk.SHADOW_NONE)
         sw.add(self.treeview)
+        model = gtk.ListStore(str,str)
+        self.cb = gtk.ComboBoxEntry()
+        table = gtk.Table(2,1)
+        row = 0
+        col = 0
+        for widget in [
+            gtk.Label('Language '), self.cb,
+        ]:
+            table.attach(widget, col, col+1, row, row+1, yoptions=2, xoptions=gtk.FILL, ypadding=2)
+            col += 1
+            if col>1:
+                col=0
+                row+=1        
 
+        for i in items:
+           model.append([i[0], i[1]])
+           
+        self.cb.set_model(model)
+        self.cb.set_text_column(1)
         self.dia.vbox.pack_start(sw, expand=True, fill=True)
+        self.dia.vbox.pack_start(gtk.HSeparator(),  expand=False, fill=False)
+        self.dia.vbox.pack_start(table, expand=False, fill=False),
         self.dia.show_all()
 
     def run(self):
         while True:
             res = self.dia.run()
+            model = self.cb.get_model()
+            active = self.cb.get_active()
+            if active < 0:
+                return None
+            res4 = model[active][0]
+
             if res==gtk.RESPONSE_OK:
                 selection = self.treeview.get_selection()
                 model,iter = selection.get_selected_rows()
@@ -161,21 +187,21 @@ class window2(object):
                     res2 = model.get_value(iter,1)
                     res3 = model.get_value(iter,2)
                     self.destroy()
-                    return res2, res, res3
+                    return res2, res, res3,  res4
             self.destroy()
             break
         return False
 
     def destroy(self):
         self.dia.destroy()
-
-
+        
 # self.sizes: a stack of containers (forms, groups, notebook, ...)
 #   0- number of columns
 #   1- total width of the upcomming element in group.notebook etc
 #   2- x position (in pixels)
 #   3- y position (in height pixels)
-#   4- max Y (in pixels)
+#   4- max Y (in pixels)        
+
 class display(object):
     def __init__(self, view, default):
         self.view = view
@@ -509,17 +535,20 @@ class display(object):
 
 def view_get(sock,db, uid, password, model, type, domain):
     try:
-        ids = sock.execute(db, uid, password, model, type, domain)                               
+        ids = sock.execute(db, uid, password, model, type, domain)
         views = sock.execute(db, uid, password, 'ir.ui.view', 'read', ids, ['name','type','model'])
+        ids_lang = sock.execute(db, uid, password, 'res.lang', 'search', [],{})
+        items = sock.execute(db, uid, password, 'res.lang', 'read', ids_lang, ['code','name'])
     except Exception, e:
         warning('Error!\nPlease Check the server configuration again.') 
     view_lst = map(lambda x: (x['name'],x['model'],x['type'],x['id']), views)
-    win = window2(view_lst)
+    item_lst = map(lambda x: (x['code'],x['name']), items)
+    win = window2(view_lst, item_lst)
     result = win.run()
     s_views = None
     if result:
-        model, view_id, view_type = result            
-        s_views = sock.execute(db, uid, password, model, 'fields_view_get', view_id, view_type, {}, True)
+        model, view_id, view_type, lang = result   
+        s_views = sock.execute(db, uid, password, model, 'fields_view_get', view_id, view_type, {'lang': lang})
     return s_views
 
 
@@ -529,7 +558,7 @@ def main(data=True, flags=True, draw=True):
     result = win.run()
     win.destroy()
     if result:
-        uid, db, password, server = result
+        uid, db, password, server= result
         _url = server + '/object'
         sock = xmlrpclib.ServerProxy(_url)
         views = view_get(sock,db, uid, password, 'ir.ui.view', 'search', [('inherit_id','=',False),('type','in',('form','tree','search'))])
