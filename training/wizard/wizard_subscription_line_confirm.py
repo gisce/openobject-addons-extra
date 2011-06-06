@@ -22,7 +22,7 @@
 
 import wizard
 import netsvc
-import ir
+#import ir
 import pooler
 
 confirm_form = """<?xml version="1.0"?>

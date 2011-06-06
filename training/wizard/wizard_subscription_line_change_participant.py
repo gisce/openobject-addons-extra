@@ -22,7 +22,7 @@
 
 import wizard
 import netsvc
-import ir
+#import ir
 import pooler
 import tools
 

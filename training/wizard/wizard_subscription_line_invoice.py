@@ -22,7 +22,7 @@
 
 import wizard
 import netsvc
-import ir
+#import ir
 import pooler
 
 invoice_form = """<?xml version="1.0"?>
