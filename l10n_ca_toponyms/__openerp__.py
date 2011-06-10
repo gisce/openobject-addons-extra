@@ -19,7 +19,7 @@
 #
 ##############################################################################
 {
-    "name" : "Canada - Provinces, Territories and Cities",
+    "name" : "Canada - Provinces and Territories",
     "version" : "1.0",
     "author" : "Savoir-faire Linux",
     "website" : "http://www.savoirfairelinux.com",
