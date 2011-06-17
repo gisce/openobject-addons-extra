@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+	<data>
+        <record id="view_users_form" model="ir.ui.view">
+            <field name="name">res.users.form</field>
+            <field name="model">res.users</field>
+            <field name="type">form</field>
+            <field name="inherit_id" ref="base.view_users_form" />
+            <field name="arch" type="xml">
+                <page string="User" position="before">
+                    <page string="Commissions" attrs="{'invisible':[('salesman', '=', False)]}"> <!-- groups="sale.group_sale_user" -->
+                        <group colspan="4" col="8">
+                            <field name="years" on_change="onchange_year(years)"/>
+                            <field name="salesman" invisible="1"/>
+                        </group>
+                        <field name="commission" colspan="4" nolabel="1">
+                            <tree string="Commissions" editable="top" >
+                                <field name="product" />
+                                <field name="realised" />
+                                <field name="objectif" />
+                                <field name="com1" />
+                                <field name="com2" />
+                            </tree>
+							<form>
+							</form>
+                        </field>
+                        <separator string="Totaux:" />
+                        <group colspan="4" col="8">
+                            <field name="realised_total" />
+                            <field name="objective_total" />
+                            <field name="com1_total" />
+                            <field name="com2_total" />
+                        </group>
+                    </page>
+                </page>
+            </field>
+        </record>
+	</data>
+</openerp>

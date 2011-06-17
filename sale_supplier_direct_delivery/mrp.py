@@ -21,7 +21,7 @@
 from osv import fields, osv
 
 class mrp_procurement(osv.osv):
-    _inherit = "mrp.procurement"
+    _inherit = "procurement.order"
     
     _columns = {
         #Field that is used temporarily: in the sale.action_ship_create method, the procurement is created but isn't yet linked back to the 

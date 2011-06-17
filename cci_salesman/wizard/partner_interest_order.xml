@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<openerp>
+	<data>
+		<wizard id="partner_interest_order_wizard" model="res.partner"
+            menu="False" name="partner_interest_order"
+            string="Marques d'intérets: BDC" />
+	</data>
+</openerp>
