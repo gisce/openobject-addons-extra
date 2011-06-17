@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<openerp>
+  <data>
+    <wizard id="partner_interest_next_wizard" model="res.partner"
+            menu="True" name="partner_interest_next"
+            string="Marques d'intérets: Aller à l'an prochaine" />
+  </data>
+</openerp>
