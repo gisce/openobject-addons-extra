@@ -14,8 +14,8 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2011-04-07 05:02+0000\n"
-"X-Generator: Launchpad (build 12735)\n"
+"X-Launchpad-Export-Date: 2011-06-18 05:07+0000\n"
+"X-Generator: Launchpad (build 13168)\n"
 
 #. module: training_images
 #: model:ir.module.module,description:training_images.module_meta_information
@@ -49,13 +49,22 @@ msgstr ""
 msgid "Base Image"
 msgstr ""
 
-#. module: training_images
+#. module: training
 #: view:training.offer:0
+#: field:training.offer,notification_note:0
 msgid "Notification Note"
 msgstr ""
 
-#. module: training_images
-#: field:training.images,offer_id:0
+#. module: training
+#: field:training.course.offer.rel,offer_id:0
+#: view:training.offer:0
+#: field:training.offer.purchase.line,offer_id:0
+#: field:training.offer.purchase.line.log,offer_id:0
+#: view:training.seance:0
+#: view:training.session:0
+#: field:training.session,offer_id:0
+#: view:training.subscription.line:0
+#: field:training.subscription.line,offer_id:0
 msgid "Offer"
 msgstr ""
 

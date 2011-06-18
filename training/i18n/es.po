@@ -14,8 +14,8 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2011-04-07 05:02+0000\n"
-"X-Generator: Launchpad (build 12735)\n"
+"X-Launchpad-Export-Date: 2011-06-18 05:07+0000\n"
+"X-Generator: Launchpad (build 13168)\n"
 "X-Poedit-Language: Spanish\n"
 
 #. module: training_images
@@ -58,13 +58,22 @@ msgstr ""
 msgid "Base Image"
 msgstr "Imagen principal"
 
-#. module: training_images
+#. module: training
 #: view:training.offer:0
+#: field:training.offer,notification_note:0
 msgid "Notification Note"
 msgstr "Nota de notificación"
 
-#. module: training_images
-#: field:training.images,offer_id:0
+#. module: training
+#: field:training.course.offer.rel,offer_id:0
+#: view:training.offer:0
+#: field:training.offer.purchase.line,offer_id:0
+#: field:training.offer.purchase.line.log,offer_id:0
+#: view:training.seance:0
+#: view:training.session:0
+#: field:training.session,offer_id:0
+#: view:training.subscription.line:0
+#: field:training.subscription.line,offer_id:0
 msgid "Offer"
 msgstr "Curso"
 
@@ -133,9 +142,6 @@ msgstr "Galería de imágenes del curso"
 #~ msgid "There is no group in this session !"
 #~ msgstr "¡No existe ningún grupo en esta edición!"
 
-#~ msgid "Has Shared Seances"
-#~ msgstr "Tiene convocatorias compartidas"
-
 #~ msgid "Send Request"
 #~ msgstr "Enviar solicitud"
 
@@ -166,9 +172,6 @@ msgstr "Galería de imágenes del curso"
 #~ msgid "Standard"
 #~ msgstr "Estándar"
 
-#~ msgid "The delivery format of the offer or session"
-#~ msgstr "Formato de realización del curso o sesión."
-
 #, python-format
 #~ msgid "The Payment Mode is not specified"
 #~ msgstr "El método de pago no se ha indicado"
@@ -177,17 +180,11 @@ msgstr "Galería de imágenes del curso"
 #~ msgstr ""
 #~ "La línea de compra ayuda a crear un pedido de compra para la convocatoria."
 
-#~ msgid "Subscriptions To Confirm"
-#~ msgstr "Suscripciones a confirmar"
-
 #~ msgid "Fail Email"
 #~ msgstr "Email fallido"
 
 #~ msgid "All Subscription Lines to Invoice"
 #~ msgstr "Todas las líneas de suscripciones a facturar"
-
-#~ msgid "Subscription Second Line"
-#~ msgstr "Suscripciones segunda línea"
 
 #~ msgid "New Participant"
 #~ msgstr "Nuevo participante"
@@ -207,17 +204,9 @@ msgstr "Galería de imágenes del curso"
 #~ msgid "The end date of the planned session"
 #~ msgstr "Fecha final de la edición."
 
-#~ msgid "training.seance"
-#~ msgstr "formacion.convocatoria"
-
 #, python-format
 #~ msgid "Procurements email are only sent to suppliers"
 #~ msgstr "Los emails de abastecimiento sólo se enviarán a los proveedores"
-
-#~ msgid ""
-#~ "Allow to not invoice this partner in case of subscription cancellation"
-#~ msgstr ""
-#~ "Permitir no facturar a este cliente en caso de cancelar la suscripción."
 
 #~ msgid "Allows to the participants to select a course whose can participate"
 #~ msgstr ""
@@ -257,12 +246,6 @@ msgstr "Galería de imágenes del curso"
 #~ msgid "Analytic Account"
 #~ msgstr "Cuenta analítica"
 
-#~ msgid "Course"
-#~ msgstr "Asignatura"
-
-#~ msgid "training.session"
-#~ msgstr "formacion.edicion"
-
 #~ msgid "The date of the planned session"
 #~ msgstr "Fecha de la edición planificada"
 
@@ -300,18 +283,9 @@ msgstr "Galería de imágenes del curso"
 #~ msgid "Label"
 #~ msgstr "Etiqueta"
 
-#~ msgid "Seance Date"
-#~ msgstr "Fecha de convocatoria"
-
-#~ msgid "Cancel (Penalities)"
-#~ msgstr "Cancelación (penalizaciones)"
-
 #~ msgid "Allows to show the long name of the course for the external view"
 #~ msgstr ""
 #~ "Permite mostrar el nombre largo de la asignatura para la vista externa."
-
-#~ msgid "training.config.contact.function"
-#~ msgstr "formacion.config.contacto.funcion"
 
 #~ msgid "SMTP Client"
 #~ msgstr "Cliente SMTP"
@@ -325,26 +299,11 @@ msgstr "Galería de imágenes del curso"
 #~ msgid "Emails Style Groups"
 #~ msgstr "Grupos de estilo de correos"
 
-#, python-format
-#~ msgid ""
-#~ "The defined groups for this session does not have the same number of seances "
-#~ "!"
-#~ msgstr ""
-#~ "¡Los grupos definidos en esta edición no tienen el mismo número de "
-#~ "convocatorias!"
-
 #~ msgid "Procurements"
 #~ msgstr "Abastecimientos"
 
 #~ msgid "Define New Year"
 #~ msgstr "Definir nuevo año"
-
-#~ msgid ""
-#~ "The following objects are availables: ${ctx}, ${time}, ${user}, ${sign}, "
-#~ "${body}"
-#~ msgstr ""
-#~ "The following objects are availables: ${ctx}, ${time}, ${user}, ${sign}, "
-#~ "${body}"
 
 #~ msgid "Date Stop"
 #~ msgstr "Fecha final"
@@ -361,9 +320,6 @@ msgstr "Galería de imágenes del curso"
 #, python-format
 #~ msgid "Can you give a right date ?"
 #~ msgstr "¿Ha introducido una fecha correcta?"
-
-#~ msgid "Mass Subscription Second Line"
-#~ msgstr "Suscripción en masa segunda línea"
 
 #, python-format
 #~ msgid "Cancelled by Postponement: %s"
@@ -387,12 +343,6 @@ msgstr "Galería de imágenes del curso"
 
 #~ msgid "_Draft"
 #~ msgstr "_Borrador"
-
-#, python-format
-#~ msgid "The type of the course (%s) of this seance has no product defined"
-#~ msgstr ""
-#~ "El tipo de asignatura (%s) de esta convocatoria no tiene ningún producto "
-#~ "definido"
 
 #~ msgid "List of the events in the session"
 #~ msgstr "Listado de eventos en la edición."
@@ -430,9 +380,6 @@ msgstr "Galería de imágenes del curso"
 #~ msgid "Payment"
 #~ msgstr "Pago"
 
-#~ msgid "Linked Courses"
-#~ msgstr "Asignaturas asociadas"
-
 #~ msgid "Additional Information"
 #~ msgstr "Información adicional"
 
@@ -441,9 +388,6 @@ msgstr "Galería de imágenes del curso"
 
 #~ msgid "All Participations"
 #~ msgstr "Todas las participaciones"
-
-#~ msgid "Course Pending"
-#~ msgstr "Asignatura pendiente"
 
 #~ msgid "Accepted Requests"
 #~ msgstr "Solicitudes aceptadas"
@@ -454,17 +398,8 @@ msgstr "Galería de imágenes del curso"
 #~ msgid "Languages"
 #~ msgstr "Idiomas"
 
-#~ msgid "Original Offer Kind"
-#~ msgstr "Tipo de curso original"
-
-#~ msgid "res.partner.team"
-#~ msgstr "res.partner.team"
-
 #~ msgid "Contact Last Name"
 #~ msgstr "Apellido contacto"
-
-#~ msgid "training.participation.reassign.wizard"
-#~ msgstr "formacion.participacion.reasigna.asistente"
 
 #~ msgid "Long Name"
 #~ msgstr "Nombre largo"
@@ -473,51 +408,26 @@ msgstr "Galería de imágenes del curso"
 #~ msgid "Selection Date"
 #~ msgstr "Selección fecha"
 
-#~ msgid "training.offer"
-#~ msgstr "formacion.curso"
-
 #~ msgid "8 Hours"
 #~ msgstr "8 horas"
 
 #~ msgid "Penality"
 #~ msgstr "Penalización"
 
-#~ msgid "training.course.offer.rel"
-#~ msgstr "formacion.asignatura.curso.rel"
-
-#~ msgid "training.subscription.line.second"
-#~ msgstr "formacion.suscripcion.linea.segunda"
+#~ msgid "Levels"
+#~ msgstr "Niveles"
 
 #~ msgid "Overall seats"
 #~ msgstr "Plazas generales"
 
-#, python-format
-#~ msgid "There is no Purchase Order for a request"
-#~ msgstr "No existe una orden de compra para una solicitud"
-
-#~ msgid "Validate Course(s)"
-#~ msgstr "Validar asignatura(s)"
-
-#~ msgid "training.holiday.period"
-#~ msgstr "formacion.vacaciones.periodo"
-
 #~ msgid "Theoritical Disponibility"
 #~ msgstr "Disponibilidad teórica"
-
-#~ msgid "Seance Information"
-#~ msgstr "Información de convocatoria"
-
-#~ msgid "By Subscription"
-#~ msgstr "Por suscripción"
 
 #~ msgid "Responsible"
 #~ msgstr "Responsable"
 
 #~ msgid "Limits"
 #~ msgstr "Límites"
-
-#~ msgid "training.subscription.line"
-#~ msgstr "formacion.suscripcion.linea"
 
 #~ msgid "Default"
 #~ msgstr "Por defecto"
@@ -528,12 +438,6 @@ msgstr "Galería de imágenes del curso"
 #~ msgid "Summary"
 #~ msgstr "Resumen"
 
-#~ msgid "Purchase State"
-#~ msgstr "Estado compra"
-
-#~ msgid "Year Generator"
-#~ msgstr "Generador de año"
-
 #~ msgid "Amount to pay"
 #~ msgstr "Importe a pagar"
 
@@ -543,19 +447,8 @@ msgstr "Galería de imágenes del curso"
 #~ msgid "Presence Rate"
 #~ msgstr "Ratio de asistencia"
 
-#~ msgid "Course Description"
-#~ msgstr "Descripción de la asignatura"
-
 #~ msgid "Remuneration"
 #~ msgstr "Remuneración"
-
-#, python-format
-#~ msgid ""
-#~ "You can not cancel this purchase line it is not the only one purchase order "
-#~ "lines in the purchase order"
-#~ msgstr ""
-#~ "No puede cancelar esta línea de compra ya que no es la única línea de pedido "
-#~ "en la orden de compra"
 
 #~ msgid "Has Certificate"
 #~ msgstr "Tiene certificado"
@@ -580,12 +473,6 @@ msgstr "Galería de imágenes del curso"
 
 #~ msgid "Original Session"
 #~ msgstr "Edición original"
-
-#~ msgid "Reassign Participation to Seance"
-#~ msgstr "Reasignar participación a convocatoria"
-
-#~ msgid "training.course.pending.wizard"
-#~ msgstr "formacion.asignatura.pendiente.asistente"
 
 #~ msgid "Auto. Update"
 #~ msgstr "Auto. Actualizar"
@@ -613,9 +500,6 @@ msgstr "Galería de imágenes del curso"
 #~ msgid "Old Catalogs"
 #~ msgstr "Catálogos antiguos"
 
-#~ msgid "Seance ID"
-#~ msgstr "ID convocatoria"
-
 #~ msgid "Contact Partner Function"
 #~ msgstr "Información de contacto"
 
@@ -623,12 +507,6 @@ msgstr "Galería de imágenes del curso"
 #~ "The minimum threshold is the minimum of the minimum threshold of each seance"
 #~ msgstr ""
 #~ "Las plazas mínimas es el mínimo de las plazas mínimas de cada convocatoria."
-
-#~ msgid "training.holiday.year"
-#~ msgstr "formacion.vacaciones.año"
-
-#~ msgid "training.config.invoice"
-#~ msgstr "formacion.config.factura"
 
 #~ msgid "Subscription Lines to Validate"
 #~ msgstr "Líneas de suscripción para validar"
@@ -651,18 +529,9 @@ msgstr "Galería de imágenes del curso"
 #~ msgid "Subscription Lines without Partner (to resolve)"
 #~ msgstr "Líneas de suscripción sin empresa (a resolver)"
 
-#~ msgid "Mass Subscription Wizard"
-#~ msgstr "Asistente de suscripción en masa"
-
-#~ msgid "Make Subscription"
-#~ msgstr "Realizar suscripción"
-
 #, python-format
 #~ msgid "Only examiners will receive request emails"
 #~ msgstr "Sólo los examinadores recibirán correos de solicitud"
-
-#~ msgid "training.holiday.year.wizard"
-#~ msgstr "formacion.vacaciones.año.asistente"
 
 #~ msgid "The user can write some internal note for this course"
 #~ msgstr ""
@@ -670,10 +539,6 @@ msgstr "Galería de imágenes del curso"
 
 #~ msgid "res.partner.contact_technical_skill"
 #~ msgstr "res.partner.contact_technical_skill"
-
-#, python-format
-#~ msgid "The type of the course (%s) of this seance hasn't a product"
-#~ msgstr "El tipo de asignatura (%s) de esta convocatoria no tiene un producto"
 
 #~ msgid "Emails"
 #~ msgstr "Emails"
@@ -684,10 +549,6 @@ msgstr "Galería de imágenes del curso"
 #~ msgid "The objective of the course will be used by the internet web site"
 #~ msgstr "El objetivo de la asignatura será usarlo por la web"
 
-#, python-format
-#~ msgid "Please, you can create an offer with a validated course"
-#~ msgstr "Puede crear un curso a partir de una asignatura validada"
-
 #~ msgid "Request"
 #~ msgstr "Solicitud"
 
@@ -697,26 +558,14 @@ msgstr "Galería de imágenes del curso"
 #~ msgid "Lecturer Participations"
 #~ msgstr "Participaciones profesor"
 
-#~ msgid "Master Course"
-#~ msgstr "Asignatura principal"
-
 #~ msgid "Create Purchase Order"
 #~ msgstr "Crear pedido de compra"
-
-#~ msgid "Confirmed Subscriptions"
-#~ msgstr "Suscripciones confirmadas"
 
 #~ msgid "Absent Participants"
 #~ msgstr "Participantes ausentes"
 
 #~ msgid "Create Date"
 #~ msgstr "Fecha creación"
-
-#~ msgid "Subscription Contacts (HR)"
-#~ msgstr "Contactos suscripciones (RH)"
-
-#~ msgid "For 'Invoice': ${invoice}"
-#~ msgstr "For 'Invoice': ${invoice}"
 
 #~ msgid "Apply"
 #~ msgstr "Aplicar"
@@ -738,20 +587,11 @@ msgstr "Galería de imágenes del curso"
 #~ msgid "Please, Can you check the price list of the partner ?"
 #~ msgstr "¿Puede verificar la tarifa de la empresa?"
 
-#~ msgid "Master Seance"
-#~ msgstr "Convocatoria principal"
-
-#~ msgid "training.config.product"
-#~ msgstr "formacion.config.producto"
-
 #~ msgid "Sent At"
 #~ msgstr "Enviado a"
 
 #~ msgid "Trigger"
 #~ msgstr "Disparador"
-
-#~ msgid "For Course"
-#~ msgstr "Para la asignatura"
 
 #~ msgid "Present Participants"
 #~ msgstr "Participantes presentes"
@@ -761,12 +601,6 @@ msgstr "Galería de imágenes del curso"
 
 #~ msgid "Body"
 #~ msgstr "Mensaje"
-
-#~ msgid "training.offer.public.target"
-#~ msgstr "formacion.curso.publico.objetivo"
-
-#~ msgid "training.session.duplicate.wizard"
-#~ msgstr "formacion.edicion.duplica.asistente"
 
 #~ msgid "Seances to Confirm"
 #~ msgstr "Convocatorias a confirmar"
@@ -781,20 +615,8 @@ msgstr "Galería de imágenes del curso"
 #~ msgid "Automatic Declaration"
 #~ msgstr "Declaración automática"
 
-#~ msgid "Support of Course"
-#~ msgstr "Soporte a la asignatura"
-
-#~ msgid "On Last Seance"
-#~ msgstr "En última convocatoria"
-
 #~ msgid "Created by"
 #~ msgstr "Creado por"
-
-#~ msgid "My Courses"
-#~ msgstr "Mis asignaturas"
-
-#~ msgid "Subscription Lines"
-#~ msgstr "Líneas de suscripción"
 
 #~ msgid "Correction Request - Cancellation"
 #~ msgstr "Solicitud de corrección - Cancelación"
@@ -812,14 +634,8 @@ msgstr "Galería de imágenes del curso"
 #~ msgid "Maximum"
 #~ msgstr "Máximo"
 
-#~ msgid "Stakeholder Emails: ${sh}"
-#~ msgstr "Organizadore de correos: ${sh}"
-
 #~ msgid "Allows to write a note for the catalog"
 #~ msgstr "Permite escribir una nota para el catálogo."
-
-#~ msgid "training.course.purchase_line"
-#~ msgstr "formacion.asignatura.linea_compra"
 
 #~ msgid "Invoice Address"
 #~ msgstr "Dirección de factura"
@@ -829,9 +645,6 @@ msgstr "Galería de imágenes del curso"
 
 #~ msgid "Start"
 #~ msgstr "Inicio"
-
-#~ msgid "training.course_category"
-#~ msgstr "formacion.categoria_asignatura"
 
 #~ msgid "Discount Invoice"
 #~ msgstr "Descuento factura"
@@ -868,24 +681,14 @@ msgstr "Galería de imágenes del curso"
 #~ msgid "Holiday year"
 #~ msgstr "Año de vacaciones"
 
-#~ msgid "Course's State"
-#~ msgstr "Estado asignatura"
-
 #~ msgid "Maximum Threshold"
 #~ msgstr "Plazas máximas"
 
 #~ msgid "End Date"
 #~ msgstr "Fecha final"
 
-#, python-format
-#~ msgid "You can not suppress a seance with a confirmed procurement"
-#~ msgstr "No puede eliminar una convocatoria con un abastecimiento confirmado"
-
 #~ msgid "Contact Firstname"
 #~ msgstr "Nombre contacto"
-
-#~ msgid "Load Procurements From Courses"
-#~ msgstr "Cargar abastecimientos desde asignaturas"
 
 #, python-format
 #~ msgid "Accountant can only receive invoice emails"
@@ -918,12 +721,6 @@ msgstr "Galería de imágenes del curso"
 #~ msgid "Creation Date"
 #~ msgstr "Fecha creación"
 
-#~ msgid "Seances"
-#~ msgstr "Convocatorias"
-
-#~ msgid "Validated at"
-#~ msgstr "Validado el"
-
 #~ msgid "Manage Subscriptions"
 #~ msgstr "Gestionar suscripciones"
 
@@ -949,9 +746,6 @@ msgstr "Galería de imágenes del curso"
 #~ msgid "Linguistic Skill"
 #~ msgstr "Habilidad lingüística"
 
-#~ msgid "Subscription Cancellation Wizard"
-#~ msgstr "Asistente de cancelación de suscripción"
-
 #, python-format
 #~ msgid "Partner"
 #~ msgstr "Empresa"
@@ -964,9 +758,6 @@ msgstr "Galería de imágenes del curso"
 
 #~ msgid "Cancel (Free)"
 #~ msgstr "Cancelar (gratis)"
-
-#~ msgid "training.config.penality"
-#~ msgstr "formacion.config.penalizacion"
 
 #, python-format
 #~ msgid "Replacement: %s %s -> %s %s"
@@ -988,9 +779,6 @@ msgstr "Galería de imágenes del curso"
 #~ msgid "Send Manually"
 #~ msgstr "Enviar manualmente"
 
-#~ msgid "New Subscription"
-#~ msgstr "Nueva suscripción"
-
 #~ msgid "unknown"
 #~ msgstr "Desconocido"
 
@@ -1000,15 +788,9 @@ msgstr "Galería de imágenes del curso"
 #~ msgid "Matricule"
 #~ msgstr "Matricula"
 
-#~ msgid "training.course.pending"
-#~ msgstr "formacion.asignatura.pendiente"
-
 #, python-format
 #~ msgid "Suppliers can only receive procurements emails"
 #~ msgstr "Los proveedores sólo pueden recibir emails de abastecimientos"
-
-#~ msgid "For 'Request For Lecturer (seance)': ${seance}"
-#~ msgstr "For 'Request For Lecturer (seance)': ${seance}"
 
 #~ msgid "Futur Seances"
 #~ msgstr "Convocatorias futuras"
@@ -1023,20 +805,11 @@ msgstr "Galería de imágenes del curso"
 #~ msgid "Allows to write the description of the course"
 #~ msgstr "Permite escribir la descripción de la asignatura."
 
-#, python-format
-#~ msgid ""
-#~ "The offer has not a product, so it is not possible to compute the price."
-#~ msgstr ""
-#~ "El curso no tiene asignado un producto y no se puede calcular el precio."
-
 #~ msgid "Session State"
 #~ msgstr "Estado edición"
 
 #~ msgid "Confirm Request"
 #~ msgstr "Confirmar solicitud"
-
-#~ msgid "The matricule of the contact"
-#~ msgstr "Matrícula del contacto"
 
 #~ msgid "External Update Support (Free)"
 #~ msgstr "Actualización de soporte externo (libre)"
@@ -1065,10 +838,6 @@ msgstr "Galería de imágenes del curso"
 #~ msgid "Technical Skills"
 #~ msgstr "Habilidades técnicas"
 
-#, python-format
-#~ msgid "You have selected a session with a shared seance"
-#~ msgstr "Ha seleccionado una edición con una convocatoria compartida"
-
 #~ msgid "Language"
 #~ msgstr "Idioma"
 
@@ -1082,17 +851,11 @@ msgstr "Galería de imágenes del curso"
 #~ msgid "Deprecated"
 #~ msgstr "Descatalogado"
 
-#~ msgid "training.offer.purchase.line"
-#~ msgstr "formacion.curso.compra.linea"
-
 #~ msgid "Deposit Price"
 #~ msgstr "Precio reserva"
 
 #~ msgid "No"
 #~ msgstr "No"
-
-#~ msgid "training.participation.stakeholder"
-#~ msgstr "formacion.participacion.organizador"
 
 #~ msgid "Linguistic Skills"
 #~ msgstr "Habilidades lingüísticas"
@@ -1100,19 +863,11 @@ msgstr "Galería de imágenes del curso"
 #~ msgid "Session Offer"
 #~ msgstr "Edición curso"
 
-#, python-format
-#~ msgid "You can not suppress a seance with a invoiced subscription"
-#~ msgstr "No puede eliminar una convocatoria con una suscripción facturada"
-
 #~ msgid "History"
 #~ msgstr "Historial"
 
 #~ msgid "This note will be show on notification emails"
 #~ msgstr "Esta nota se mostrará en los emails de notificación."
-
-#, python-format
-#~ msgid "%d seance(s) updated"
-#~ msgstr "%d convocatoria(s) actualizada(s)"
 
 #~ msgid "Code"
 #~ msgstr "Código"
@@ -1131,12 +886,6 @@ msgstr "Galería de imágenes del curso"
 
 #~ msgid "Config Product"
 #~ msgstr "Configurar producto"
-
-#~ msgid "Notification (Kind)"
-#~ msgstr "Notificación (clase)"
-
-#~ msgid "Subscription Draft -> Confirmation (Session Not Confirmed)"
-#~ msgstr "Suscripción Borrador -> Confirmación (edición no confirmada)"
 
 #~ msgid "Session Open -> Confirmed"
 #~ msgstr "Edición Abierta -> Confirmada"
@@ -1163,9 +912,6 @@ msgstr "Galería de imágenes del curso"
 #~ msgstr ""
 #~ "Permite saber si un curso es independiente o es un bloque de asignaturas."
 
-#~ msgid "training.participation.stakeholder.request"
-#~ msgstr "formacion.participacion.organizador.peticion"
-
 #~ msgid "Allow Closed Session"
 #~ msgstr "Permitir ediciones cerradas"
 
@@ -1175,9 +921,6 @@ msgstr "Galería de imágenes del curso"
 #~ msgid "Date Approved"
 #~ msgstr "Fecha de aprobación"
 
-#~ msgid "Create Subscription"
-#~ msgstr "Crear suscripción"
-
 #~ msgid "Available Seats = Maximum Threshold - Total Confirmed Seats"
 #~ msgstr "Plazas disponibles = Plazas máximas - Total plazas confirmadas"
 
@@ -1186,9 +929,6 @@ msgstr "Galería de imágenes del curso"
 
 #~ msgid "Requested"
 #~ msgstr "Solicitado"
-
-#~ msgid "First Seance"
-#~ msgstr "Primera convocatoria"
 
 #~ msgid "Partner Filter"
 #~ msgstr "Filtra empresa"
@@ -1211,25 +951,11 @@ msgstr "Galería de imágenes del curso"
 #~ msgid "The name's offer"
 #~ msgstr "Nombre del curso"
 
-#~ msgid "Subscription Replacement"
-#~ msgstr "Reemplazo de suscripción"
-
-#, python-format
-#~ msgid ""
-#~ "No notification mode (HR and/or Participant) for this partner \"%s\", please "
-#~ "choose at least one"
-#~ msgstr ""
-#~ "No hay forma de notificación (RH y/o Participante) para esta empresa \"%s\". "
-#~ "Por favor, seleccione por lo menos una"
-
 #~ msgid "The Minimum of Participants in Seance"
 #~ msgstr "El mínimo de participantes en una convocatoria."
 
 #~ msgid "Reply-to"
 #~ msgstr "Responder-a"
-
-#~ msgid "Validate Courses"
-#~ msgstr "Validar asignaturas"
 
 #~ msgid "Has Support"
 #~ msgstr "Tiene soporte"
@@ -1251,15 +977,8 @@ msgstr "Galería de imágenes del curso"
 #~ msgid "Reports"
 #~ msgstr "Informes"
 
-#, python-format
-#~ msgid "You have selected the same seance"
-#~ msgstr "Ha seleccionado la misma convocatoria"
-
 #~ msgid "Threshold"
 #~ msgstr "Límite"
-
-#~ msgid "Course Information"
-#~ msgstr "Información de la asignatura"
 
 #~ msgid "Session Description"
 #~ msgstr "Descripción de la edición"
@@ -1276,17 +995,8 @@ msgstr "Galería de imágenes del curso"
 #~ "remuneración de todos los contactos. El formato de archivo es "
 #~ "Request_NOMBREPETICIÓN_Invoice_IDFACTURA.pdf"
 
-#~ msgid "All Subscriptions"
-#~ msgstr "Todas las suscripciones"
-
-#~ msgid "Subscriptions"
-#~ msgstr "Suscripciones"
-
 #~ msgid "Total Duration"
 #~ msgstr "Duración total"
-
-#~ msgid "Closed Subscriptions"
-#~ msgstr "Suscripciones cerradas"
 
 #~ msgid "The maximum threshold is the maximum for this type of course"
 #~ msgstr "Las plazas máximas para este tipo de asignatura."
@@ -1294,15 +1004,8 @@ msgstr "Galería de imágenes del curso"
 #~ msgid "Confirmed Lecturer"
 #~ msgstr "Profesor confirmado"
 
-#~ msgid "training.offer.kind"
-#~ msgstr "formacion.curso.nivel"
-
 #~ msgid "An offer can contain some courses"
 #~ msgstr "Un curso puede contener varias asignaturas."
-
-#, python-format
-#~ msgid "This Subscription line was invoiced or price is 0"
-#~ msgstr "Esta línea de subscripción está facturada o el precio es 0."
 
 #~ msgid "Current Catalogs"
 #~ msgstr "Catálogo actual"
@@ -1325,23 +1028,11 @@ msgstr "Galería de imágenes del curso"
 #~ msgid "Search Subscription"
 #~ msgstr "Buscar subscripciones"
 
-#~ msgid "First Seance Date"
-#~ msgstr "Fecha primera convocatoria"
-
-#~ msgid "training.seance.purchase_line"
-#~ msgstr "formacion.convocatoria.linea_compra"
-
 #~ msgid "Internal Contact"
 #~ msgstr "Contacto interno"
 
-#~ msgid "Themes of courses"
-#~ msgstr "Temas de asignaturas"
-
 #~ msgid "Document"
 #~ msgstr "Documento"
-
-#~ msgid "Support of Courses"
-#~ msgstr "Soporte de asignaturas"
 
 #~ msgid "Subscriptions to Invoice"
 #~ msgstr "Suscripciones a facturar"
@@ -1358,12 +1049,6 @@ msgstr "Galería de imágenes del curso"
 
 #~ msgid "Holiday Period"
 #~ msgstr "Periodo vacaciones"
-
-#~ msgid "HR Email"
-#~ msgstr "Email RH"
-
-#~ msgid "Subscription Contact"
-#~ msgstr "Suscripción contacto"
 
 #~ msgid "Update"
 #~ msgstr "Actualizar"
@@ -1415,9 +1100,6 @@ msgstr "Galería de imágenes del curso"
 #~ msgid "If not specify, use the email defined in the SMTP Client"
 #~ msgstr "Si no se indica, usa el email definido en el cliente SMTP."
 
-#~ msgid "Closed Subscription"
-#~ msgstr "Suscripciones cerradas"
-
 #~ msgid "Complementary Offers (Internet)"
 #~ msgstr "Curso complementario (internet)"
 
@@ -1457,9 +1139,6 @@ msgstr "Galería de imágenes del curso"
 #~ msgid "Reset to Draft"
 #~ msgstr "Inicializar a borrador"
 
-#~ msgid "Validated by"
-#~ msgstr "Validado por"
-
 #~ msgid ""
 #~ "The person to contact for things related to invoicing on partner side."
 #~ msgstr ""
@@ -1493,17 +1172,11 @@ msgstr "Galería de imágenes del curso"
 #~ msgid "Priority"
 #~ msgstr "Prioridad"
 
-#~ msgid "Subscription Draft -> Confirmation (Session Confirmed)"
-#~ msgstr "Suscripción Borrador -> Confirmación (edición confirmada)"
-
 #~ msgid "The status of the session"
 #~ msgstr "Estado de la edición."
 
 #~ msgid "Payment Mode"
 #~ msgstr "Modo de pago"
-
-#~ msgid "My Subscriptions"
-#~ msgstr "Mis suscripciones"
 
 #~ msgid "Supplier Info"
 #~ msgstr "Información de proveedor"
@@ -1516,12 +1189,6 @@ msgstr "Galería de imágenes del curso"
 
 #~ msgid "The group of participants"
 #~ msgstr "El grupo de participantes."
-
-#~ msgid "Supports of Course"
-#~ msgstr "Soportes de la asignatura"
-
-#~ msgid "Planned Date"
-#~ msgstr "Fecha planificada"
 
 #~ msgid "Log Details"
 #~ msgstr "Detalles historial"
@@ -1543,18 +1210,8 @@ msgstr "Galería de imágenes del curso"
 #~ msgstr ""
 #~ "Existe por lo menos una edición en estado \"Borrador\" o \"Confirmada\""
 
-#~ msgid "Subscription"
-#~ msgstr "Suscripción"
-
 #~ msgid "Lecturer"
 #~ msgstr "Profesor"
-
-#~ msgid "Kind"
-#~ msgstr "Nivel"
-
-#, python-format
-#~ msgid "Please, do not forget to have the seances in your session"
-#~ msgstr "No olvide de tener convocatorias en su edición"
 
 #~ msgid "Target"
 #~ msgstr "Destinatario"
@@ -1588,12 +1245,6 @@ msgstr "Galería de imágenes del curso"
 #~ "\\n                \" y cantidad.\n"
 #~ "Debería cambiar el producto,\" \\n                \" la cantidad o la tarifa."
 
-#~ msgid "training.contact.course"
-#~ msgstr "formacion.contacto.asignatura"
-
-#~ msgid "Generate Reports"
-#~ msgstr "Generar informe"
-
 #, python-format
 #~ msgid ""
 #~ "You have to select a pricelist in the sale form !\n"
@@ -1607,9 +1258,6 @@ msgstr "Galería de imágenes del curso"
 
 #~ msgid "Result"
 #~ msgstr "Resultado"
-
-#~ msgid "Training Subscription Cancellation Wizard"
-#~ msgstr "Asistente de cancelación de suscripción"
 
 #~ msgid "The price of the support of the courses"
 #~ msgstr "El precio del soporte a las asignaturas."
@@ -1628,12 +1276,6 @@ msgstr "Galería de imágenes del curso"
 
 #~ msgid "Search Session"
 #~ msgstr "Buscar ediciones"
-
-#~ msgid "Seance Destination"
-#~ msgstr "Destino convocatoria"
-
-#~ msgid "On All Seances"
-#~ msgstr "En todas convocatorias"
 
 #~ msgid "Create Subscriptions"
 #~ msgstr "Crear suscripciones"
@@ -1662,18 +1304,8 @@ msgstr "Galería de imágenes del curso"
 #~ msgid "The lecturers who give the course"
 #~ msgstr "Los profesores que imparten la asignatura."
 
-#~ msgid "Course Kind"
-#~ msgstr "Nivel asignatura"
-
-#~ msgid "training.offer.purchase.line.log"
-#~ msgstr "formacion.curso.compra.linea.historial"
-
 #~ msgid "Paid"
 #~ msgstr "Pagado"
-
-#, python-format
-#~ msgid "Only draft subscription lines could be deleted !"
-#~ msgstr "¡Sólo líneas de subscripción en borrador pueden ser eliminadas!"
 
 #~ msgid "Exam Result"
 #~ msgstr "Resultado examen"
@@ -1687,29 +1319,14 @@ msgstr "Galería de imágenes del curso"
 #~ msgid "Active"
 #~ msgstr "Activo"
 
-#, python-format
-#~ msgid "Subscription line %s doesn't have any corresponding invoice line"
-#~ msgstr ""
-#~ "La línea de suscripción %s no tiene ninguna línea de factura relacionada"
-
 #~ msgid "Refused Requests"
 #~ msgstr "Solicitudes rechazadas"
-
-#~ msgid ""
-#~ "The person to contact if the the partner want to receive a notification for "
-#~ "a subscription"
-#~ msgstr ""
-#~ "La persona con la que contactar si la empresa quiere recibir una "
-#~ "notificación para una suscripción."
 
 #~ msgid "Do you want to validate the selected courses ?"
 #~ msgstr "¿Desea validar las asignaturas seleccionadas?"
 
 #~ msgid "Definition"
 #~ msgstr "Definición"
-
-#~ msgid "Course Type Description"
-#~ msgstr "Descripción tipo de asignatura"
 
 #~ msgid "Allows to order the offers by its importance"
 #~ msgstr "Permite ordenar los cursos por su importancia."
@@ -1720,44 +1337,24 @@ msgstr "Galería de imágenes del curso"
 #~ msgid "Correction Request - Request"
 #~ msgstr "Solicitud de corrección - Solicitud"
 
-#~ msgid "Courses"
-#~ msgstr "Asignaturas"
-
 #~ msgid "Email Description"
 #~ msgstr "Descripción email"
-
-#~ msgid "Seance Description"
-#~ msgstr "Descripción convocatoria"
 
 #, python-format
 #~ msgid "Cancellation"
 #~ msgstr "Cancelación"
 
-#~ msgid "_Create Seances"
-#~ msgstr "_Crear convocatorias"
-
 #~ msgid "Attachments"
 #~ msgstr "Adjuntos"
 
-#~ msgid "Search Course"
-#~ msgstr "Buscar asignaturas"
-
 #~ msgid "_Validate"
 #~ msgstr "_Validar"
-
-#, python-format
-#~ msgid "There is a seance with a start date inferior to %(days)s day(s)"
-#~ msgstr ""
-#~ "Existe una convocatoria con una fecha de inicio inferior a %(days)s día(s)"
 
 #~ msgid "Select the Participant"
 #~ msgstr "Selección de participantes"
 
 #~ msgid "Participation Description"
 #~ msgstr "Descripción participación"
-
-#~ msgid "Ordered Quantity"
-#~ msgstr "Cantidades pedidas"
 
 #~ msgid "General"
 #~ msgstr "General"
@@ -1776,10 +1373,6 @@ msgstr "Galería de imágenes del curso"
 
 #~ msgid "Invoice"
 #~ msgstr "Factura"
-
-#, python-format
-#~ msgid "Please, Could you check the subscription of your contact(s)"
-#~ msgstr "Podría comprobar las suscripciones de su(s) contacto(s)"
 
 #~ msgid ""
 #~ "The quantity of supports, catering, ... relative to the number of "
@@ -1812,17 +1405,11 @@ msgstr "Galería de imágenes del curso"
 #~ msgid "To Do"
 #~ msgstr "Por hacer"
 
-#~ msgid "Resend Request Email"
-#~ msgstr "Reenviar petición por email"
-
 #~ msgid "Allows to know if a participant was present or not"
 #~ msgstr "Permite saber si un participante estaba presente o no."
 
 #~ msgid "Refuse"
 #~ msgstr "Rechazar"
-
-#~ msgid "The following objects are availables: ${ctx}, ${time}, ${user}"
-#~ msgstr "The following objects are availables: ${ctx}, ${time}, ${user}"
 
 #, python-format
 #~ msgid "You can not select this date because it is a public holiday"
@@ -1841,39 +1428,8 @@ msgstr "Galería de imágenes del curso"
 #~ msgid "Class %d"
 #~ msgstr "Clase %d"
 
-#~ msgid ""
-#~ "\n"
-#~ "From the conception of a project to the elaboration of your catalog, our "
-#~ "training management allows you to create easily courses and to organize the "
-#~ "sessions.\n"
-#~ "With the analytic account support, you can know the costs of your "
-#~ "trainings.\n"
-#~ "\n"
-#~ "* Manage the subscriptions\n"
-#~ "* Manage the courses\n"
-#~ "* Manage the offers (for a planning)\n"
-#~ "* Manage the sessions\n"
-#~ "* Manage the support of course\n"
-#~ msgstr ""
-#~ "\n"
-#~ "Desde la concepción de un proyecto a la elaboración de su catálogo, la "
-#~ "gestión de formación permite crear asignaturas y cursos con facilidad y "
-#~ "organizar las ediciones y convocatorias.\n"
-#~ "Con el soporte de la contabilidad analítica, podrá saber los costes de sus "
-#~ "formaciones.\n"
-#~ "\n"
-#~ "* Gestión de suscripciones\n"
-#~ "* Gestión de asignaturas\n"
-#~ "* Gestión de cursos (para una planificación)\n"
-#~ "* Gestión de ediciones\n"
-#~ "* Gestión de soporte del curso\n"
-
 #~ msgid "Education Level"
 #~ msgstr "Nivel educativo"
-
-#, python-format
-#~ msgid "Please, The state of all courses must be 'validated'"
-#~ msgstr "El estado de todas las asignaturas debe ser 'Validada'"
 
 #~ msgid "Product"
 #~ msgstr "Producto"
@@ -1889,9 +1445,6 @@ msgstr "Galería de imágenes del curso"
 
 #~ msgid "_Cancel"
 #~ msgstr "_Cancelar"
-
-#~ msgid "training.offer.purchase.line.update.wizard"
-#~ msgstr "formacion.curso.compra.linea.actualizacion.asistente"
 
 #~ msgid "Accountants"
 #~ msgstr "Contables"
@@ -1918,17 +1471,11 @@ msgstr "Galería de imágenes del curso"
 #~ msgid "The course attached to this purchase line"
 #~ msgstr "La asignatura relacionada a esta línea de compra."
 
-#~ msgid "Calendar of Seances"
-#~ msgstr "Calendario de convocatorias"
-
 #~ msgid "No Penalties"
 #~ msgstr "No penalizaciones"
 
 #~ msgid "Cost Prices"
 #~ msgstr "Precios coste"
-
-#~ msgid "Ask Review"
-#~ msgstr "Preguntar revisión"
 
 #~ msgid "Session(s) Type"
 #~ msgstr "Tipos de edición"
@@ -1944,9 +1491,6 @@ msgstr "Galería de imágenes del curso"
 
 #~ msgid "Purchase Orders"
 #~ msgstr "Pedidos de compra"
-
-#~ msgid "Subscription Line"
-#~ msgstr "Línea de suscripción"
 
 #~ msgid "Complementary Offers"
 #~ msgstr "Cursos complementarios"
@@ -1978,9 +1522,6 @@ msgstr "Galería de imágenes del curso"
 #~ msgid "Price"
 #~ msgstr "Precio"
 
-#~ msgid "Course Structure (By Sub Courses)"
-#~ msgstr "Estructura de asignaturas (por sub-asignaturas)"
-
 #~ msgid "Errors"
 #~ msgstr "Errores"
 
@@ -1990,23 +1531,11 @@ msgstr "Galería de imágenes del curso"
 #~ msgid "-"
 #~ msgstr "-"
 
-#~ msgid "Subscription Lines To Confirm"
-#~ msgstr "Líneas de suscripción a confirmar"
-
 #~ msgid "Filename"
 #~ msgstr "Archivo"
 
-#~ msgid "training.seance.generate.zip.wizard"
-#~ msgstr "formacion.convocatoria.genera.zip.asistente"
-
-#~ msgid "Mass Subscription"
-#~ msgstr "Suscripción en masa"
-
 #~ msgid "Allows to know if the participant wants to receive a notification"
 #~ msgstr "Permite saber si el participante quiere recibir una notificación."
-
-#~ msgid "Draft Subscriptions"
-#~ msgstr "Suscripciones borrador"
 
 #~ msgid "Group"
 #~ msgstr "Grupo"
@@ -2041,20 +1570,11 @@ msgstr "Galería de imágenes del curso"
 #~ msgid "Contact Function Configuration"
 #~ msgstr "Configuración de función del contacto"
 
-#~ msgid "Parent Course"
-#~ msgstr "Asignatura padre"
-
-#~ msgid "Course Theme"
-#~ msgstr "Tema de la asignatura"
-
 #~ msgid "Requests to validate"
 #~ msgstr "Solicitud para validar"
 
 #~ msgid "Email From"
 #~ msgstr "Email de"
-
-#~ msgid "training.subscription"
-#~ msgstr "formacion.suscripcion"
 
 #~ msgid "Allows to the user to write the description of the course type"
 #~ msgstr "Permite al usuario escribir la descripción del tipo de asignatura."
@@ -2065,12 +1585,6 @@ msgstr "Galería de imágenes del curso"
 #~ msgid "Seances Procurements For The Next 20 Days"
 #~ msgstr "Abastecimientos para convocatorias de los próximos 20 días"
 
-#~ msgid "Purchase Order"
-#~ msgstr "Orden de compra"
-
-#~ msgid "Relative to the course"
-#~ msgstr "Relativo a la asignatura"
-
 #~ msgid "Components"
 #~ msgstr "Componentes"
 
@@ -2080,41 +1594,15 @@ msgstr "Galería de imágenes del curso"
 #~ msgid "Requests"
 #~ msgstr "Solicitudes"
 
-#~ msgid "Member"
-#~ msgstr "Member"
-
 #~ msgid "Update Questionnaire"
 #~ msgstr "Actualizar cuestionario"
-
-#~ msgid "Subscription Confirmed -> Cancelled"
-#~ msgstr "Suscripción Confirmada -> Cancelada"
-
-#~ msgid "Confirm Subscription Lines"
-#~ msgstr "Confirmar líneas de suscripción"
-
-#~ msgid "Sent By Mail"
-#~ msgstr "Enviado por mail"
 
 #~ msgid "Delivery format of the planned session"
 #~ msgstr "Formato de realización de la edición planificada."
 
 #, python-format
-#~ msgid "Please, You have selected a course with a different language"
-#~ msgstr "Ha seleccionado una asignatura con un idioma distinto"
-
-#, python-format
 #~ msgid "Warning"
 #~ msgstr "Aviso"
-
-#~ msgid ""
-#~ "Are you sure you want to update procurements all opened seance in all future "
-#~ "session?"
-#~ msgstr ""
-#~ "¿Está seguro que desea actualizar todas los abastecimientos de la "
-#~ "convocatoria abierta en todas las ediciones futuras?"
-
-#~ msgid "Close Subscriptions"
-#~ msgstr "Cerrar suscripción"
 
 #~ msgid "Session"
 #~ msgstr "Edición"
@@ -2134,14 +1622,8 @@ msgstr "Galería de imágenes del curso"
 #~ msgid "Error ! You can not create recursive Menu."
 #~ msgstr "Error! No puede crear un menú recursivo."
 
-#~ msgid "All Subscription Lines"
-#~ msgstr "Todas las líneas de suscripción"
-
 #~ msgid "Other Data"
 #~ msgstr "Otros datos"
-
-#~ msgid "Included Offers"
-#~ msgstr "También incluido en los cursos"
 
 #~ msgid "Default Product"
 #~ msgstr "Producto por defecto"
@@ -2161,43 +1643,20 @@ msgstr "Galería de imágenes del curso"
 #~ msgid "Available seats in Seance"
 #~ msgstr "Plazas disponibles en convocatoria."
 
-#~ msgid "Minimum Threshold Reached"
-#~ msgstr "Plazas mínimas obtenidas"
-
 #~ msgid "Email"
 #~ msgstr "Email"
-
-#~ msgid "State of Seance"
-#~ msgstr "Estado convocatoria"
 
 #~ msgid "Manual Description"
 #~ msgstr "Descripción manual"
 
-#~ msgid "The Course's Type"
-#~ msgstr "El tipo de asignatura"
-
 #~ msgid "/"
 #~ msgstr "/"
-
-#~ msgid "Courses Pending Reviews (Update)"
-#~ msgstr "Asignaturas pendientes de revisión (actualizar)"
 
 #~ msgid "Catalog"
 #~ msgstr "Catálogo"
 
-#, python-format
-#~ msgid ""
-#~ "You can not approve this purchase line it is not the only one purchase order "
-#~ "lines in the purchase order"
-#~ msgstr ""
-#~ "No puede aprobar esta línea de compra si no es la única línea de pedido en "
-#~ "la orden de compra"
-
 #~ msgid "Allows to select a published catalog"
 #~ msgstr "Permite seleccionar un catálogo publicado."
-
-#~ msgid "Course Type"
-#~ msgstr "Tipo de asignatura"
 
 #~ msgid "Configuration"
 #~ msgstr "Configuración"
@@ -2220,9 +1679,6 @@ msgstr "Galería de imágenes del curso"
 #~ msgid "Course Structure (By Product Line)"
 #~ msgstr "Estructura de asignaturas (por línea de producto)"
 
-#~ msgid "training.course"
-#~ msgstr "formacion.asignatura"
-
 #~ msgid "Included Offers (Internet)"
 #~ msgstr "También incluido en los cursos (internet)"
 
@@ -2242,9 +1698,6 @@ msgstr "Galería de imágenes del curso"
 
 #~ msgid "Create Session"
 #~ msgstr "Crear edición"
-
-#~ msgid "Participant and HR Emails: ${subline}"
-#~ msgstr "Email participante: ${subline}"
 
 #~ msgid "Participation Information"
 #~ msgstr "Información de participación"
@@ -2277,27 +1730,11 @@ msgstr "Galería de imágenes del curso"
 #~ msgid "New Session"
 #~ msgstr "Nueva edición"
 
-#, python-format
-#~ msgid "Lecturers never recieve emails about subscriptions"
-#~ msgstr "Profesores no recibirán nunca emails acerca de las suscripciones"
-
-#~ msgid "Sub Courses"
-#~ msgstr "Sub asignaturas"
-
 #~ msgid "Opened"
 #~ msgstr "Abierto"
 
 #~ msgid "Contacts"
 #~ msgstr "Contactos"
-
-#, python-format
-#~ msgid ""
-#~ "%(stakeholder)s is not available for seance \"%(this_seance)s\" because "
-#~ "(s)he is already requested or confirmed for the seance \"%(other_seance)s\""
-#~ msgstr ""
-#~ "% (stakeholder)s no está disponible para la convocatoria \"%(this_seance)s\" "
-#~ "porque ya está solicitado o confirmado para la convocatoria "
-#~ "\"%(other_seance)s\""
 
 #~ msgid "Requeriments"
 #~ msgstr "Requerimientos"
@@ -2308,9 +1745,6 @@ msgstr "Galería de imágenes del curso"
 #~ msgid "Training Management"
 #~ msgstr "Formación"
 
-#~ msgid "Purchase Order Line"
-#~ msgstr "Línea pedido compra"
-
 #~ msgid "Presence Form Received"
 #~ msgstr "Recibido formulario de asistencia"
 
@@ -2319,9 +1753,6 @@ msgstr "Galería de imágenes del curso"
 
 #~ msgid "Duplicate"
 #~ msgstr "Duplicar"
-
-#~ msgid "Available objects: ${ctx}, ${time}, ${user}"
-#~ msgstr "Available objects: ${ctx}, ${time}, ${user}"
 
 #~ msgid "Draft"
 #~ msgstr "Borrador"
@@ -2341,15 +1772,8 @@ msgstr "Galería de imágenes del curso"
 #~ msgid "Session Date"
 #~ msgstr "Fecha edición"
 
-#, python-format
-#~ msgid "There is no Invoice for the Purchase Order for this request"
-#~ msgstr "No existe factura para la orden de compra para esta solicitud"
-
 #~ msgid "The kind of course"
 #~ msgstr "El nivel de la asignatura."
-
-#~ msgid "training.course.kind"
-#~ msgstr "formacion.asignatura.nivel"
 
 #~ msgid "Requests awaiting response"
 #~ msgstr "Solicitudes esperando respuesta"
@@ -2372,9 +1796,6 @@ msgstr "Galería de imágenes del curso"
 #~ msgid "Offer Content (Internet Index)"
 #~ msgstr "Contenido curso (índice internet)"
 
-#~ msgid "Seance"
-#~ msgstr "Convocatoria"
-
 #~ msgid "User"
 #~ msgstr "Usuario"
 
@@ -2389,11 +1810,6 @@ msgstr "Galería de imágenes del curso"
 #~ msgstr ""
 #~ "¿Podría comprobar las funciones ya que el sistema no encuentra ninguna "
 #~ "función con el estado 'Actual'?"
-
-#, python-format
-#~ msgid "Select Analytic Journal from Financial Journals Configuration"
-#~ msgstr ""
-#~ "Selecciona un diario analítico a la configuración de diarios financieros"
 
 #~ msgid "Cost Price"
 #~ msgstr "Precio coste"
@@ -2413,9 +1829,6 @@ msgstr "Galería de imágenes del curso"
 #~ msgid "Contract"
 #~ msgstr "Contrato"
 
-#~ msgid "The name of the technical skill"
-#~ msgstr "Nombre de la habilidad técnica."
-
 #, python-format
 #~ msgid "Error"
 #~ msgstr "Error"
@@ -2430,18 +1843,8 @@ msgstr "Galería de imágenes del curso"
 #~ msgid "BirthPlace"
 #~ msgstr "Lugar nacimiento"
 
-#~ msgid "training.email.error"
-#~ msgstr "formacion.email.error"
-
-#~ msgid "training.course.pending.reason"
-#~ msgstr "formacion.asignatura.pendiente.motivo"
-
 #~ msgid "The year when the catalog has been published"
 #~ msgstr "El año en que el catálogo ha sido publicado."
-
-#, python-format
-#~ msgid "Please, you have at least a draft seance"
-#~ msgstr "Existe por lo menos una convocatoria en estado borrador"
 
 #~ msgid "Voucher"
 #~ msgstr "Comprobante"
@@ -2451,12 +1854,6 @@ msgstr "Galería de imágenes del curso"
 
 #~ msgid "Close"
 #~ msgstr "Cerrar"
-
-#~ msgid "Offer's Kind"
-#~ msgstr "Nivel del curso"
-
-#~ msgid "Courses in Pending"
-#~ msgstr "Asignaturas pendientes"
 
 #~ msgid "Stakeholder functions"
 #~ msgstr "Funciones de los organizadores"
@@ -2474,9 +1871,6 @@ msgstr "Galería de imágenes del curso"
 #~ msgid "Preliminary Offers (Internet)"
 #~ msgstr "Cursos preliminares (internet)"
 
-#~ msgid "Planned Courses"
-#~ msgstr "Asignaturas planificadas"
-
 #~ msgid "Layout"
 #~ msgstr "Plantilla"
 
@@ -2484,40 +1878,17 @@ msgstr "Galería de imágenes del curso"
 #~ msgstr "Actualiza abastecimientos de convocatoria"
 
 #, python-format
-#~ msgid ""
-#~ "You can not select a subscription with the following state: Done or Cancelled"
-#~ msgstr ""
-#~ "No puede seleccionar una suscripción con el estado: Realizado o Cancelado"
-
-#~ msgid "wizard.training.subscription.line.change.participant"
-#~ msgstr "asistente.formacion.suscripcion.linea.cambio.participante"
-
-#, python-format
 #~ msgid "This trigger can be only used with the Portal"
 #~ msgstr "Este disparador sólo puede usarse con el portal"
 
-#~ msgid "Master Course's Type"
-#~ msgstr "Tipo asignatura principal"
-
 #~ msgid "The language of the course"
 #~ msgstr "El idioma de la asignatura."
-
-#, python-format
-#~ msgid ""
-#~ "Please, Check the date of your seances because there is one seance with a "
-#~ "date inferior to the session's date"
-#~ msgstr ""
-#~ "Compruebe la fecha de sus convocatorias ya que existe una convocatoria con "
-#~ "una fecha inferior a la fecha de la edición"
 
 #~ msgid "Product Line Description"
 #~ msgstr "Descripción de la línea de producto"
 
 #~ msgid "Non-Working Days"
 #~ msgstr "Días festivos"
-
-#~ msgid "training.email.stylegroup"
-#~ msgstr "formacion.email.grupoestilo"
 
 #~ msgid "The training center has received the presence list from the lecturer"
 #~ msgstr ""
@@ -2553,38 +1924,20 @@ msgstr "Galería de imágenes del curso"
 #~ msgid "Preliminary Offers"
 #~ msgstr "Cursos preliminares"
 
-#~ msgid "Followup By"
-#~ msgstr "Seguido por"
-
 #~ msgid "Contact First Name"
 #~ msgstr "Nombre contacto"
 
 #~ msgid "Internal Notes"
 #~ msgstr "Notas internas"
 
-#~ msgid "On First Seance"
-#~ msgstr "En primera convocatoria"
-
 #~ msgid "Participation Reassignation"
 #~ msgstr "Reasignación de participantes"
-
-#~ msgid "training.subscription.mass.line"
-#~ msgstr "formacion.suscripcion.masa.linea"
-
-#~ msgid "Update Course"
-#~ msgstr "Actualizar asignatura"
 
 #~ msgid "Indicate is this Offer is a Certification Offer"
 #~ msgstr "Indica si este curso es un curso de certificación."
 
-#~ msgid "Subscription Description"
-#~ msgstr "Descripción de suscripción"
-
 #~ msgid "Duplicate Session"
 #~ msgstr "Duplicar edición"
-
-#~ msgid "Master Course's Language"
-#~ msgstr "Idioma asignatura principal"
 
 #~ msgid "Product Template"
 #~ msgstr "Plantilla del producto"
@@ -2594,13 +1947,6 @@ msgstr "Galería de imágenes del curso"
 
 #~ msgid "Do you want to confirm all subscription lines ?"
 #~ msgstr "¿Quiere confirmar todas las líneas de suscripción?"
-
-#~ msgid "Seance Next Date"
-#~ msgstr "Fecha próxima convocatoria"
-
-#, python-format
-#~ msgid "You have to open all seances in this session"
-#~ msgstr "Tiene que abrir todas las convocatorias para esta edición"
 
 #~ msgid "Can you select a date for the session ?"
 #~ msgstr "¿Puede seleccionar una fecha para la edición?"
@@ -2617,30 +1963,14 @@ msgstr "Galería de imágenes del curso"
 #~ msgid "Payment Term"
 #~ msgstr "Plazo de pago"
 
-#~ msgid "Seance Procurements"
-#~ msgstr "Abastecimientos convocatoria"
-
 #~ msgid "Accept"
 #~ msgstr "Aceptar"
 
 #~ msgid "Pendings"
 #~ msgstr "Pendientes"
 
-#~ msgid "subscription"
-#~ msgstr "Suscripción"
-
-#, python-format
-#~ msgid "You have selected a course with a different language"
-#~ msgstr "Ha seleccionado una asignatura con un idioma distinto"
-
 #~ msgid "Year"
 #~ msgstr "Año"
-
-#~ msgid "wizard.course.pending"
-#~ msgstr "wizard.course.pending"
-
-#~ msgid "Deposit price for this product."
-#~ msgstr "Precio de reserva de este producto."
 
 #~ msgid "Draft Sessions"
 #~ msgstr "Ediciones borrador"
@@ -2684,9 +2014,6 @@ msgstr "Galería de imágenes del curso"
 #~ msgid "Please, Can you check the duration ?"
 #~ msgstr "¿Puede verificar la duración?"
 
-#~ msgid "Can you check the year"
-#~ msgstr "Puede revisar el  año"
-
 #~ msgid ""
 #~ "Error: The default UOM and the purchase UOM must be in the same category."
 #~ msgstr ""
@@ -2705,8 +2032,807 @@ msgstr "Galería de imágenes del curso"
 #~ msgid "Where?"
 #~ msgstr "Dónde"
 
-#~ msgid "Levels"
-#~ msgstr "Tipos de asignaturas"
+#~ msgid "Has Shared Seances"
+#~ msgstr "Tiene sesiones compartidas"
+
+#~ msgid "The delivery format of the offer or session"
+#~ msgstr "Formato de realización del curso o edición."
+
+#~ msgid "Subscriptions To Confirm"
+#~ msgstr "Inscripciones a confirmar"
+
+#~ msgid "Purchase State"
+#~ msgstr "Estado de compra"
+
+#~ msgid "Subscription Second Line"
+#~ msgstr "Inscripciones segunda línea"
+
+#~ msgid "_Create Seances"
+#~ msgstr "_Crear sesiones"
+
+#~ msgid "training.seance"
+#~ msgstr "formación.sesión"
+
+#~ msgid ""
+#~ "Allow to not invoice this partner in case of subscription cancellation"
+#~ msgstr ""
+#~ "Permitir no facturar a este cliente en caso de cancelar la inscripción."
+
+#~ msgid "My Subscriptions"
+#~ msgstr "Mis inscripciones"
+
+#~ msgid "Course"
+#~ msgstr "Materia"
+
+#~ msgid "training.session"
+#~ msgstr "formación.edición"
 
 #~ msgid "Error! You can not create recursive analytic accounts."
-#~ msgstr "Error! No puede crear una cuenta analítica recursiva."
+#~ msgstr "¡Error! No puede crear cuentas analíticas recursivas."
+
+#~ msgid "Seance Date"
+#~ msgstr "Fecha de sesión"
+
+#~ msgid "Cancel (Penalities)"
+#~ msgstr "Cancelar (penalizaciones)"
+
+#~ msgid "training.config.contact.function"
+#~ msgstr "formación.config.contacto.función"
+
+#~ msgid "Salle"
+#~ msgstr "Sala"
+
+#, python-format
+#~ msgid ""
+#~ "The defined groups for this session does not have the same number of seances "
+#~ "!"
+#~ msgstr ""
+#~ "¡Los grupos definidos en esta edición no tienen el mismo número de sesiones!"
+
+#, python-format
+#~ msgid "Subscriptions"
+#~ msgstr "Inscripciones"
+
+#~ msgid ""
+#~ "The following objects are availables: ${ctx}, ${time}, ${user}, ${sign}, "
+#~ "${body}"
+#~ msgstr ""
+#~ "Están disponibles los siguientes objetos: ${ctx}, ${time}, ${user}, ${sign}, "
+#~ "${body}"
+
+#, python-format
+#~ msgid "Please, Could you check the subscription of your contact(s)"
+#~ msgstr "¿Puede comprobar la inscripción de su(s) contacto(s)?"
+
+#~ msgid "Mass Subscription Second Line"
+#~ msgstr "Inscripción en masa segunda línea"
+
+#, python-format
+#~ msgid "The type of the course (%s) of this seance has no product defined"
+#~ msgstr ""
+#~ "El tipo de materia (%s) de esta sesión no tiene ningún producto definido"
+
+#~ msgid "res.partner.team"
+#~ msgstr "res.empresa.equipo"
+
+#~ msgid "On First Seance"
+#~ msgstr "En primera sesión"
+
+#~ msgid "training.participation.reassign.wizard"
+#~ msgstr "formación.participación.reasigna.asistente"
+
+#~ msgid ""
+#~ "<html>\n"
+#~ "    <head>\n"
+#~ "        <title>Training Center</title>\n"
+#~ "        <meta content='text/html' http-equiv='Content-Type' />\n"
+#~ "        <style type='text/css'>\n"
+#~ "            body {\n"
+#~ "                margin-left: auto;\n"
+#~ "                margin-right: auto;\n"
+#~ "                background: white;\n"
+#~ "                font-size: 10pt;\n"
+#~ "                font-family:  Arial, \"Trebuchet MS\", Verdana,  sans-"
+#~ "serif;\n"
+#~ "            }\n"
+#~ "            #page {\n"
+#~ "                background: white;\n"
+#~ "                padding: 0.5em;\n"
+#~ "            }\n"
+#~ "            #subject {\n"
+#~ "                text-align: center;\n"
+#~ "                text-decoration:  underline;\n"
+#~ "            }\n"
+#~ "            #footer #sign {\n"
+#~ "                text-align: left;\n"
+#~ "            }\n"
+#~ "            table {\n"
+#~ "                width: 98%;\n"
+#~ "                margin-left: auto;\n"
+#~ "                margin-right: auto;\n"
+#~ "                cellpadding: 0;\n"
+#~ "                cellspacing: 0;\n"
+#~ "            }\n"
+#~ "            .even {\n"
+#~ "                background: white;\n"
+#~ "            }\n"
+#~ "            .underline {\n"
+#~ "               text-decoration: underline;\n"
+#~ "            }\n"
+#~ "        </style>\n"
+#~ "    </head>\n"
+#~ "    <body>\n"
+#~ "        <div id='page'>\n"
+#~ "            <div id='header'>\n"
+#~ "                <div id='logo'><img src=\"cid:company_logo\" /></div>\n"
+#~ "            </div>\n"
+#~ "            <div id='body'>\n"
+#~ "                ${body}\n"
+#~ "            </div>\n"
+#~ "            <div id='footer'>\n"
+#~ "                <div id='sign'>\n"
+#~ "% if sign: \n"
+#~ "   ${sign} \n"
+#~ "% endif\n"
+#~ "                </div>\n"
+#~ "            </div>\n"
+#~ "        </div>\n"
+#~ "    </body>\n"
+#~ "</html>"
+#~ msgstr ""
+#~ "<html>\n"
+#~ "    <head>\n"
+#~ "        <title>Centro de formación</title>\n"
+#~ "        <meta content='text/html' http-equiv='Content-Type' />\n"
+#~ "        <style type='text/css'>\n"
+#~ "            body {\n"
+#~ "                margin-left: auto;\n"
+#~ "                margin-right: auto;\n"
+#~ "                background: white;\n"
+#~ "                font-size: 10pt;\n"
+#~ "                font-family:  Arial, \"Trebuchet MS\", Verdana,  sans-"
+#~ "serif;\n"
+#~ "            }\n"
+#~ "            #page {\n"
+#~ "                background: white;\n"
+#~ "                padding: 0.5em;\n"
+#~ "            }\n"
+#~ "            #subject {\n"
+#~ "                text-align: center;\n"
+#~ "                text-decoration:  underline;\n"
+#~ "            }\n"
+#~ "            #footer #sign {\n"
+#~ "                text-align: left;\n"
+#~ "            }\n"
+#~ "            table {\n"
+#~ "                width: 98%;\n"
+#~ "                margin-left: auto;\n"
+#~ "                margin-right: auto;\n"
+#~ "                cellpadding: 0;\n"
+#~ "                cellspacing: 0;\n"
+#~ "            }\n"
+#~ "            .even {\n"
+#~ "                background: white;\n"
+#~ "            }\n"
+#~ "            .underline {\n"
+#~ "               text-decoration: underline;\n"
+#~ "            }\n"
+#~ "        </style>\n"
+#~ "    </head>\n"
+#~ "    <body>\n"
+#~ "        <div id='page'>\n"
+#~ "            <div id='header'>\n"
+#~ "                <div id='logo'><img src=\"cid:company_logo\" /></div>\n"
+#~ "            </div>\n"
+#~ "            <div id='body'>\n"
+#~ "                ${body}\n"
+#~ "            </div>\n"
+#~ "            <div id='footer'>\n"
+#~ "                <div id='sign'>\n"
+#~ "% if sign: \n"
+#~ "   ${sign} \n"
+#~ "% endif\n"
+#~ "                </div>\n"
+#~ "            </div>\n"
+#~ "        </div>\n"
+#~ "    </body>\n"
+#~ "</html>"
+
+#~ msgid "training.offer"
+#~ msgstr "formación.curso"
+
+#~ msgid "training.config.penality"
+#~ msgstr "formación.config.penalización"
+
+#~ msgid "training.subscription.line.second"
+#~ msgstr "formación.inscripción.linea.segunda"
+
+#, python-format
+#~ msgid "There is no Purchase Order for a request"
+#~ msgstr "No existe un pedido de compra para una solicitud"
+
+#~ msgid "Validate Course(s)"
+#~ msgstr "Validar materia(s)"
+
+#~ msgid "Seance Information"
+#~ msgstr "Información de sesión"
+
+#~ msgid "By Subscription"
+#~ msgstr "Por inscripción"
+
+#~ msgid "The following objects are availables: ${ctx}, ${time}, ${user}"
+#~ msgstr "Están disponibles los siguientes objetos: ${ctx}, ${time}, ${user}"
+
+#~ msgid "Course Description"
+#~ msgstr "Descripción de la materia"
+
+#, python-format
+#~ msgid ""
+#~ "You can not cancel this purchase line it is not the only one purchase order "
+#~ "lines in the purchase order"
+#~ msgstr ""
+#~ "No puede cancelar esta línea de compra ya que no es la única línea en el "
+#~ "pedido de compra"
+
+#~ msgid "Reassign Participation to Seance"
+#~ msgstr "Reasignar participación a sesión"
+
+#~ msgid "training.course.offer.rel"
+#~ msgstr "formación.materia.curso.rel"
+
+#~ msgid "Seance ID"
+#~ msgstr "ID sesión"
+
+#~ msgid "training.holiday.year"
+#~ msgstr "formación.vacaciones.año"
+
+#~ msgid "training.config.invoice"
+#~ msgstr "formación.config.factura"
+
+#~ msgid "Mass Subscription Wizard"
+#~ msgstr "Asistente de inscripción en masa"
+
+#~ msgid "Make Subscription"
+#~ msgstr "Realizar inscripción"
+
+#~ msgid "training.holiday.year.wizard"
+#~ msgstr "formación.vacaciones.año.asistente"
+
+#, python-format
+#~ msgid "The type of the course (%s) of this seance hasn't a product"
+#~ msgstr "El tipo de materia (%s) de esta sesión no tiene un producto"
+
+#, python-format
+#~ msgid "Please, you can create an offer with a validated course"
+#~ msgstr "Debe crear un curso a partir de una materia validada"
+
+#~ msgid "Master Course"
+#~ msgstr "Materia principal"
+
+#~ msgid "Confirmed Subscriptions"
+#~ msgstr "Inscripciones confirmadas"
+
+#~ msgid "Subscription Contacts (HR)"
+#~ msgstr "Contactos inscripciones (RRHH)"
+
+#~ msgid "For 'Invoice': ${invoice}"
+#~ msgstr "Para 'Factura': ${invoice}"
+
+#~ msgid "Master Seance"
+#~ msgstr "Sesión principal"
+
+#~ msgid "training.config.product"
+#~ msgstr "formación.config.producto"
+
+#~ msgid "For Course"
+#~ msgstr "Para la materia"
+
+#~ msgid "training.offer.public.target"
+#~ msgstr "formación.curso.publico.objetivo"
+
+#~ msgid "training.session.duplicate.wizard"
+#~ msgstr "formación.edición.duplica.asistente"
+
+#~ msgid "Support of Course"
+#~ msgstr "Soporte a la materia"
+
+#~ msgid "On Last Seance"
+#~ msgstr "En última sesión"
+
+#~ msgid "My Courses"
+#~ msgstr "Mis materias"
+
+#~ msgid "Subscription Lines"
+#~ msgstr "Líneas de inscripción"
+
+#~ msgid "Stakeholder Emails: ${sh}"
+#~ msgstr "Correos organizador: ${sh}"
+
+#~ msgid "training.course.purchase_line"
+#~ msgstr "formación.materia.linea_compra"
+
+#~ msgid "training.course_category"
+#~ msgstr "formación.categoría_materia"
+
+#~ msgid "Course's State"
+#~ msgstr "Estado de la materia"
+
+#, python-format
+#~ msgid "You can not suppress a seance with a confirmed procurement"
+#~ msgstr "No puede eliminar una sesión con un abastecimiento confirmado"
+
+#~ msgid "Load Procurements From Courses"
+#~ msgstr "Cargar abastecimientos desde materias"
+
+#~ msgid "training.course.pending.wizard"
+#~ msgstr "formación.materia.pendiente.asistente"
+
+#~ msgid "Seances"
+#~ msgstr "Sesiones"
+
+#~ msgid "Validated at"
+#~ msgstr "Validada el"
+
+#~ msgid "Subscription Cancellation Wizard"
+#~ msgstr "Asistente de cancelación de inscripción"
+
+#~ msgid "New Subscription"
+#~ msgstr "Nueva inscripción"
+
+#~ msgid "training.course.pending"
+#~ msgstr "formación.materia.pendiente"
+
+#~ msgid "For 'Request For Lecturer (seance)': ${seance}"
+#~ msgstr "Para 'Solicitudes de profesor (sesión)': ${seance}"
+
+#~ msgid "The matricule of the contact"
+#~ msgstr "La matrícula del contacto."
+
+#, python-format
+#~ msgid "You can not suppress a seance with a invoiced subscription"
+#~ msgstr "No puede eliminar una sesión con una inscripción facturada"
+
+#, python-format
+#~ msgid "You have selected a session with a shared seance"
+#~ msgstr "Ha seleccionado una edición con una sesión compartida"
+
+#~ msgid "training.participation.stakeholder"
+#~ msgstr "formación.participación.organizador"
+
+#, python-format
+#~ msgid "%d seance(s) updated"
+#~ msgstr "%d sesión(s) actualizada(s)"
+
+#~ msgid ""
+#~ "The person to contact if the the partner want to receive a notification for "
+#~ "a subscription"
+#~ msgstr ""
+#~ "La persona con la que contactar si la empresa quiere recibir una "
+#~ "notificación para una inscripción."
+
+#~ msgid "Notification (Kind)"
+#~ msgstr "Notificación (modo)"
+
+#~ msgid "Subscription Draft -> Confirmation (Session Not Confirmed)"
+#~ msgstr "Inscripción Borrador -> Confirmación (edición no confirmada)"
+
+#~ msgid "training.participation.stakeholder.request"
+#~ msgstr "formación.participación.organizador.solicitud"
+
+#~ msgid "Create Subscription"
+#~ msgstr "Crear inscripción"
+
+#~ msgid "training.offer.purchase.line.update.wizard"
+#~ msgstr "formación.curso.compra.linea.actualización.asistente"
+
+#~ msgid "First Seance"
+#~ msgstr "Primera sesión"
+
+#~ msgid "training.subscription"
+#~ msgstr "formación.inscripción"
+
+#~ msgid "Subscription Replacement"
+#~ msgstr "Reemplazo de inscripción"
+
+#, python-format
+#~ msgid ""
+#~ "No notification mode (HR and/or Participant) for this partner \"%s\", please "
+#~ "choose at least one"
+#~ msgstr ""
+#~ "No hay forma de notificación (RRHH y/o Participante) para esta empresa "
+#~ "\"%s\". Seleccione una por lo menos."
+
+#~ msgid "Validate Courses"
+#~ msgstr "Validar materias"
+
+#~ msgid "training.offer.purchase.line"
+#~ msgstr "formación.curso.compra.linea"
+
+#, python-format
+#~ msgid "You have selected the same seance"
+#~ msgstr "Ha seleccionado la misma sesión"
+
+#~ msgid "Course Information"
+#~ msgstr "Información de la materia"
+
+#~ msgid "All Subscriptions"
+#~ msgstr "Todas las inscripciones"
+
+#~ msgid "Closed Subscriptions"
+#~ msgstr "Inscripciones cerradas"
+
+#~ msgid "training.offer.kind"
+#~ msgstr "formación.curso.modo"
+
+#~ msgid "First Seance Date"
+#~ msgstr "Fecha primera sesión"
+
+#~ msgid "training.seance.purchase_line"
+#~ msgstr "formación.sesión.linea_compra"
+
+#~ msgid "Themes of courses"
+#~ msgstr "Temas de materias"
+
+#~ msgid "Support of Courses"
+#~ msgstr "Soporte de materias"
+
+#~ msgid "HR Email"
+#~ msgstr "Email RRHH"
+
+#~ msgid "Subscription Contact"
+#~ msgstr "Inscripción contacto"
+
+#~ msgid "Closed Subscription"
+#~ msgstr "Inscripciones cerradas"
+
+#~ msgid "training.subscription.line"
+#~ msgstr "formación.inscripción.linea"
+
+#~ msgid "Validated by"
+#~ msgstr "Validada por"
+
+#~ msgid "Subscription"
+#~ msgstr "Inscripción"
+
+#~ msgid "Kind"
+#~ msgstr "Modo"
+
+#~ msgid "Subscription Draft -> Confirmation (Session Confirmed)"
+#~ msgstr "Inscripción Borrador -> Confirmación (edición confirmada)"
+
+#~ msgid "Supports of Course"
+#~ msgstr "Soportes de la materia"
+
+#, python-format
+#~ msgid "This Subscription line was invoiced or price is 0"
+#~ msgstr "Esta línea de inscripción ya está facturada o el precio es 0."
+
+#~ msgid "Planned Date"
+#~ msgstr "Fecha de planificación"
+
+#~ msgid "Can you check the year"
+#~ msgstr "¿Puede revisar el año?"
+
+#, python-format
+#~ msgid "Please, do not forget to have the seances in your session"
+#~ msgstr "No olvide de tener sesiones en su edición"
+
+#~ msgid "training.contact.course"
+#~ msgstr "formación.contacto.materia"
+
+#~ msgid "Generate Reports"
+#~ msgstr "Generar informes"
+
+#~ msgid "Training Subscription Cancellation Wizard"
+#~ msgstr "Asistente de cancelación de inscripción"
+
+#~ msgid "On All Seances"
+#~ msgstr "En todas sesiones"
+
+#~ msgid "Planned Courses"
+#~ msgstr "Materias planificadas"
+
+#~ msgid "Course Kind"
+#~ msgstr "Modo materia"
+
+#~ msgid "training.offer.purchase.line.log"
+#~ msgstr "formación.curso.compra.linea.historial"
+
+#, python-format
+#~ msgid "Only draft subscription lines could be deleted !"
+#~ msgstr "¡Sólo se pueden eliminar las líneas de inscripción en borrador!"
+
+#, python-format
+#~ msgid "Subscription line %s doesn't have any corresponding invoice line"
+#~ msgstr ""
+#~ "La línea de inscripción %s no tiene ninguna línea de factura relacionada"
+
+#~ msgid "Course Type Description"
+#~ msgstr "Descripción tipo de materia"
+
+#~ msgid "Courses"
+#~ msgstr "Materias"
+
+#~ msgid "Seance Description"
+#~ msgstr "Descripción sesión"
+
+#~ msgid "Search Course"
+#~ msgstr "Buscar materias"
+
+#, python-format
+#~ msgid "There is a seance with a start date inferior to %(days)s day(s)"
+#~ msgstr "Existe una sesión con una fecha de inicio inferior a %(days)s día(s)"
+
+#~ msgid "Ordered Quantity"
+#~ msgstr "Cantidad pedida"
+
+#~ msgid "Linked Courses"
+#~ msgstr "Materias asociadas"
+
+#~ msgid "Original Offer Kind"
+#~ msgstr "Modo de curso original"
+
+#~ msgid "Resend Request Email"
+#~ msgstr "Reenviar solicitud por email"
+
+#~ msgid "Year Generator"
+#~ msgstr "Generar año"
+
+#~ msgid ""
+#~ "\n"
+#~ "From the conception of a project to the elaboration of your catalog, our "
+#~ "training management allows you to create easily courses and to organize the "
+#~ "sessions.\n"
+#~ "With the analytic account support, you can know the costs of your "
+#~ "trainings.\n"
+#~ "\n"
+#~ "* Manage the subscriptions\n"
+#~ "* Manage the courses\n"
+#~ "* Manage the offers (for a planning)\n"
+#~ "* Manage the sessions\n"
+#~ "* Manage the support of course\n"
+#~ msgstr ""
+#~ "\n"
+#~ "Desde la concepción de un proyecto a la elaboración de su catálogo, la "
+#~ "gestión de formación le permite crear materias y cursos con facilidad y "
+#~ "organizar las ediciones y sesiones.\n"
+#~ "Con el soporte de la contabilidad analítica, podrá saber los costes de sus "
+#~ "formaciones.\n"
+#~ "\n"
+#~ "* Gestión de inscripciones\n"
+#~ "* Gestión de materias\n"
+#~ "* Gestión de cursos (para una planificación)\n"
+#~ "* Gestión de ediciones\n"
+#~ "* Gestión de soportes del curso\n"
+
+#, python-format
+#~ msgid "Please, The state of all courses must be 'validated'"
+#~ msgstr "El estado de todas las materias debe ser 'Validada'"
+
+#~ msgid "Calendar of Seances"
+#~ msgstr "Calendario de sesiones"
+
+#~ msgid "Ask Review"
+#~ msgstr "Solicitar revisión"
+
+#~ msgid "Subscription Line"
+#~ msgstr "Línea de inscripción"
+
+#~ msgid "Seance Destination"
+#~ msgstr "Destino sesión"
+
+#~ msgid "Course Structure (By Sub Courses)"
+#~ msgstr "Estructura de materias (por sub-materias)"
+
+#~ msgid "Subscription Lines To Confirm"
+#~ msgstr "Líneas de inscripción a confirmar"
+
+#~ msgid "training.seance.generate.zip.wizard"
+#~ msgstr "formación.sesión.genera.zip.asistente"
+
+#~ msgid "Mass Subscription"
+#~ msgstr "Inscripción en masa"
+
+#~ msgid "Draft Subscriptions"
+#~ msgstr "Inscripciones borrador"
+
+#~ msgid "Course Pending"
+#~ msgstr "Materia pendiente"
+
+#~ msgid "Parent Course"
+#~ msgstr "Materia padre"
+
+#~ msgid "Course Theme"
+#~ msgstr "Tema de la materia"
+
+#~ msgid "training.holiday.period"
+#~ msgstr "formación.vacaciones.periodo"
+
+#~ msgid "Purchase Order"
+#~ msgstr "Pedido de compra"
+
+#~ msgid "Relative to the course"
+#~ msgstr "Relativo a la materia"
+
+#~ msgid "Member"
+#~ msgstr "Miembro"
+
+#~ msgid "Subscription Confirmed -> Cancelled"
+#~ msgstr "Inscripción Confirmada -> Cancelada"
+
+#~ msgid "Confirm Subscription Lines"
+#~ msgstr "Confirmar líneas de inscripción"
+
+#~ msgid "Sent By Mail"
+#~ msgstr "Enviado por correo"
+
+#, python-format
+#~ msgid "Please, You have selected a course with a different language"
+#~ msgstr "Ha seleccionado una materia con un idioma distinto"
+
+#~ msgid ""
+#~ "Are you sure you want to update procurements all opened seance in all future "
+#~ "session?"
+#~ msgstr ""
+#~ "¿Está seguro que desea actualizar todas los abastecimientos de todas las "
+#~ "sesiones abiertas en todas las ediciones futuras?"
+
+#~ msgid "Close Subscriptions"
+#~ msgstr "Cerrar inscripción"
+
+#~ msgid "All Subscription Lines"
+#~ msgstr "Todas las líneas de inscripción"
+
+#~ msgid "Included Offers"
+#~ msgstr "Cursos incluidos"
+
+#, python-format
+#~ msgid ""
+#~ "Please, Check the date of your seances because there is one seance with a "
+#~ "date inferior to the session's date"
+#~ msgstr ""
+#~ "Compruebe la fecha de sus sesiones ya que existe una sesión con una fecha "
+#~ "inferior a la fecha de la edición"
+
+#~ msgid "Minimum Threshold Reached"
+#~ msgstr "Plazas mínimas cubiertas"
+
+#~ msgid "State of Seance"
+#~ msgstr "Estado sesión"
+
+#~ msgid "The Course's Type"
+#~ msgstr "El tipo de materia"
+
+#~ msgid "Courses Pending Reviews (Update)"
+#~ msgstr "Materias pendientes de revisión (actualizar)"
+
+#, python-format
+#~ msgid ""
+#~ "You can not approve this purchase line it is not the only one purchase order "
+#~ "lines in the purchase order"
+#~ msgstr ""
+#~ "No puede aprobar esta línea de compra si no es la única línea en el pedido "
+#~ "de compra"
+
+#~ msgid "Course Type"
+#~ msgstr "Tipo de materia"
+
+#~ msgid "training.course"
+#~ msgstr "formación.materia"
+
+#~ msgid "Participant and HR Emails: ${subline}"
+#~ msgstr "Correos del Participante y RRHH: ${subline}"
+
+#, python-format
+#~ msgid "Lecturers never recieve emails about subscriptions"
+#~ msgstr "Los profesores no recibirán nunca emails acerca de las inscripciones"
+
+#~ msgid "Sub Courses"
+#~ msgstr "Sub materias"
+
+#, python-format
+#~ msgid ""
+#~ "%(stakeholder)s is not available for seance \"%(this_seance)s\" because "
+#~ "(s)he is already requested or confirmed for the seance \"%(other_seance)s\""
+#~ msgstr ""
+#~ "%(stakeholder)s no está disponible para la sesión \"%(this_seance)s\" porque "
+#~ "ya está solicitado o confirmado para la sesión \"%(other_seance)s\""
+
+#~ msgid "Purchase Order Line"
+#~ msgstr "Línea pedido de compra"
+
+#~ msgid "Available objects: ${ctx}, ${time}, ${user}"
+#~ msgstr "Objetos disponibles: ${ctx}, ${time}, ${user}"
+
+#, python-format
+#~ msgid "There is no Invoice for the Purchase Order for this request"
+#~ msgstr "No existe factura para el pedido de compra para esta solicitud"
+
+#~ msgid "training.course.kind"
+#~ msgstr "formación.materia.modo"
+
+#~ msgid "Seance"
+#~ msgstr "Sesión"
+
+#, python-format
+#~ msgid "Select Analytic Journal from Financial Journals Configuration"
+#~ msgstr ""
+#~ "Seleccione un diario analítico en la configuración de diarios financieros"
+
+#~ msgid "The name of the technical skill"
+#~ msgstr "El nombre de la habilidad técnica."
+
+#~ msgid "training.email.error"
+#~ msgstr "formación.email.error"
+
+#~ msgid "training.course.pending.reason"
+#~ msgstr "formación.materia.pendiente.motivo"
+
+#, python-format
+#~ msgid "Please, you have at least a draft seance"
+#~ msgstr "Existe por lo menos una sesión en estado borrador"
+
+#~ msgid "Offer's Kind"
+#~ msgstr "Modo del curso"
+
+#~ msgid "Courses in Pending"
+#~ msgstr "Materias pendientes"
+
+#, python-format
+#~ msgid ""
+#~ "You can not select a subscription with the following state: Done or Cancelled"
+#~ msgstr ""
+#~ "No puede seleccionar una inscripción con el estado: Realizado o Cancelado"
+
+#~ msgid "wizard.training.subscription.line.change.participant"
+#~ msgstr "asistente.formación.inscripción.linea.cambio.participante"
+
+#~ msgid "Master Course's Type"
+#~ msgstr "Tipo materia principal"
+
+#~ msgid "training.email.stylegroup"
+#~ msgstr "formación.email.grupoestilo"
+
+#~ msgid "Followup By"
+#~ msgstr "Seguimiento por"
+
+#~ msgid "training.subscription.mass.line"
+#~ msgstr "formación.inscripción.masa.linea"
+
+#~ msgid "Update Course"
+#~ msgstr "Actualizar materia"
+
+#~ msgid "Subscription Description"
+#~ msgstr "Descripción de inscripción"
+
+#~ msgid "Master Course's Language"
+#~ msgstr "Idioma materia principal"
+
+#~ msgid "Seance Next Date"
+#~ msgstr "Fecha próxima sesión"
+
+#, python-format
+#~ msgid "You have to open all seances in this session"
+#~ msgstr "Tiene que abrir todas las sesiones para esta edición"
+
+#~ msgid "Seance Procurements"
+#~ msgstr "Abastecimientos sesión"
+
+#, python-format
+#~ msgid "You have selected a course with a different language"
+#~ msgstr "Ha seleccionado una materia con un idioma distinto"
+
+#~ msgid "wizard.course.pending"
+#~ msgstr "asistente.materia.pendiente"
+
+#~ msgid "Deposit price for this product."
+#~ msgstr "Precio de reserva para este producto."
+
+#, python-format
+#~ msgid ""
+#~ "The offer has not a product, so it is not possible to compute the price."
+#~ msgstr ""
+#~ "El curso no tiene asignado ningún producto y no se puede calcular el precio."
+
+#~ msgid "subscription"
+#~ msgstr "Inscripción"

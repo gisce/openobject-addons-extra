@@ -14,8 +14,8 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2011-05-16 04:48+0000\n"
-"X-Generator: Launchpad (build 12959)\n"
+"X-Launchpad-Export-Date: 2011-06-18 05:05+0000\n"
+"X-Generator: Launchpad (build 13168)\n"
 
 #. module: account_coda
 #: help:account.coda,journal_id:0
@@ -82,7 +82,7 @@ msgstr "Coda İçeaktar"
 #: view:account.coda:0
 #: field:account.coda,user_id:0
 msgid "User"
-msgstr ""
+msgstr "Kullanıcı"
 
 msgid "Invalid XML for View Architecture!"
 msgstr ""
@@ -90,12 +90,12 @@ msgstr ""
 #. module: account_coda
 #: model:ir.model,name:account_coda.model_account_coda
 msgid "coda for an Account"
-msgstr ""
+msgstr "Bir hesap için Coda"
 
 #. module: account_coda
 #: field:account.coda.import,def_payable:0
 msgid "Default Payable Account"
-msgstr ""
+msgstr "Varsayılan Satıcılar Hesabı"
 
 msgid "Coda Statements"
 msgstr ""
@@ -103,7 +103,7 @@ msgstr ""
 #. module: account_coda
 #: model:ir.ui.menu,name:account_coda.menu_account_coda_import
 msgid "Import Coda Statements"
-msgstr ""
+msgstr "Coda Ekstrelerini İçeaktar"
 
 msgid "_Ok"
 msgstr ""
@@ -112,23 +112,23 @@ msgstr ""
 #: view:account.coda.import:0
 #: model:ir.actions.act_window,name:account_coda.action_account_coda_import
 msgid "Import Coda Statement"
-msgstr ""
+msgstr "Coda Ekstresini İçeaktar"
 
 #. module: account_coda
 #: field:account.bank.statement,coda_id:0
 msgid "Coda"
-msgstr ""
+msgstr "Coda"
 
 #. module: account_coda
 #: view:account.coda.import:0
 msgid "Results :"
-msgstr ""
+msgstr "Sonuçlar :"
 
 #. module: account_coda
 #: field:account.coda.import,coda:0
 #: model:ir.actions.act_window,name:account_coda.act_account_payment_account_bank_statement
 msgid "Coda File"
-msgstr ""
+msgstr "Coda Dosyası"
 
 #. module: account_coda
 #: help:account.coda,date:0
