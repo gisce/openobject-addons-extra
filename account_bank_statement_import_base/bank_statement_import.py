@@ -32,13 +32,15 @@ class account_bank_statement_import(osv.osv):
     _columns = {
         'name': fields.char('Name', size=64, required=True),
         'bank_statement_prefix': fields.char('Bank Statement Prefix', size=64, required=True),
-        'journal_id':fields.many2one('account.journal', 'Journal'),
+        'partner_id': fields.many2one('res.partner', 'Bank Partner'),
+        'journal_id': fields.many2one('account.journal', 'Journal'),
         'transferts_account_id':fields.many2one('account.account', 'Transferts Account'),
         'referential_id':fields.many2one('external.referential', 'Referential'),
         'credit_account_id':fields.many2one('account.account', 'Credit Account'),
         'fee_account_id':fields.many2one('account.account', 'Fee Account'),
         'scheduler': fields.many2one('ir.cron', 'scheduler', readonly=True),
         'rec_log': fields.text('log', readonly=True),
+        
 
     }
 
@@ -47,13 +49,3 @@ class account_bank_statement_import(osv.osv):
         return True
 
 account_bank_statement_import()
-
-class account_bank_statement(osv.osv):
-    _inherit='account.bank.statement'
-    
-    def create(self, cr, uid, vals, context=None):
-        if (not vals.get('period_id', False)) and vals.get('date', False):
-            vals['period_id'] = self.pool.get('account.period').find(cr, uid, vals['date'], context=context)[0]
-        return super(account_bank_statement, self).create(cr, uid, vals, context=context)
-    
-account_bank_statement()

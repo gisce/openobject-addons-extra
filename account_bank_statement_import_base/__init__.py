@@ -21,6 +21,7 @@
 
 
 import bank_statement_import
+import account
 
 
 

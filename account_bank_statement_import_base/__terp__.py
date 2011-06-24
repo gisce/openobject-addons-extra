@@ -32,6 +32,7 @@
     'init_xml': [],
     'update_xml': [ 
            'bank_statement_import_view.xml',
+           'account_view.xml',
     ],
     'demo_xml': [],
     'installable': True,
