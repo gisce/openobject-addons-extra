@@ -21,7 +21,7 @@
 
 from osv import fields, osv
 import tools
-import ir
+# import ir
 import pooler
 
 
