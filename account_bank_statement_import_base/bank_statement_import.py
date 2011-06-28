@@ -43,6 +43,7 @@ class account_bank_statement_import(osv.osv):
         'rec_log': fields.text('log', readonly=True),
         'bank_statement_ids': fields.one2many('account.bank.statement', 'bank_statement_import_id', 'Bank Statement Imported'),
         'last_import_date': fields.date("Last Import Date"),
+        'merge_fee': fields.boolean("Merge Fee"),
     }
 
     def launch_import_bank_statement(self, cr, uid, ids, context=None):
@@ -60,5 +61,20 @@ class account_bank_statement_import(osv.osv):
     def action_import_bank_statement(self, cr, uid, id, context=None):
         '''not implemented in this module'''
         return {}
+    
+    def open_bank_statement(self, cr, uid, ids, context):
+        task = self.browse(cr, uid, ids, context=context)[0]
+        
+        return {
+            'name': 'Bank ',
+            'view_type': 'form',
+            'view_mode': 'form',
+            'view_id': [252],
+            'res_model': self._name,
+            'type': 'ir.actions.act_window',
+            'nodestroy': True,
+            'target': 'current',
+            'res_id': self.read(cr, uid, ids, ['bank_statement_ids'],context=context)[0]['bank_statement_ids'],
+        }
 
 account_bank_statement_import()

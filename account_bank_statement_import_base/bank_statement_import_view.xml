@@ -27,19 +27,24 @@
 			        <field name="credit_account_id" />
 			        <field name="fee_account_id" />
 			        <field name="scheduler"/>
+                    <field name="merge_fee"/>
                     <field name="last_import_date"/>
-		        	<button icon="gtk-ok" name="launch_import_bank_statement" colspan = "4" string="Import Bank Statement" type="object"/>
+		        	<button icon="gtk-ok" name="launch_import_bank_statement" colspan = "2" string="Import Bank Statement" type="object"/>
+                    
                     <notebook colspan="4">
                         <page string="Log">
                             <field name="rec_log" colspan = "4" nolabel="1"/>
-                        </page>
-                        <page string="Statement">
-                            <field name="bank_statement_ids" colspan = "4" nolabel="1"/>
                         </page>
                     </notebook>
 			    </form>
             </field>
 		</record>
+<!--
+                        <button icon="gtk-ok" name="open_bank_statement" colspan = "2" string="Open Bank Statement" type="object"/>
+                        <page string="Statement">
+                            <field name="bank_statement_ids" colspan = "4" nolabel="1"/>
+                        </page>
+-->
 
 		<record id="bank_statement_import_view_tree" model="ir.ui.view">
 			<field name="name">account_bank_statement_import_base.bank_statement_import.view_tree</field>
