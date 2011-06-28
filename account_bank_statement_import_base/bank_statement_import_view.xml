@@ -27,9 +27,16 @@
 			        <field name="credit_account_id" />
 			        <field name="fee_account_id" />
 			        <field name="scheduler"/>
-		        	<button icon="gtk-ok" name="action_import_bank_statement" colspan = "4" string="Import Bank Statement" type="object"/>
-                    <separator colspan="4" string="Log" />
-                    <field name="rec_log" colspan = "4" nolabel="1"/>
+                    <field name="last_import_date"/>
+		        	<button icon="gtk-ok" name="launch_import_bank_statement" colspan = "4" string="Import Bank Statement" type="object"/>
+                    <notebook colspan="4">
+                        <page string="Log">
+                            <field name="rec_log" colspan = "4" nolabel="1"/>
+                        </page>
+                        <page string="Statement">
+                            <field name="bank_statement_ids" colspan = "4" nolabel="1"/>
+                        </page>
+                    </notebook>
 			    </form>
             </field>
 		</record>

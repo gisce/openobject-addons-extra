@@ -21,7 +21,8 @@
 
 from osv import osv, fields
 import netsvc
-
+from datetime import datetime
+from tools.translate import _
 
 class account_bank_statement_import(osv.osv):
     
@@ -40,12 +41,24 @@ class account_bank_statement_import(osv.osv):
         'fee_account_id':fields.many2one('account.account', 'Fee Account'),
         'scheduler': fields.many2one('ir.cron', 'scheduler', readonly=True),
         'rec_log': fields.text('log', readonly=True),
-        
-
+        'bank_statement_ids': fields.one2many('account.bank.statement', 'bank_statement_import_id', 'Bank Statement Imported'),
+        'last_import_date': fields.date("Last Import Date"),
     }
 
-    def action_import_bank_statement(self, cr, uid, ids, context=None):
-        '''not implemented in this module'''
+    def launch_import_bank_statement(self, cr, uid, ids, context=None):
+        for id in ids:
+            logger = netsvc.Logger()
+            res = self.action_import_bank_statement(cr, uid, id, context)
+            log = self.read(cr, uid, id, ['rec_log'], context=context)['rec_log']
+            log_line = log and log.split("\n") or []
+            log_line[0:0] = [datetime.now().strftime('%Y-%m-%d %H:%M:%S') + ' : ' + str(len(res['crids'])) + _(' bank statement have been imported and ' + str(len(res['exist_ids'])) + _(' bank statement already exist'))]
+            log = "\n".join(log_line)
+            self.write(cr, uid, id, {'rec_log' : log}, context=context)
+            logger.notifyChannel('banck statement import', netsvc.LOG_INFO, "%s bank statement have been imported and %s bank statement already exist"%(len(res['crids']), len(res['exist_ids'])))
         return True
+
+    def action_import_bank_statement(self, cr, uid, id, context=None):
+        '''not implemented in this module'''
+        return {}
 
 account_bank_statement_import()

@@ -28,6 +28,7 @@ class account_bank_statement(osv.osv):
     
     _columns={
         'note': fields.text('Note'),
+        'bank_statement_import_id': fields.many2one('account.bank.statement.import', 'Bank Statement Import'),
     }
     
     def create(self, cr, uid, vals, context=None):
