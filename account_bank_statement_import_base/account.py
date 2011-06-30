@@ -57,19 +57,11 @@ class account_bank_statement(osv.osv):
     
     def button_auto_completion(self, cr, uid, ids, context=None):
         stat_line_obj = self.pool.get('account.bank.statement.line')
-        partner_obj = self.pool.get('res.partner')
         for stat in self.browse(cr, uid, ids, context=context):
             for line in stat.line_ids:
-                if not line.partner_id:
-                    partner_id=False
-                    if line.order_ref:
-                        partner_id = partner_obj.get_partner_from_order_ref(cr, uid, line.order_ref, context=context)
-                    if not partner_id and line.email_address:
-                        partner_id = partner_obj.get_partner_from_email(cr, uid, line.email_address, context=context)
-                    if not partner_id and line.partner_name:
-                        partner_id = partner_obj.get_partner_from_name(cr, uid, line.partner_name, context=context)
-                    if partner_id:
-                        stat_line_obj.write(cr, uid, line.id, {'partner_id' : partner_id}, context=context)
+                vals = stat_line_obj.auto_complete_line(cr, uid, line, context=context)
+                if vals:
+                    stat_line_obj.write(cr, uid, line.id, vals, context=context)
         return True
                         
                     
@@ -83,8 +75,24 @@ class account_bank_statement_line(osv.osv):
     _columns={
         'email_address': fields.char('Email', size=64),
         'order_ref': fields.char('Order Ref', size=64),
-        'partner_name':fields.char('Partner Name', size=64),
+        'partner_name': fields.char('Partner Name', size=64),
+        'label': fields.char('Label', size=64),
     }
+    
+    def auto_complete_line(self, cr, uid, line, context=None):
+        if not line.partner_id:
+            partner_obj = self.pool.get('res.partner')
+            partner_id=False
+            if line.order_ref:
+                partner_id = partner_obj.get_partner_from_order_ref(cr, uid, line.order_ref, context=context)
+            if not partner_id and line.email_address:
+                partner_id = partner_obj.get_partner_from_email(cr, uid, line.email_address, context=context)
+            if not partner_id and line.partner_name:
+                partner_id = partner_obj.get_partner_from_name(cr, uid, line.partner_name, context=context)
+            if partner_id:
+                return {'partner_id': partner_id}
+        return {}
+    
 account_bank_statement_line()
 
 class res_partner(osv.osv):

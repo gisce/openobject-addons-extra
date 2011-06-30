@@ -23,6 +23,7 @@
 						<field name="partner_name" />
 						<field name="order_ref" />
 						<field name="email_address" />
+                        <field name="label" />
 					</xpath>
 
 					<xpath expr="/form/notebook" position="inside">
