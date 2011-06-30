@@ -56,12 +56,20 @@ class account_bank_statement(osv.osv):
 
     
     def button_auto_completion(self, cr, uid, ids, context=None):
+        if not context:
+            context={}
         stat_line_obj = self.pool.get('account.bank.statement.line')
         for stat in self.browse(cr, uid, ids, context=context):
+            ctx = context.copy()
+            if stat.bank_statement_import_id:
+                ctx['partner_id'] = stat.bank_statement_import_id.partner_id.id
+                ctx['transferts_account_id'] = stat.bank_statement_import_id.transferts_account_id.id
+                ctx['credit_account_id'] = stat.bank_statement_import_id.credit_account_id.id
+                ctx['fee_account_id'] = stat.bank_statement_import_id.fee_account_id.id
             for line in stat.line_ids:
-                vals = stat_line_obj.auto_complete_line(cr, uid, line, context=context)
+                vals = stat_line_obj.auto_complete_line(cr, uid, line, context=ctx)
                 if vals:
-                    stat_line_obj.write(cr, uid, line.id, vals, context=context)
+                    stat_line_obj.write(cr, uid, line.id, vals, context=ctx)
         return True
                         
                     
