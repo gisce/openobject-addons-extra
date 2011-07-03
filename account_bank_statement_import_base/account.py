@@ -66,6 +66,8 @@ class account_bank_statement(osv.osv):
                 ctx['transferts_account_id'] = stat.bank_statement_import_id.transferts_account_id.id
                 ctx['credit_account_id'] = stat.bank_statement_import_id.credit_account_id.id
                 ctx['fee_account_id'] = stat.bank_statement_import_id.fee_account_id.id
+                ctx['auto_completion'] = stat.bank_statement_import_id.auto_completion
+                print stat.bank_statement_import_id.id
             for line in stat.line_ids:
                 vals = stat_line_obj.auto_complete_line(cr, uid, line, context=ctx)
                 if vals:
@@ -88,7 +90,8 @@ class account_bank_statement_line(osv.osv):
     }
     
     def auto_complete_line(self, cr, uid, line, context=None):
-        if not line.partner_id:
+        res={}
+        if not line.partner_id or line.account_id.id ==1:
             partner_obj = self.pool.get('res.partner')
             partner_id=False
             if line.order_ref:
@@ -98,8 +101,20 @@ class account_bank_statement_line(osv.osv):
             if not partner_id and line.partner_name:
                 partner_id = partner_obj.get_partner_from_name(cr, uid, line.partner_name, context=context)
             if partner_id:
-                return {'partner_id': partner_id}
-        return {}
+                res = {'partner_id': partner_id}
+            if context['auto_completion']:
+                #Build the space for expr
+                space = {
+                            'self':self,
+                            'cr':cr,
+                            'uid':uid,
+                            'line': line,
+                            'context':context,
+                        }
+                exec context['auto_completion'] in space
+                if space.get('result', False):
+                    res.update(space['result'])
+        return res
     
 account_bank_statement_line()
 
@@ -119,15 +134,18 @@ class res_partner(osv.osv):
         return False
         
     def get_partner_from_email(self, cr, uid, partner_email, context=None):
-        print 'email_address', partner_email
         address_ids = self.pool.get('res.partner.address').search(cr, uid, [['email', '=', partner_email]], context=context)
-        print 'address', address_ids
         if address_ids:
             partner_id = self.search(cr, uid, [['address', 'in', address_ids]], context=context)
-            print 'partner', partner_id
             return partner_id and partner_id[0]
         return False
 
+    def get_partner_from_label(self, cr, uid, line, context=None):
+        supplier_ids = self.search(cr, uid, [['supplier', '=', True]], context=context)
+        for partner in self.read(cr, uid, supplier_ids, ['name', 'property_account_payable', 'property_account_receivable'], context=context):
+            if partner['name'] in line.label:
+                return {'partner_id': partner['id'], 'account_id': line.amount>0 and partner['property_account_receivable'][0] or partner['property_account_payable'][0]}
+        return {}
 
 
 res_partner()

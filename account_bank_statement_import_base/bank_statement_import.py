@@ -44,6 +44,7 @@ class account_bank_statement_import(osv.osv):
         'bank_statement_ids': fields.one2many('account.bank.statement', 'bank_statement_import_id', 'Bank Statement Imported'),
         'last_import_date': fields.date("Last Import Date"),
         'merge_fee': fields.boolean("Merge Fee"),
+        'auto_completion': fields.text('Auto Completion'),
     }
 
     def launch_import_bank_statement(self, cr, uid, ids, context=None):
