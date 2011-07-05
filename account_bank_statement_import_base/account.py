@@ -74,7 +74,19 @@ class account_bank_statement(osv.osv):
                     stat_line_obj.write(cr, uid, line.id, vals, context=ctx)
         return True
                         
-                    
+    def auto_confirm(self, cr, uid, ids, context=None):
+        if not context:
+            context={}
+        ok=True
+        for stat in self.browse(cr, uid, ids, context=context):
+            for line in stat.line_ids:
+                if not line.partner_id or line.account_id.id == 1:
+                    ok=False
+                    continue
+            if ok:
+                self.button_confirm(cr, uid, [stat.id], context=context)
+        return True
+                 
     
 account_bank_statement()
 

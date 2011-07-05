@@ -48,9 +48,13 @@ class account_bank_statement_import(osv.osv):
     }
 
     def launch_import_bank_statement(self, cr, uid, ids, context=None):
+        stat_obj = self.pool.get('account.bank.statement')
         for id in ids:
             logger = netsvc.Logger()
             res = self.action_import_bank_statement(cr, uid, id, context)
+            #autocomplete bank statement
+            stat_obj.button_auto_completion(cr, uid, res['crids'], context=context)
+            stat_obj.auto_confirm(cr, uid, res['crids'], context=context)
             log = self.read(cr, uid, id, ['rec_log'], context=context)['rec_log']
             log_line = log and log.split("\n") or []
             log_line[0:0] = [datetime.now().strftime('%Y-%m-%d %H:%M:%S') + ' : ' + str(len(res['crids'])) + _(' bank statement have been imported and ' + str(len(res['exist_ids'])) + _(' bank statement already exist'))]
