@@ -78,14 +78,14 @@ class account_analytic_line(osv.osv):
     _columns = {
           'aa_currency_id': fields.function(_get_account_currency, method=True, type='many2one', relation='res.currency', string='Account currency',
                   store={
-                      'account.analytic.account': (_get_account_line, ['company_id'], 50),
-                      'account.analytic.line': (lambda self,cr,uid,ids,c={}: ids, ['amount','unit_amount'],10),
+                      'account.analytic.account': (_get_account_line, ['currency_id','company_id'], 50),
+                      'account.analytic.line': (lambda self,cr,uid,ids,c={}: ids, ['amount','unit_amount','product_uom_id'],10),
                   },
                   help="The related analytic account currency."),
           'aa_amount_currency': fields.function(_amount_currency, method=True, digits=(16, int(config['price_accuracy'])), string='Amount currency',
                   store={
-                      'account.analytic.account': (_get_account_line, ['company_id'], 50),
-                      'account.analytic.line': (lambda self,cr,uid,ids,c={}: ids, ['amount','unit_amount'],10),
+                      'account.analytic.account': (_get_account_line, ['currency_id','company_id'], 50),
+                      'account.analytic.line': (lambda self,cr,uid,ids,c={}: ids, ['amount','unit_amount','product_uom_id'],10),
                   },
                   help="The amount expressed in the related analytic account currency."),
           'company_id': fields.related('general_account_id', 'company_id', type='many2one', relation='res.company', string='Company', store=True, readonly=True),
@@ -101,10 +101,5 @@ class account_analytic_line(osv.osv):
         res=super(account_analytic_line,self).on_change_unit_amount(cr, uid, id, prod_id, quantity, company_id, \
                 unit=unit, journal_id=journal_id, context=context)
         return res
-        
-    def create(self,cr,uid,args, context):
-        print "asédflkjaslkfjaslkdfjaélsd"
-        print args
-        return super(account_analytic_line,self).create(cr,uid,args,context)
         
 account_analytic_line()
