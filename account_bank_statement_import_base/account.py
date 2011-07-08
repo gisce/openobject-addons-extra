@@ -48,8 +48,8 @@ class account_bank_statement(osv.osv):
                     for move_line in move.line_id:
                         if move_line.reconcile_id:
                             move_line.reconcile_id.unlink(context=context)
-                ids += [x.id for x in line.move_ids]
-            self.pool.get('account.move').unlink(cr, uid, ids, context)
+                    move.button_cancel()
+                    move.unlink()
             done.append(st.id)
         self.write(cr, uid, done, {'state':'draft'}, context=context)
         return True
