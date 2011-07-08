@@ -50,9 +50,9 @@ class res_partner(osv.osv):
         return False
 
     def get_partner_from_label_based_on_bank_statement_label(self, cr, uid, label, context=None):
-        ids = self.search(cr, uid, [['bank_statement_label_auto', '!=', False]], context=context)
+        ids = self.search(cr, uid, [['bank_statement_label', '!=', False]], context=context)
         for partner in self.browse(cr, uid, ids, context=context):
-            for partner_label in partner.bank_statement_label_auto.split(';'):
+            for partner_label in partner.bank_statement_label.split(';'):
                 if partner_label in label:
                     return partner.id
         return False
