@@ -27,7 +27,7 @@ class res_partner(osv.osv):
     _description = 'Partner'
 
     _columns = {
-        'bank_statement_label_auto':fields.char('Bank Statement Label', size=100, help="enter the various label found on your bank statement separated by a ; If one of this label is include in the bank statement line the partner will be automatically filled"),
+        'bank_statement_label':fields.char('Bank Statement Label', size=100, help="enter the various label found on your bank statement separated by a ; If one of this label is include in the bank statement line the partner will be automatically filled"),
             }
 
     def get_partner_from_order_ref(self, cr, uid, order_ref, context=None):
