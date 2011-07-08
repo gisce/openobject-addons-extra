@@ -129,35 +129,3 @@ class account_bank_statement_line(osv.osv):
         return res
     
 account_bank_statement_line()
-
-class res_partner(osv.osv):
-    _inherit='res.partner'
-    
-    def get_partner_from_order_ref(self, cr, uid, order_ref, context=None):
-        order_obj = self.pool.get('sale.order')
-        so_id = order_obj.search(cr, uid, [('name', '=', order_ref)], context=context)
-        if so_id:
-            so = order_obj.browse(cr, uid, so_id, context=context)[0]
-            return so.partner_id.id
-        return False
-        
-    def get_partner_from_name(self, cr, uid, partner_name, context=None):
-        #print 'try to get partner from name', partner_name
-        return False
-        
-    def get_partner_from_email(self, cr, uid, partner_email, context=None):
-        address_ids = self.pool.get('res.partner.address').search(cr, uid, [['email', '=', partner_email]], context=context)
-        if address_ids:
-            partner_id = self.search(cr, uid, [['address', 'in', address_ids]], context=context)
-            return partner_id and partner_id[0]
-        return False
-
-    def get_partner_from_label(self, cr, uid, line, context=None):
-        supplier_ids = self.search(cr, uid, [['supplier', '=', True]], context=context)
-        for partner in self.read(cr, uid, supplier_ids, ['name', 'property_account_payable', 'property_account_receivable'], context=context):
-            if partner['name'] in line.label:
-                return {'partner_id': partner['id'], 'account_id': line.amount>0 and partner['property_account_receivable'][0] or partner['property_account_payable'][0]}
-        return {}
-
-
-res_partner()

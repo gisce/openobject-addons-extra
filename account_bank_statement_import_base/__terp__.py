@@ -33,6 +33,7 @@
     'update_xml': [ 
            'bank_statement_import_view.xml',
            'account_view.xml',
+           'partner_view.xml',
     ],
     'demo_xml': [],
     'installable': True,
