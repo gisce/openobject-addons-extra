@@ -101,6 +101,14 @@ class account_bank_statement_line(osv.osv):
         'label': fields.char('Label', size=64),
     }
     
+    #this should be done in an external module
+    def onchange_partner_id(self, cr, uid, line_id, partner_id, type, currency_id, context={}):
+        line = self.browse(cr, uid, line_id[0], context=context)
+        if line.statement_id.state == 'confirm':
+            cr.execute('Update account_move_line set partner_id = %s where id in %s' %(partner_id, tuple([line.id for line in line.move_ids[0].line_id])))
+            cr.execute('Update account_bank_statement_line set partner_id = %s where id = %s' %(partner_id, line_id[0]))
+        return super(account_bank_statement_line, self).onchange_partner_id(cr, uid, line_id, partner_id, type, currency_id, context={})
+    
     def auto_complete_line(self, cr, uid, line, context=None):
         res={}
         if not line.partner_id or line.account_id.id ==1:
