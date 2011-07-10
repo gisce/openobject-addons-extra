@@ -113,7 +113,11 @@ class account_bank_statement_line(osv.osv):
     
     #this should be done in an external module
     def onchange_partner_id(self, cr, uid, line_id, partner_id, type, currency_id, context={}):
-        line = self.browse(cr, uid, line_id[0], context=context)
+        if type(line_id) == list:
+            id = line_id[0]
+        else:
+            id=line_id
+        line = self.browse(cr, uid, id, context=context)
         if line.statement_id.state == 'confirm':
             cr.execute('Update account_move_line set partner_id = %s where id in %s' %(partner_id, tuple([line.id for line in line.move_ids[0].line_id])))
             cr.execute('Update account_bank_statement_line set partner_id = %s where id = %s' %(partner_id, line_id[0]))
