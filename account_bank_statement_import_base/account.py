@@ -22,6 +22,18 @@
 from osv import osv, fields
 import netsvc
 
+    #This code should be excuted in an other module
+class account_move(osv.osv):
+    _inherit='account.move'
+    def unlink(self, cr, uid, ids, context=None):
+        for move in self.browse(cr, uid, ids, context=context):
+            for move_line in move.line_id:
+                if move_line.reconcile_id:
+                    move_line.reconcile_id.unlink(context=context)
+        return super(account_move, self).unlink(cr, uid, ids, context=context)
+account_move()
+
+
 
 class account_bank_statement(osv.osv):
     _inherit='account.bank.statement'
@@ -35,21 +47,19 @@ class account_bank_statement(osv.osv):
         if (not vals.get('period_id', False)) and vals.get('date', False):
             vals['period_id'] = self.pool.get('account.period').find(cr, uid, vals['date'], context=context)[0]
         return super(account_bank_statement, self).create(cr, uid, vals, context=context)
-    
+
+    #This code should be excuted in an other module
     def button_cancel(self, cr, uid, ids, context={}):
         print 'super cancel'
         done = []
-        for st in self.browse(cr, uid, ids, context):
+        for st in self.browse(cr, uid, ids, context=context):
             if st.state=='draft':
                 continue
             ids = []
             for line in st.line_ids:
                 for move in line.move_ids:
-                    for move_line in move.line_id:
-                        if move_line.reconcile_id:
-                            move_line.reconcile_id.unlink(context=context)
-                    move.button_cancel()
-                    move.unlink()
+                    move.button_cancel(context=context)
+                    move.unlink(context=context)
             done.append(st.id)
         self.write(cr, uid, done, {'state':'draft'}, context=context)
         return True
