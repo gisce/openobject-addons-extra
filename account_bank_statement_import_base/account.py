@@ -42,7 +42,7 @@ class account_bank_statement(osv.osv):
         'note': fields.text('Note'),
         'bank_statement_import_id': fields.many2one('account.bank.statement.import', 'Bank Statement Import'),
     }
-    
+
     def create(self, cr, uid, vals, context=None):
         if (not vals.get('period_id', False)) and vals.get('date', False):
             vals['period_id'] = self.pool.get('account.period').find(cr, uid, vals['date'], context=context)[0]
@@ -80,6 +80,8 @@ class account_bank_statement(osv.osv):
                 print stat.bank_statement_import_id.id
             for line in stat.line_ids:
                 vals = stat_line_obj.auto_complete_line(cr, uid, line, context=ctx)
+                if not line.ref and not vals.get('ref', False):
+                    vals['ref'] = stat.name
                 if vals:
                     stat_line_obj.write(cr, uid, line.id, vals, context=ctx)
         return True
