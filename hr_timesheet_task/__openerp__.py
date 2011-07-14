@@ -40,6 +40,10 @@ This module allow you to enter your timesheet for a specific task and will autom
 in the concerned task. Unless the project_timesheet module, this module base the work done of task on timesheet line 
 (hr.analytic.timesheet), so we only have one object for all time recording entry.
 
+Warning: you have to apply project_addons.patch (in the module's root) on the addons branch.
+It modifies the sequence of the function fields of the project so they are computed after the function fields of the tasks.
+This could not be overidded in this module and is necessary to have all the project indicators correctly computed.
+
 """,
 	"website": "http://camptocamp.com",
 	"depends" : ["project",
