@@ -407,6 +407,7 @@ class training_course(osv.osv):
     _columns = {
         'splitted_by' : fields.selection([('2', '2 Hours'),
                                           ('4', '4 Hours'),
+                                          ('6', '6 Hours'),
                                           ('8', '8 Hours')
                                          ],
                                          'Splitted By',
