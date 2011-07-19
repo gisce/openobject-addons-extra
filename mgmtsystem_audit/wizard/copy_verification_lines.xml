@@ -8,7 +8,7 @@
     			<field name="type">form</field>
     			<field name="arch" type="xml">
 				<form string="Copy Verification Lines">
-         				<field name="audit_src"/>
+         				<field name="audit_src" domain="[('state','=','c')]"/>
 					<group colspan="2" col="3">
                                         	<button string="_Cancel" icon="gtk-cancel" special="cancel"/>
                                         	<button string="_Copy" name="copy" type="object"/>

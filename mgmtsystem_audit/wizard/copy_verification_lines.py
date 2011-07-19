@@ -29,7 +29,7 @@ class copy_verification_lines(osv.osv_memory):
     _description = "Copy Verification Lines"
 
     _columns = {
-        'audit_src': fields.many2one('mgmtsystem.audit','Copy from'),
+        'audit_src': fields.many2one('mgmtsystem.audit','Choose audit'),
     }
 
     def copy(self, cr, uid, ids, context=None):
