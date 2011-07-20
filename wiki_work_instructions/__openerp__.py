@@ -19,28 +19,18 @@
 #
 ##############################################################################
 {
-    "name" : "Management System",
+    "name" : "Document Management - Wiki - Work Instructions",
     "version" : "0.1",
     "author" : "Savoir-faire Linux",
     "website" : "http://www.savoirfairelinux.com",
     "license" : "GPL-3",
-    "category" : "Management System",
-    "description": """
-	This module is the basis of any management system applications:
-         * audit reports,
-         * nonconformities,
-         * immediate actions,
-         * preventive actions,
-         * corrective actions,
-         * improvement opportunities.	
+    "category" : "Generic Modules/Others",
+    "description": """Work Instructions Template
     """,
-    "depends" : ['base','board'],
+    "depends" : ['mgmtsystem','wiki'],
     "init_xml" : [],
     "update_xml" : [
-        'security/mgmtsystem_security.xml',
-#        'security/ir.model.access.csv',
-        'mgmtsystem.xml',
-        'board_mgmtsystem_view.xml',
+	'wiki_work_instructions.xml'
     ],
     "demo_xml" : [],
     "installable" : True,

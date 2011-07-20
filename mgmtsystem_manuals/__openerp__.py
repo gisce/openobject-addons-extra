@@ -19,29 +19,21 @@
 #
 ##############################################################################
 {
-    "name" : "Management System",
+    "name" : "Management System - Manual",
     "version" : "0.1",
     "author" : "Savoir-faire Linux",
     "website" : "http://www.savoirfairelinux.com",
     "license" : "GPL-3",
     "category" : "Management System",
     "description": """
-	This module is the basis of any management system applications:
-         * audit reports,
-         * nonconformities,
-         * immediate actions,
-         * preventive actions,
-         * corrective actions,
-         * improvement opportunities.	
+          This module adds a menu item "Manual" and is a dependencies of:
+             * wiki_environment_manual
+             * wiki_health_safety_manual
+             * mgmtsystem_quality
     """,
-    "depends" : ['base','board'],
+    "depends" : ['wiki', 'mgmtsystem'],
     "init_xml" : [],
-    "update_xml" : [
-        'security/mgmtsystem_security.xml',
-#        'security/ir.model.access.csv',
-        'mgmtsystem.xml',
-        'board_mgmtsystem_view.xml',
-    ],
+    "update_xml" : ['mgmtsystem_manuals.xml'],
     "demo_xml" : [],
     "installable" : True,
     "certificate" : ''

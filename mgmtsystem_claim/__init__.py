@@ -18,33 +18,5 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.     
 #
 ##############################################################################
-{
-    "name" : "Management System",
-    "version" : "0.1",
-    "author" : "Savoir-faire Linux",
-    "website" : "http://www.savoirfairelinux.com",
-    "license" : "GPL-3",
-    "category" : "Management System",
-    "description": """
-	This module is the basis of any management system applications:
-         * audit reports,
-         * nonconformities,
-         * immediate actions,
-         * preventive actions,
-         * corrective actions,
-         * improvement opportunities.	
-    """,
-    "depends" : ['base','board'],
-    "init_xml" : [],
-    "update_xml" : [
-        'security/mgmtsystem_security.xml',
-#        'security/ir.model.access.csv',
-        'mgmtsystem.xml',
-        'board_mgmtsystem_view.xml',
-    ],
-    "demo_xml" : [],
-    "installable" : True,
-    "certificate" : ''
-}
+import mgmtsystem_claim
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
-

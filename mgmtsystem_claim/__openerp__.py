@@ -19,28 +19,23 @@
 #
 ##############################################################################
 {
-    "name" : "Management System",
+    "name" : "Management System - Claim",
     "version" : "0.1",
     "author" : "Savoir-faire Linux",
     "website" : "http://www.savoirfairelinux.com",
     "license" : "GPL-3",
     "category" : "Management System",
     "description": """
-	This module is the basis of any management system applications:
-         * audit reports,
-         * nonconformities,
-         * immediate actions,
-         * preventive actions,
-         * corrective actions,
-         * improvement opportunities.	
+	This module enables you to manage the claims of your management system.
     """,
-    "depends" : ['base','board'],
+    "depends" : ['mgmtsystem','crm_claim'],
     "init_xml" : [],
     "update_xml" : [
-        'security/mgmtsystem_security.xml',
-#        'security/ir.model.access.csv',
-        'mgmtsystem.xml',
-        'board_mgmtsystem_view.xml',
+        'security/ir.model.access.csv',
+	'mgmtsystem_claim.xml',
+	'claim_sequence.xml',
+	'board_mgmtsystem_claim.xml',
+	'workflow_mgmtsystem_claim.xml',
     ],
     "demo_xml" : [],
     "installable" : True,

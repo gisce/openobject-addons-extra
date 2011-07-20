@@ -19,29 +19,17 @@
 #
 ##############################################################################
 {
-    "name" : "Management System",
+    "name" : "Document Management - Wiki - Health and Safety Manual",
     "version" : "0.1",
     "author" : "Savoir-faire Linux",
     "website" : "http://www.savoirfairelinux.com",
     "license" : "GPL-3",
-    "category" : "Management System",
-    "description": """
-	This module is the basis of any management system applications:
-         * audit reports,
-         * nonconformities,
-         * immediate actions,
-         * preventive actions,
-         * corrective actions,
-         * improvement opportunities.	
+    "category" : "Generic Modules/Others",
+    "description": """Health and Safety Manual Template
     """,
-    "depends" : ['base','board'],
+    "depends" : ['wiki','mgmtsystem_manuals'],
     "init_xml" : [],
-    "update_xml" : [
-        'security/mgmtsystem_security.xml',
-#        'security/ir.model.access.csv',
-        'mgmtsystem.xml',
-        'board_mgmtsystem_view.xml',
-    ],
+    "update_xml" : ['wiki_health_safety_manual.xml'],
     "demo_xml" : [],
     "installable" : True,
     "certificate" : ''

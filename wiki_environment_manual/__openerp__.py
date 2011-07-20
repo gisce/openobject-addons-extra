@@ -27,7 +27,7 @@
     "category" : "Generic Modules/Others",
     "description": """Environment Manual Template
     """,
-    "depends" : ['wiki'],
+    "depends" : ['wiki','mgmtsystem_manuals'],
     "init_xml" : [],
     "update_xml" : ['wiki_environment_manual.xml'],
     "demo_xml" : [],

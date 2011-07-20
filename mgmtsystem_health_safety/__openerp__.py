@@ -19,29 +19,35 @@
 #
 ##############################################################################
 {
-    "name" : "Management System",
+    "name" : "Health and Safety Management System",
     "version" : "0.1",
     "author" : "Savoir-faire Linux",
     "website" : "http://www.savoirfairelinux.com",
     "license" : "GPL-3",
     "category" : "Management System",
     "description": """
-	This module is the basis of any management system applications:
-         * audit reports,
-         * nonconformities,
-         * immediate actions,
-         * preventive actions,
-         * corrective actions,
-         * improvement opportunities.	
+	This module enables you to manage your health and safety management system, including :
+            * Hazards
+            * Equipments
+            * Employee Training
+            * Audits
+            * Procedures
+            * Nonconformities
+            * Actions
+            * Claims
+            * Letters
     """,
-    "depends" : ['base','board'],
-    "init_xml" : [],
-    "update_xml" : [
-        'security/mgmtsystem_security.xml',
-#        'security/ir.model.access.csv',
-        'mgmtsystem.xml',
-        'board_mgmtsystem_view.xml',
+    "depends" : [
+        'mgmtsystem_audit',
+        'mgmtsystem_claim',
+        'letter_mgmt_v6',
+        'wiki_health_safety_manual',
+#       'mgmtsystem_hazards',
+#       'mgmtsystem_equipments',
+#       'mgmtsystem_employee_training'
     ],
+    "init_xml" : [],
+    "update_xml" : [],
     "demo_xml" : [],
     "installable" : True,
     "certificate" : ''

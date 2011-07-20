@@ -18,33 +18,29 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.     
 #
 ##############################################################################
-{
-    "name" : "Management System",
-    "version" : "0.1",
-    "author" : "Savoir-faire Linux",
-    "website" : "http://www.savoirfairelinux.com",
-    "license" : "GPL-3",
-    "category" : "Management System",
-    "description": """
-	This module is the basis of any management system applications:
-         * audit reports,
-         * nonconformities,
-         * immediate actions,
-         * preventive actions,
-         * corrective actions,
-         * improvement opportunities.	
-    """,
-    "depends" : ['base','board'],
-    "init_xml" : [],
-    "update_xml" : [
-        'security/mgmtsystem_security.xml',
-#        'security/ir.model.access.csv',
-        'mgmtsystem.xml',
-        'board_mgmtsystem_view.xml',
-    ],
-    "demo_xml" : [],
-    "installable" : True,
-    "certificate" : ''
-}
-# vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
 
+from osv import fields, osv
+from crm import crm
+
+class mgmtsystem_claim(osv.osv):
+    _name = "mgmtsystem.claim"
+    _description = "Claim"
+    _inherit = "crm.claim"
+    _columns = {
+        'reference': fields.char('Reference', size=64, required=True, readonly=True),
+        'message_ids': fields.one2many('mailgate.message', 'res_id', 'Messages', domain=[('model','=',_name)]),
+    }
+
+    _defaults = {
+        'reference': 'NEW',
+    }
+
+    def create(self, cr, uid, vals, context=None):
+        vals.update({
+            'reference': self.pool.get('ir.sequence').get(cr, uid, 'mgmtsystem.claim')
+        })
+        return super(mgmtsystem_claim, self).create(cr, uid, vals, context)
+
+mgmtsystem_claim()
+
+# vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

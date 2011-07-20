@@ -33,7 +33,7 @@
             * Nonconformities
             * Actions
     """,
-    "depends" : ['mgmtsystem_audit','wiki_quality_manual'],
+    "depends" : ['mgmtsystem_audit','wiki_quality_manual','mgmtsystem_manuals'],
     "init_xml" : [],
     "update_xml" : [],
     "demo_xml" : [],
