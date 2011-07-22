@@ -156,6 +156,7 @@ class mgmtsystem_hazard_residual_risk(osv.osv):
     def _compute_risk(self, cr, uid, ids, field_name, arg, context=None):
         result = {}
         for obj in self.browse(cr, uid, ids):
+            # TODO: Use res.company.risk_computation_id to determine the risk computation
             if obj.probability_id and obj.severity_id and obj.usage_id:
                 result[obj.id] = obj.probability_id.value * obj.severity_id.value * obj.usage_id.value
             else:
@@ -184,6 +185,7 @@ class mgmtsystem_hazard(osv.osv):
     def _compute_risk(self, cr, uid, ids, field_name, arg, context=None):
         result = {}
         for obj in self.browse(cr, uid, ids):
+            # TODO: Use res.company.risk_computation_id to determine the risk computation
             if obj.probability_id and obj.severity_id and obj.usage_id:
                 result[obj.id] = obj.probability_id.value * obj.severity_id.value * obj.usage_id.value
             else:
