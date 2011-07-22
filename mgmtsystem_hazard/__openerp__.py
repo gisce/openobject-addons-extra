@@ -37,6 +37,7 @@
     "update_xml" : [
         'security/ir.model.access.csv',
 	'mgmtsystem_hazard.xml',
+	'mgmtsystem_hazard_data.xml',
     ],
     "demo_xml" : [],
     "installable" : True,
