@@ -42,7 +42,7 @@
         'mgmtsystem_claim',
         'letter_mgmt_v6',
         'wiki_health_safety_manual',
-#       'mgmtsystem_hazards',
+        'mgmtsystem_hazard',
 #       'mgmtsystem_equipments',
 #       'mgmtsystem_employee_training'
     ],
