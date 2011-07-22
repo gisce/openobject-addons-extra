@@ -19,29 +19,21 @@
 #
 ##############################################################################
 {
-    "name" : " Quality Management System",
+    "name" : "Management System - Survey",
     "version" : "0.1",
     "author" : "Savoir-faire Linux",
     "website" : "http://www.savoirfairelinux.com",
     "license" : "GPL-3",
     "category" : "Management System",
     "description": """
-	This module enables you to manage your quality management system, including :
-            * Quality Manual
-            * Reviews
-            * Audits
-            * Procedures
-            * Nonconformities
-            * Actions
+	This module enables you to manage your satisfaction surveys
+        and its answers.
     """,
-    "depends" : [
-        'mgmtsystem_audit',
-        'wiki_quality_manual',
-        'mgmtsystem_manuals',
-        'mgmtsystem_review',
-    ],
+    "depends" : ['survey'],
     "init_xml" : [],
-    "update_xml" : [],
+    "update_xml" : [
+	'mgmtsystem_survey.xml',
+    ],
     "demo_xml" : [],
     "installable" : True,
     "certificate" : ''

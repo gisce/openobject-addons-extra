@@ -33,7 +33,12 @@
             * Nonconformities
             * Actions
     """,
-    "depends" : ['mgmtsystem_audit','wiki_environment_manual','wiki_environmental_aspect'],
+    "depends" : [
+        'mgmtsystem_audit',
+        'mgmtsystem_review',
+        'wiki_environment_manual',
+        'wiki_environmental_aspect',
+    ],
     "init_xml" : [],
     "update_xml" : [],
     "demo_xml" : [],

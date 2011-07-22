@@ -105,7 +105,7 @@
 
         <menuitem id="menu_open_hazard" 
             action="open_mgmtsystem_hazard_list" 
-            parent="mgmtsystem.menu_mgmtsystem_main" 
+            parent="mgmtsystem.menu_mgmtsystem_manuals" 
             sequence="20" 
             groups="base.group_mgmtsystem_manager,base.group_mgmtsystem_auditor,base.group_user"/>
 

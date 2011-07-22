@@ -18,33 +18,22 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.     
 #
 ##############################################################################
-{
-    "name" : " Quality Management System",
-    "version" : "0.1",
-    "author" : "Savoir-faire Linux",
-    "website" : "http://www.savoirfairelinux.com",
-    "license" : "GPL-3",
-    "category" : "Management System",
-    "description": """
-	This module enables you to manage your quality management system, including :
-            * Quality Manual
-            * Reviews
-            * Audits
-            * Procedures
-            * Nonconformities
-            * Actions
-    """,
-    "depends" : [
-        'mgmtsystem_audit',
-        'wiki_quality_manual',
-        'mgmtsystem_manuals',
-        'mgmtsystem_review',
-    ],
-    "init_xml" : [],
-    "update_xml" : [],
-    "demo_xml" : [],
-    "installable" : True,
-    "certificate" : ''
-}
-# vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
 
+import time
+from report import report_sxw
+
+class mgmtsystem_review_report(report_sxw.rml_parse):
+    def __init__(self, cr, uid, name, context):
+        super(mgmtsystem_review_report, self).__init__(cr, uid, name, context)
+        self.localcontext.update({
+            'time': time,
+        })
+
+report_sxw.report_sxw(
+    'report.mgmtsystem.review.report',
+    'mgmtsystem.review',
+    'addons/mgmtsystem_review/report/review_report.rml',
+    parser=mgmtsystem_review_report
+)
+
+# vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
