@@ -30,6 +30,7 @@
             * Hazards
             * Equipments
             * Employee Training
+            * Reviews
             * Audits
             * Procedures
             * Nonconformities
@@ -39,6 +40,7 @@
     """,
     "depends" : [
         'mgmtsystem_audit',
+        'mgmtsystem_review',
         'mgmtsystem_claim',
         'letter_mgmt_v6',
         'wiki_health_safety_manual',

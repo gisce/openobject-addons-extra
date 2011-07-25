@@ -62,6 +62,7 @@ class mgmtsystem_review_line(osv.osv):
         'type': fields.selection((('action','Action'), ('nonconformity','Noncomformity')),'Type'),
         'action_id': fields.many2one('mgmtsystem.action', 'Action', select=True),
         'nonconformity_id': fields.many2one('mgmtsystem.nonconformity', 'Nonconformity', select=True),
+        'decision': fields.text('Decision'),
         'review_id': fields.many2one('mgmtsystem.review', 'Review', ondelete='cascade', select=True),
     }
 

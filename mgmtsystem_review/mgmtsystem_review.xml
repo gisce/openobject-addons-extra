@@ -13,6 +13,7 @@
                     <field name="type"/>
                     <field name="action_id" attrs="{'invisible' : [('type', '!=', 'action')]}"/>
                     <field name="nonconformity_id" attrs="{'invisible' : [('type', '!=', 'nonconformity')]}"/>
+                    <field name="decision"/>
                 </tree>
             </field>
         </record>
@@ -27,6 +28,7 @@
                     <field name="type"/>
                     <field name="action_id"/>
                     <field name="nonconformity_id"/>
+                    <field name="decision"/>
                 </search>
             </field>
         </record>        
@@ -43,6 +45,8 @@
                         <newline/>
                         <field name="action_id" attrs="{'invisible' : [('type', '!=', 'action')]}"/>
                         <field name="nonconformity_id" attrs="{'invisible' : [('type', '!=', 'nonconformity')]}"/>
+                        <newline/>
+                        <field name="decision"/>
                     </group>
                 </form>
             </field>

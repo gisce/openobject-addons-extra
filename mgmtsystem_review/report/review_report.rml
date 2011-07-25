@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<document filename="Review Report.pdf">
+<document filename="Review_Report.pdf">
   <template pageSize="(595.0,842.0)" title="Review Report" author="Savoir-faire Linux" allowSplitting="20">
     <pageTemplate id="first">
       <frame id="first" x1="15.0" y1="42.0" width="539" height="758"/>
@@ -15,7 +15,7 @@
     </initialize>
     <paraStyle name="Standard" fontName="Helvetica"/>
     <paraStyle name="Text body" fontName="Helvetica" spaceBefore="0.0" spaceAfter="6.0"/>
-    <paraStyle name="Heading" fontName="Helvetica" fontSize="8.0" leading="10" spaceBefore="12.0" spaceAfter="6.0"/>
+    <paraStyle name="Heading" fontName="Helvetica-Bold" fontSize="12.0" leading="10" spaceBefore="12.0" spaceAfter="6.0"/>
     <paraStyle name="List" fontName="Helvetica" spaceBefore="0.0" spaceAfter="6.0"/>
     <paraStyle name="Table Contents" fontName="Helvetica"/>
     <paraStyle name="Table Heading" fontName="Helvetica" alignment="CENTER"/>
@@ -55,33 +55,42 @@
     <para style="terp_default_8">
       <font color="white"> </font>
     </para>
-    <para style="terp_header_Centre">Audit Report</para>
+    <para style="terp_header_Centre">Review Report</para>
     <para style="terp_header_Centre">[[ o.name ]]</para>
     <para style="terp_default_8">
       <font color="white"> </font>
     </para>
-    <para>Confidentiality: Internal</para>
+    <para>Confidentiality: Direction Review</para>
     <para>Reference: [[ o.reference ]]</para>
     <para>Date: [[ o.date ]]</para>
-    <para>Auditors:</para>
+    <para>Participants:</para>
     <section>
-      <para>[[repeatIn(o.auditor_user_ids,'auditor')]]</para>
-      <para>- [[ auditor.name ]] </para>
+      <para>[[repeatIn(o.user_ids,'participant')]]</para>
+      <para>- [[ participant.name ]] </para>
     </section>
-    <para style="terp_header">Strong points</para>
-    <para>[[ o.strong_points ]]</para>
-    <para style="terp_header">Points To Improve</para>
-    <para>[[ o.to_improve_points ]]</para>
-    <para style="terp_header">Improvement opportunities</para>
+    <para style="terp_header">Inputs</para>
+    <para style="Heading">Policies</para>
+    <para>[[ o.policy ]]</para>
+    <para style="Heading">Changes affecting the management systems</para>
+    <para>[[ o.changes ]]</para>
+    <para style="Heading">Satisfaction Survey Answers</para>
     <section>
-        <para>[[ repeatIn(o.imp_opp_ids,'improvement') ]]</para>
-        <para leftIndent="15" bulletIndent="20"><bullet size="20">.</bullet>[[ improvement.name ]]</para>
+        <para>[[ repeatIn(o.response_ids,'response') ]]</para>
+        <para style="Heading">[[ response.question_ids[0].single_text ]] ([[ response.question_ids[1].single_text ]])</para>
+        <para leftIndent="15">Comments: [[ response.question_ids[2].comment ]]</para>
+        <para leftIndent="15">Expectations: [[ response.question_ids[5].comment ]]</para>
+        <para leftIndent="15">Improvements: [[ response.question_ids[3].comment ]]</para>
     </section>
-    <para style="terp_header">Nonconformities</para>
     <section>
-        <para>[[ repeatIn(o.nonconformity_ids,'nonconformity') ]]</para>
-        <para leftIndent="15" bulletIndent="20"><bullet size="20">.</bullet>[[ nonconformity.description ]]</para>
+        <para>[[ repeatIn(o.line_ids,'line') ]]</para>
+        <para style="terp_header">[[ line.name ]]</para>
+        <para leftIndent="15">Action: [[ line.type=='action' and (line.action_id.name) or (line.nonconformity_id.description) ]]</para>
+        <para leftIndent="15">State: [[ line.type=='action' and (line.action_id.state) or (line.nonconformity_id.state) ]]</para>
+        <para leftIndent="15">Decision: [[ line.decision ]]</para>
+        <para leftIndent="15">Reference: [[ line.type=='action' and 'Action' or 'Nonconformity' ]] [[ line.type=='action' and (line.action_id.reference) or (line.nonconformity_id.ref) ]]</para>
     </section> 
+    <para style="terp_header">Conclusion</para>
+    <para>[[ o.conclusion ]]</para>
   </pto>
   </story>
 </document>

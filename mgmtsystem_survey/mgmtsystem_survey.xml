@@ -15,8 +15,10 @@
             <field name="responsible_id" ref="base.user_root"/>
             <field name="type" ref="mgmtsystem_survey_type"/>
             <field name="state">open</field>
-            <field name="tot_comp_survey">1</field>
-            <field name="tot_start_survey">1</field>
+            <field name="tot_comp_survey">0</field>
+            <field name="tot_start_survey">0</field>
+            <field name="max_response_limit">0</field>
+            <field name="response_user">0</field>
             <field name="date_open" eval="time.strftime('%Y-%m-%d %H:%M:%S')"/>
         </record>
 
@@ -99,9 +101,16 @@
             <field name="in_visible_answer_type">1</field>
         </record>
 
-        <!-- action window and menu -->
+        <!-- window actions and menus -->
 
-        <record model="ir.actions.act_window" id="action_survey_form">
+        <menuitem id="menu_open_answers" 
+            name="Survey Answers" 
+            action="survey.action_browse_survey_response" 
+            parent="mgmtsystem.menu_mgmtsystem_main"
+            sequence="90" 
+            groups="base.group_user"/>
+
+        <record id="action_survey_form" model="ir.actions.act_window">
             <field name="name">Surveys</field>
             <field name="res_model">survey</field>
             <field name="view_type">form</field>
@@ -110,13 +119,6 @@
             <field name="view_id" ref="survey.survey_tree"></field>
             <field name="search_view_id" ref="survey.survey_search"/>
         </record>
-
-        <menuitem id="menu_open_answers" 
-            name="Survey Answers" 
-            action="survey.action_browse_survey_response" 
-            parent="mgmtsystem.menu_mgmtsystem_main"
-            sequence="90" 
-            groups="base.group_user"/>
 
         <menuitem id="menu_open_survey" 
             action="action_survey_form" 
