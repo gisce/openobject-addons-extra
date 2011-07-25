@@ -25,6 +25,7 @@
     "website" : "http://www.savoirfairelinux.com",
     "license" : "GPL-3",
     "category" : "Management System",
+    "complexity" : "normal",
     "description": """
 	This module is the basis of any management system applications:
          * audit reports,
@@ -34,7 +35,7 @@
          * corrective actions,
          * improvement opportunities.	
     """,
-    "depends" : [],
+    "depends" : ['base','board','audittrail'],
     "init_xml" : [],
     "update_xml" : [
         'security/mgmtsystem_security.xml',

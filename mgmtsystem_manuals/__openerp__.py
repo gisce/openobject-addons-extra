@@ -18,25 +18,25 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.     
 #
 ##############################################################################
-
-from osv import fields, osv
-
-class copy_verification_lines(osv.osv_memory):
-    """
-    Copy Verification Lines
-    """
-    _name = "copy.verification.lines"
-    _description = "Copy Verification Lines"
-
-    _columns = {
-        'audit_src': fields.many2one('mgmtsystem.audit','Choose audit'),
-    }
-
-    def copy(self, cr, uid, ids, context=None):
-	# Code to copy verification lines from the chosen audit to the current one
-
-        return {}
-
-copy_verification_lines()
-
+{
+    "name" : "Management System - Manual",
+    "version" : "0.1",
+    "author" : "Savoir-faire Linux",
+    "website" : "http://www.savoirfairelinux.com",
+    "license" : "GPL-3",
+    "category" : "Management System",
+    "description": """
+          This module adds a menu item "Manual" and is a dependencies of:
+             * wiki_environment_manual
+             * wiki_health_safety_manual
+             * mgmtsystem_quality
+    """,
+    "depends" : ['wiki', 'mgmtsystem'],
+    "init_xml" : [],
+    "update_xml" : ['mgmtsystem_manuals.xml'],
+    "demo_xml" : [],
+    "installable" : True,
+    "certificate" : ''
+}
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
+

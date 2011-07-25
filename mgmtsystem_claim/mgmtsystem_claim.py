@@ -20,23 +20,27 @@
 ##############################################################################
 
 from osv import fields, osv
+from crm import crm
 
-class copy_verification_lines(osv.osv_memory):
-    """
-    Copy Verification Lines
-    """
-    _name = "copy.verification.lines"
-    _description = "Copy Verification Lines"
-
+class mgmtsystem_claim(osv.osv):
+    _name = "mgmtsystem.claim"
+    _description = "Claim"
+    _inherit = "crm.claim"
     _columns = {
-        'audit_src': fields.many2one('mgmtsystem.audit','Choose audit'),
+        'reference': fields.char('Reference', size=64, required=True, readonly=True),
+        'message_ids': fields.one2many('mailgate.message', 'res_id', 'Messages', domain=[('model','=',_name)]),
     }
 
-    def copy(self, cr, uid, ids, context=None):
-	# Code to copy verification lines from the chosen audit to the current one
+    _defaults = {
+        'reference': 'NEW',
+    }
 
-        return {}
+    def create(self, cr, uid, vals, context=None):
+        vals.update({
+            'reference': self.pool.get('ir.sequence').get(cr, uid, 'mgmtsystem.claim')
+        })
+        return super(mgmtsystem_claim, self).create(cr, uid, vals, context)
 
-copy_verification_lines()
+mgmtsystem_claim()
 
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

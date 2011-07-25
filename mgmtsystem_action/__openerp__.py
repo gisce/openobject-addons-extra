@@ -30,7 +30,8 @@
         system :
             * immediate actions
             * corrective actions
-            * preventive actions.
+            * preventive actions
+            * improvement opportunities.
     """,
     "depends" : ['mgmtsystem','crm_claim'],
     "init_xml" : [],

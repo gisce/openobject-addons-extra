@@ -19,24 +19,21 @@
 #
 ##############################################################################
 
-from osv import fields, osv
+import time
+from report import report_sxw
 
-class copy_verification_lines(osv.osv_memory):
-    """
-    Copy Verification Lines
-    """
-    _name = "copy.verification.lines"
-    _description = "Copy Verification Lines"
+class mgmtsystem_review_report(report_sxw.rml_parse):
+    def __init__(self, cr, uid, name, context):
+        super(mgmtsystem_review_report, self).__init__(cr, uid, name, context)
+        self.localcontext.update({
+            'time': time,
+        })
 
-    _columns = {
-        'audit_src': fields.many2one('mgmtsystem.audit','Choose audit'),
-    }
-
-    def copy(self, cr, uid, ids, context=None):
-	# Code to copy verification lines from the chosen audit to the current one
-
-        return {}
-
-copy_verification_lines()
+report_sxw.report_sxw(
+    'report.mgmtsystem.review.report',
+    'mgmtsystem.review',
+    'addons/mgmtsystem_review/report/review_report.rml',
+    parser=mgmtsystem_review_report
+)
 
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

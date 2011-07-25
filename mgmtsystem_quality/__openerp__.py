@@ -28,12 +28,18 @@
     "description": """
 	This module enables you to manage your quality management system, including :
             * Quality Manual
+            * Reviews
             * Audits
             * Procedures
             * Nonconformities
             * Actions
     """,
-    "depends" : ['mgmtsystem_audit','wiki_quality_manual'],
+    "depends" : [
+        'mgmtsystem_audit',
+        'wiki_quality_manual',
+        'mgmtsystem_manuals',
+        'mgmtsystem_review',
+    ],
     "init_xml" : [],
     "update_xml" : [],
     "demo_xml" : [],
