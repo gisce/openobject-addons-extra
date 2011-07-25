@@ -754,5 +754,18 @@
             <field name="search_view_id" ref="view_mgmtsystem_hazard_residual_risk_filter"/>
         </record>
 
+        <!-- audittrail rule -->
+
+        <record id="mgmtsystem_hazard_audit_rule" model="audittrail.rule">
+            <field name="name">Audit on Management System Hazards</field>
+            <field name="object_id" search="[('model','=','mgmtsystem.hazard')]"/>
+            <field name="log_create">1</field>
+            <field name="log_workflow">1</field>
+            <field name="log_unlink">1</field>
+            <field name="log_action">1</field>
+            <field name="log_workflow">1</field>
+            <field name="state">subscribed</field>
+        </record>
+
     </data>
 </openerp>
