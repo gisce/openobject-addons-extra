@@ -23,7 +23,7 @@ import datetime
 import time
 import netsvc
 from osv import fields,osv
-import ir
+# import ir
 
 # Definition of classes to manage risks, and Safety Hazards
 
