@@ -8,8 +8,9 @@ msgstr ""
 "Project-Id-Version: openobject-addons\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2011-02-22 20:40+0000\n"
-"PO-Revision-Date: 2011-07-24 19:43+0000\n"
-"Last-Translator: Quentin THEURET <Unknown>\n"
+"PO-Revision-Date: 2011-07-24 19:45+0000\n"
+"Last-Translator: Maxime Chambreuil (http://www.savoirfairelinux.com) "
+"<maxime.chambreuil@savoirfairelinux.com>\n"
 "Language-Team: French <fr@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -17,16 +18,16 @@ msgstr ""
 "X-Launchpad-Export-Date: 2011-07-26 04:47+0000\n"
 "X-Generator: Launchpad (build 13405)\n"
 
-#. module: wiki_procedure
-#: model:ir.module.module,description:wiki_procedure.module_meta_information
+#. module: wiki_environment_manual
+#: model:ir.module.module,shortdesc:wiki_environment_manual.module_meta_information
+msgid "Document Management - Wiki - Environment Manual"
+msgstr "Gestion des Documents - Wiki - Manuel environnemental"
+
+#. module: wiki_environment_manual
+#: model:ir.module.module,description:wiki_environment_manual.module_meta_information
 msgid ""
-"Procedure Template\n"
+"Environment Manual Template\n"
 "    "
 msgstr ""
-"Modèle de procédure\n"
+"Modèle de manuel environnemental\n"
 "    "
-
-#. module: wiki_procedure
-#: model:ir.module.module,shortdesc:wiki_procedure.module_meta_information
-msgid "Document Management - Wiki - Procedures"
-msgstr "Gestion de documents - Wiki - Procédures"
