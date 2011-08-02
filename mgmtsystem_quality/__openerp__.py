@@ -33,12 +33,14 @@
             * Procedures
             * Nonconformities
             * Actions
+            * Employee Training
     """,
     "depends" : [
         'mgmtsystem_audit',
         'wiki_quality_manual',
         'mgmtsystem_manuals',
         'mgmtsystem_review',
+        'training_hr',
     ],
     "init_xml" : [],
     "update_xml" : [],
