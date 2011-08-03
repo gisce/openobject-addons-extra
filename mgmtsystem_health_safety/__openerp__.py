@@ -46,7 +46,7 @@
         'wiki_health_safety_manual',
         'mgmtsystem_hazard',
 #       'mgmtsystem_equipments',
-#       'mgmtsystem_employee_training'
+        'training_hr'
     ],
     "init_xml" : [],
     "update_xml" : [],
