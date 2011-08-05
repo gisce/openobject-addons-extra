@@ -9,6 +9,7 @@
             <field name="type">tree</field>
             <field name="arch" type="xml">
                 <tree string="Verification Lines">
+                    <field name="seq"/>
                     <field name="name"/>
                     <field name="is_conformed"/>
                     <field name="procedure_id"/>
@@ -24,6 +25,7 @@
             <field name="arch" type="xml">
                 <search string="Verification Lines">
                     <group>
+                        <field name="seq"/>
                         <field name="name"/>
                         <field name="procedure_id" domain="[('group_id','=','Procedure')]"/>
                         <field name="is_conformed"/>
@@ -44,6 +46,7 @@
                         <field name="is_conformed"/>
                         <newline/>
                         <field name="procedure_id" domain="[('group_id','=','Procedure')]"/>
+                        <field name="seq"/>
                         <newline/>
                         <field name="comments"/>
                     </group>
