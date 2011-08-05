@@ -26,7 +26,6 @@ class mgmtsystem_audit(osv.osv):
     _name = "mgmtsystem.audit"
     _description = "Audit"
     _columns = {
-        'id': fields.integer('ID', readonly=True),
         'name': fields.char('Name', size=50),
         'reference': fields.char('Reference', size=64, required=True, readonly=True),
         'date': fields.datetime('Date'),
@@ -60,13 +59,15 @@ class mgmtsystem_verification_line(osv.osv):
     _name = "mgmtsystem.verification.line"
     _description = "Verification Line"
     _columns = {
-        'id': fields.integer('ID', readonly=True),
 	'name': fields.char('Question',size=300, required=True),
         'audit_id': fields.many2one('mgmtsystem.audit', 'Audit', ondelete='cascade', select=True),
         'procedure_id': fields.many2one('wiki.wiki', 'Procedure', ondelete='cascade', select=True),
 	'is_conformed': fields.boolean('Is conformed'),
 	'comments': fields.text('Comments'),
+	'seq': fields.integer('Sequence'),
     }
+
+    _order = "seq"
 
     _defaults = {
         'is_conformed': False

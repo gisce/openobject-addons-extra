@@ -34,8 +34,22 @@ class copy_verification_lines(osv.osv_memory):
 
     def copy(self, cr, uid, ids, context=None):
 	# Code to copy verification lines from the chosen audit to the current one
+        if context is None:
+            context = {}
 
-        return {}
+        audit_proxy = self.pool.get(context.get('active_model'))
+        verification_line_proxy = self.pool.get('mgmtsystem.verification.line')
+        src_id = self.read(cr, uid, ids, [], context=context)[0]['audit_src'][0]
+
+        for line in audit_proxy.browse(cr, uid, src_id, context=context).line_ids:
+            verification_line_proxy.create(cr,uid, {
+                'seq' : line.seq,
+                'name' : line.name,
+                'audit_id' : context['active_id'],
+                'procedure_id' : line.procedure_id.id,
+                'is_conformed' : False,
+            }, context=context)
+        return {'type':'ir.actions.act_window_close'}
 
 copy_verification_lines()
 
