@@ -14,8 +14,8 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2011-06-18 05:04+0000\n"
-"X-Generator: Launchpad (build 13168)\n"
+"X-Launchpad-Export-Date: 2011-08-13 05:00+0000\n"
+"X-Generator: Launchpad (build 13674)\n"
 
 msgid "Information"
 msgstr "信息"
@@ -79,7 +79,7 @@ msgstr "变好"
 #: view:hr.employee:0
 #: view:hr_evaluation.evaluation:0
 msgid "Evaluation"
-msgstr "考核"
+msgstr "考评"
 
 msgid "Evaluation Type"
 msgstr "考核类型"
@@ -115,7 +115,7 @@ msgstr "日期"
 #: model:ir.ui.menu,name:hr_evaluation.menu_eval_hr
 #: model:ir.ui.menu,name:hr_evaluation.menu_open_view_hr_evaluation_tree
 msgid "Evaluations"
-msgstr "考核"
+msgstr "考评"
 
 msgid "Configuration"
 msgstr "设置"
@@ -154,7 +154,7 @@ msgstr "备注"
 #. module: hr_evaluation
 #: model:ir.model,name:hr_evaluation.model_hr_evaluation_evaluation
 msgid "Employee Evaluation"
-msgstr "员工考核"
+msgstr "员工考评"
 
 msgid "Employee Evaluation Type"
 msgstr "员工考核类型"
@@ -180,7 +180,7 @@ msgstr "考核引用"
 #. module: hr_evaluation
 #: model:ir.module.module,shortdesc:hr_evaluation.module_meta_information
 msgid "Human Resources Evaluation"
-msgstr "人力资源考核"
+msgstr "人力资源考评"
 
 msgid "Quotes"
 msgstr "引号"

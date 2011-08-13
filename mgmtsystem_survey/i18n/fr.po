@@ -14,8 +14,8 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2011-07-29 04:57+0000\n"
-"X-Generator: Launchpad (build 13405)\n"
+"X-Launchpad-Export-Date: 2011-08-13 05:11+0000\n"
+"X-Generator: Launchpad (build 13674)\n"
 
 #. module: mgmtsystem_survey
 #: model:ir.ui.menu,name:mgmtsystem_survey.menu_open_answers
@@ -45,6 +45,3 @@ msgstr ""
 #: model:ir.module.module,shortdesc:mgmtsystem_survey.module_meta_information
 msgid "Management System - Survey"
 msgstr "Système de gestion - Questionnaire"
-
-#~ msgid "Answer Survey"
-#~ msgstr "Répondre au questionnaire"

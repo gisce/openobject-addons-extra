@@ -14,8 +14,8 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2011-06-18 05:10+0000\n"
-"X-Generator: Launchpad (build 13168)\n"
+"X-Launchpad-Export-Date: 2011-08-13 05:06+0000\n"
+"X-Generator: Launchpad (build 13674)\n"
 
 #. module: survey
 #: model:ir.actions.act_window,name:survey.action_survey_form1
@@ -73,7 +73,7 @@ msgstr "Data d'obertura de l'enquesta"
 #. module: survey
 #: model:ir.model,name:survey.model_survey_name_wiz
 msgid "survey.name.wiz"
-msgstr ""
+msgstr "enquesta.nom.assist"
 
 msgid "Users Details"
 msgstr ""
@@ -112,14 +112,14 @@ msgstr ""
 #. module: survey
 #: view:survey.question.wiz:0
 msgid "Your Messages"
-msgstr ""
+msgstr "Els vostres missatges"
 
 #. module: survey
 #: selection:survey,state:0
 #: view:survey.request:0
 #: selection:survey.request,state:0
 msgid "Cancelled"
-msgstr ""
+msgstr "Cancel·lada"
 
 #. module: survey
 #: field:survey.question,allow_comment:0
@@ -201,7 +201,7 @@ msgstr ""
 #. module: survey
 #: field:survey.send.invitation,mail_from:0
 msgid "From"
-msgstr ""
+msgstr "Des de"
 
 msgid "Response Type"
 msgstr ""
@@ -209,7 +209,7 @@ msgstr ""
 #. module: survey
 #: field:survey.name.wiz,transfer:0
 msgid "Page Transfer"
-msgstr ""
+msgstr "Pàgina de transferència"
 
 #. module: survey
 #: field:survey.answer,question_id:0
@@ -518,7 +518,7 @@ msgstr ""
 #: view:survey.request:0
 #: selection:survey.request,state:0
 msgid "Done"
-msgstr ""
+msgstr "Fet"
 
 #, python-format
 msgid "'\" + que_rec[0]['question'] + \"' This question requires an answer."
@@ -563,7 +563,7 @@ msgstr ""
 #. module: survey
 #: field:survey.answer,average:0
 msgid "#Avg"
-msgstr ""
+msgstr "# Punt"
 
 #. module: survey
 #: view:survey:0
@@ -574,7 +574,7 @@ msgstr "Responsable"
 #. module: survey
 #: selection:survey.response.line,state:0
 msgid "Answered"
-msgstr ""
+msgstr "Respost"
 
 #. module: survey
 #: view:survey:0
@@ -687,4 +687,4 @@ msgstr ""
 #. module: survey
 #: field:survey.name.wiz,page:0
 msgid "Page Position"
-msgstr ""
+msgstr "Posició de la pàgina"

@@ -14,8 +14,8 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2011-06-18 05:13+0000\n"
-"X-Generator: Launchpad (build 13168)\n"
+"X-Launchpad-Export-Date: 2011-08-13 05:09+0000\n"
+"X-Generator: Launchpad (build 13674)\n"
 
 #. module: account_financial_report
 #: wizard_field:account.invoice.list.report,init,in_invoice:0
@@ -1166,15 +1166,3 @@ msgstr "FRP: "
 #: report:account.print.journal.entriesh:0
 msgid "End of report"
 msgstr "Final de l'informe"
-
-#~ msgid "Select period"
-#~ msgstr "Selecciona període"
-
-#~ msgid "Sort by:"
-#~ msgstr "Ordena per:"
-
-#~ msgid ":"
-#~ msgstr ":"
-
-#~ msgid "Invoice description"
-#~ msgstr "Descripció factura"

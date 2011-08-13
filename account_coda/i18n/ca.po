@@ -14,14 +14,14 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2011-06-18 05:05+0000\n"
-"X-Generator: Launchpad (build 13168)\n"
+"X-Launchpad-Export-Date: 2011-08-13 05:01+0000\n"
+"X-Generator: Launchpad (build 13674)\n"
 
 #. module: account_coda
 #: help:account.coda,journal_id:0
 #: field:account.coda.import,journal_id:0
 msgid "Bank Journal"
-msgstr ""
+msgstr "Diari bancari"
 
 msgid ""
 "The Object name must start with x_ and not contain any special character !"
@@ -31,7 +31,7 @@ msgstr ""
 #: view:account.coda:0
 #: field:account.coda.import,note:0
 msgid "Log"
-msgstr ""
+msgstr "Registre"
 
 msgid "_Open Statement"
 msgstr ""
@@ -42,7 +42,7 @@ msgstr ""
 #. module: account_coda
 #: field:account.coda,name:0
 msgid "Coda file"
-msgstr ""
+msgstr "Fitxer Coda"
 
 msgid "Clic on 'New' to select your file :"
 msgstr ""
@@ -56,7 +56,7 @@ msgstr ""
 #. module: account_coda
 #: field:account.coda,note:0
 msgid "Import log"
-msgstr ""
+msgstr "Registre de la importació"
 
 msgid "Default receivable Account"
 msgstr ""
@@ -76,13 +76,13 @@ msgstr ""
 #. module: account_coda
 #: view:account.coda:0
 msgid "Coda import"
-msgstr ""
+msgstr "Importa Coda"
 
 #. module: account_coda
 #: view:account.coda:0
 #: field:account.coda,user_id:0
 msgid "User"
-msgstr ""
+msgstr "Usuari"
 
 msgid "Invalid XML for View Architecture!"
 msgstr ""
@@ -90,12 +90,12 @@ msgstr ""
 #. module: account_coda
 #: model:ir.model,name:account_coda.model_account_coda
 msgid "coda for an Account"
-msgstr ""
+msgstr "Coda per a un compte"
 
 #. module: account_coda
 #: field:account.coda.import,def_payable:0
 msgid "Default Payable Account"
-msgstr ""
+msgstr "Compte a pagar per defecte"
 
 msgid "Coda Statements"
 msgstr ""
@@ -103,7 +103,7 @@ msgstr ""
 #. module: account_coda
 #: model:ir.ui.menu,name:account_coda.menu_account_coda_import
 msgid "Import Coda Statements"
-msgstr ""
+msgstr "Importa els extractes Coda"
 
 msgid "_Ok"
 msgstr ""
@@ -112,28 +112,28 @@ msgstr ""
 #: view:account.coda.import:0
 #: model:ir.actions.act_window,name:account_coda.action_account_coda_import
 msgid "Import Coda Statement"
-msgstr ""
+msgstr "Importa l'extracte Coda"
 
 #. module: account_coda
 #: field:account.bank.statement,coda_id:0
 msgid "Coda"
-msgstr ""
+msgstr "Coda"
 
 #. module: account_coda
 #: view:account.coda.import:0
 msgid "Results :"
-msgstr ""
+msgstr "Resultats :"
 
 #. module: account_coda
 #: field:account.coda.import,coda:0
 #: model:ir.actions.act_window,name:account_coda.act_account_payment_account_bank_statement
 msgid "Coda File"
-msgstr ""
+msgstr "Fitxer Coda"
 
 #. module: account_coda
 #: help:account.coda,date:0
 msgid "Import Date"
-msgstr ""
+msgstr "Data de l'importació"
 
 msgid "Select your bank journal :"
 msgstr ""

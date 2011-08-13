@@ -14,8 +14,8 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2011-06-18 05:10+0000\n"
-"X-Generator: Launchpad (build 13168)\n"
+"X-Launchpad-Export-Date: 2011-08-13 05:07+0000\n"
+"X-Generator: Launchpad (build 13674)\n"
 
 #. module: survey
 #: model:ir.actions.act_window,name:survey.action_survey_form1
@@ -73,7 +73,7 @@ msgstr "调查开展日期"
 #. module: survey
 #: model:ir.model,name:survey.model_survey_name_wiz
 msgid "survey.name.wiz"
-msgstr ""
+msgstr "survey.name.wiz"
 
 msgid "Users Details"
 msgstr "用户详细信息"
@@ -209,7 +209,7 @@ msgstr ""
 #. module: survey
 #: field:survey.name.wiz,transfer:0
 msgid "Page Transfer"
-msgstr ""
+msgstr "转页"
 
 #. module: survey
 #: field:survey.answer,question_id:0
@@ -218,12 +218,12 @@ msgstr ""
 #: field:survey.question.column.heading,question_id:0
 #: field:survey.response.line,question_id:0
 msgid "Question"
-msgstr ""
+msgstr "疑问"
 
 #. module: survey
 #: view:survey.send.invitation:0
 msgid "Send"
-msgstr ""
+msgstr "发送"
 
 msgid "#Response"
 msgstr ""
@@ -238,7 +238,7 @@ msgstr ""
 #: view:survey.send.invitation:0
 #: field:survey.send.invitation,send_mail:0
 msgid "Send mail for new user"
-msgstr ""
+msgstr "发送邮件给新用户"
 
 #, python-format
 msgid "Error !"
@@ -253,7 +253,7 @@ msgstr ""
 #. module: survey
 #: selection:survey.response,response_type:0
 msgid "Link"
-msgstr ""
+msgstr "链接"
 
 msgid "Configuration"
 msgstr ""
@@ -261,7 +261,7 @@ msgstr ""
 #. module: survey
 #: model:ir.model,name:survey.model_survey_question_wiz
 msgid "survey.question.wiz"
-msgstr ""
+msgstr "survey.question.wiz"
 
 #. module: survey
 #: constraint:ir.ui.view:0
@@ -284,7 +284,7 @@ msgstr ""
 #: field:survey.response.answer,comment_field:0
 #: view:survey.response.line:0
 msgid "Comment"
-msgstr ""
+msgstr "注释"
 
 msgid "Modify Date"
 msgstr ""
@@ -296,12 +296,12 @@ msgstr ""
 #: code:addons/survey/wizard/survey_selection.py:134
 #, python-format
 msgid "You can not give response for this survey more than %s times"
-msgstr ""
+msgstr "不能回复此问卷超过%s次"
 
 #. module: survey
 #: selection:survey.response,response_type:0
 msgid "Manually"
-msgstr ""
+msgstr "手工"
 
 msgid "All Surveys"
 msgstr ""
@@ -309,22 +309,22 @@ msgstr ""
 #. module: survey
 #: field:survey,users:0
 msgid "Users"
-msgstr ""
+msgstr "用户"
 
 #. module: survey
 #: view:survey.send.invitation:0
 msgid "Message"
-msgstr ""
+msgstr "消息"
 
 #. module: survey
 #: field:survey.name.wiz,page_no:0
 msgid "Page Number"
-msgstr ""
+msgstr "页码"
 
 #. module: survey
 #: field:survey.send.invitation.log,note:0
 msgid "Log"
-msgstr ""
+msgstr "日志"
 
 msgid "All Survey Questions"
 msgstr ""
@@ -332,25 +332,25 @@ msgstr ""
 #. module: survey
 #: field:survey,date_close:0
 msgid "Survey Close Date"
-msgstr ""
+msgstr "问卷截止日期"
 
 #. module: survey
 #: view:survey.browse.answer:0
 #: view:survey.name.wiz:0
 msgid "Start"
-msgstr ""
+msgstr "开始"
 
 #. module: survey
 #: selection:survey,state:0
 #: selection:survey.request,state:0
 #: selection:survey.response.line,state:0
 msgid "Draft"
-msgstr ""
+msgstr "草稿"
 
 #. module: survey
 #: selection:survey,state:0
 msgid "Closed"
-msgstr ""
+msgstr "已结束"
 
 #. module: survey
 #: view:survey:0
@@ -372,7 +372,7 @@ msgstr ""
 #: field:survey.send.invitation,partner_ids:0
 #: field:survey.tbl.column.heading,response_table_id:0
 msgid "Answer"
-msgstr ""
+msgstr "回复"
 
 msgid "All Survey Pages"
 msgstr ""
@@ -380,19 +380,19 @@ msgstr ""
 #. module: survey
 #: field:survey.name.wiz,store_ans:0
 msgid "Store Answer"
-msgstr ""
+msgstr "保存回复"
 
 #. module: survey
 #: field:survey,state:0
 #: field:survey.response,state:0
 #: field:survey.response.line,state:0
 msgid "Status"
-msgstr ""
+msgstr "状态"
 
 #. module: survey
 #: model:ir.module.module,shortdesc:survey.module_meta_information
 msgid "Survey Module"
-msgstr ""
+msgstr "问卷模块"
 
 msgid ""
 "\n"
@@ -411,14 +411,14 @@ msgstr ""
 #: view:survey:0
 #: view:survey.name.wiz:0
 msgid "Survey Details"
-msgstr ""
+msgstr "问卷详情"
 
 #. module: survey
 #: view:survey:0
 #: view:survey.page:0
 #: view:survey.question:0
 msgid "Required Answer"
-msgstr ""
+msgstr "需要的答复"
 
 #. module: survey
 #: field:survey.history,user_id:0
@@ -426,12 +426,12 @@ msgstr ""
 #: field:survey.request,user_id:0
 #: field:survey.response,user_id:0
 msgid "User"
-msgstr ""
+msgstr "用户"
 
 #. module: survey
 #: field:res.users,survey_id:0
 msgid "Groups"
-msgstr ""
+msgstr "组"
 
 msgid "Response"
 msgstr ""
@@ -445,7 +445,7 @@ msgstr ""
 #. module: survey
 #: selection:survey.response.line,state:0
 msgid "Skiped"
-msgstr ""
+msgstr "忽略"
 
 #. module: survey
 #: model:ir.model,name:survey.model_survey_answer
@@ -455,7 +455,7 @@ msgstr ""
 #: view:survey.response.answer:0
 #: view:survey.response.line:0
 msgid "Survey Answer"
-msgstr ""
+msgstr "问卷答案"
 
 #, python-format
 msgid "Attention!"
@@ -480,7 +480,7 @@ msgstr ""
 #: field:survey.request,survey_id:0
 #: field:survey.response,survey_id:0
 msgid "Survey"
-msgstr ""
+msgstr "问卷"
 
 msgid "Total Completed Survey :-"
 msgstr ""
@@ -488,7 +488,7 @@ msgstr ""
 #. module: survey
 #: view:survey:0
 msgid "History"
-msgstr ""
+msgstr "历史记录"
 
 #. module: survey
 #: view:survey:0
@@ -496,12 +496,12 @@ msgstr ""
 #: view:survey.page:0
 #: view:survey.question:0
 msgid "Seq"
-msgstr ""
+msgstr "序号"
 
 #. module: survey
 #: field:survey,tot_comp_survey:0
 msgid "Total Completed Survey"
-msgstr ""
+msgstr "完成的调查总数"
 
 msgid "Response Percentage"
 msgstr ""
@@ -509,7 +509,7 @@ msgstr ""
 #. module: survey
 #: field:survey.question.wiz,name:0
 msgid "Number"
-msgstr ""
+msgstr "数字"
 
 msgid "Survey Title :-"
 msgstr ""
@@ -518,7 +518,7 @@ msgstr ""
 #: view:survey.request:0
 #: selection:survey.request,state:0
 msgid "Done"
-msgstr ""
+msgstr "已完成"
 
 #, python-format
 msgid "'\" + que_rec[0]['question'] + \"' This question requires an answer."
@@ -533,23 +533,23 @@ msgstr ""
 #: view:survey.print.statistics:0
 #: view:survey.send.invitation:0
 msgid "Cancel"
-msgstr ""
+msgstr "取消"
 
 #. module: survey
 #: view:survey:0
 msgid "Close"
-msgstr ""
+msgstr "结束"
 
 #. module: survey
 #: view:survey:0
 #: selection:survey,state:0
 msgid "Open"
-msgstr ""
+msgstr "开始"
 
 #. module: survey
 #: field:survey,tot_start_survey:0
 msgid "Total Started Survey"
-msgstr ""
+msgstr "已开始的文件总数"
 
 #. module: survey
 #: constraint:ir.model:0
@@ -563,34 +563,34 @@ msgstr ""
 #. module: survey
 #: field:survey.answer,average:0
 msgid "#Avg"
-msgstr ""
+msgstr "平均#"
 
 #. module: survey
 #: view:survey:0
 #: field:survey,responsible_id:0
 msgid "Responsible"
-msgstr ""
+msgstr "负责人"
 
 #. module: survey
 #: selection:survey.response.line,state:0
 msgid "Answered"
-msgstr ""
+msgstr "已答复"
 
 #. module: survey
 #: view:survey:0
 msgid "Other"
-msgstr ""
+msgstr "其它"
 
 #. module: survey
 #: model:ir.actions.act_window,name:survey.action_view_survey_send_invitation
 #: view:survey.send.invitation:0
 msgid "Send Invitation"
-msgstr ""
+msgstr "发送邀请"
 
 #. module: survey
 #: field:survey,title:0
 msgid "Survey Title"
-msgstr ""
+msgstr "问卷标题"
 
 msgid "%"
 msgstr ""
@@ -602,12 +602,12 @@ msgstr ""
 #: field:survey.page,note:0
 #: view:survey.response.line:0
 msgid "Description"
-msgstr ""
+msgstr "描述"
 
 #. module: survey
 #: view:survey.name.wiz:0
 msgid "Select Survey"
-msgstr ""
+msgstr "选择问卷"
 
 msgid "New Survey Page"
 msgstr ""
@@ -617,18 +617,18 @@ msgstr ""
 #: view:survey.page:0
 #: field:survey.question,page_id:0
 msgid "Survey Page"
-msgstr ""
+msgstr "问卷页面"
 
 #. module: survey
 #: model:ir.actions.report.xml,name:survey.survey_browse_response
 #: field:survey.browse.answer,response_id:0
 msgid "Survey Answers"
-msgstr ""
+msgstr "问卷答复"
 
 #. module: survey
 #: view:survey.page:0
 msgid "#Questions"
-msgstr ""
+msgstr "问题#"
 
 msgid "Que:"
 msgstr ""
@@ -638,40 +638,40 @@ msgstr ""
 #: view:survey.question:0
 #: field:survey.response.line,page_id:0
 msgid "Page"
-msgstr ""
+msgstr "页面"
 
 #. module: survey
 #: view:survey.send.invitation.log:0
 msgid "User creation"
-msgstr ""
+msgstr "创建用户"
 
 #. module: survey
 #: field:survey.answer,sequence:0
 #: field:survey.question,sequence:0
 msgid "Sequence"
-msgstr ""
+msgstr "序号"
 
 #. module: survey
 #: view:survey.send.invitation.log:0
 msgid "Results :"
-msgstr ""
+msgstr "结果："
 
 #. module: survey
 #: code:addons/survey/wizard/survey_send_invitation.py:74
 #, python-format
 msgid "%sSurvey is not in open state"
-msgstr ""
+msgstr "%s问卷不是启用状态"
 
 #. module: survey
 #: view:survey.send.invitation:0
 msgid "Select Partner"
-msgstr ""
+msgstr "选择业务伙伴"
 
 #. module: survey
 #: field:survey.response,date_create:0
 #: field:survey.response.line,date_create:0
 msgid "Create Date"
-msgstr ""
+msgstr "创建日期"
 
 #. module: survey
 #: model:ir.actions.act_window,name:survey.action_survey_page_form
@@ -679,7 +679,7 @@ msgstr ""
 #: model:ir.ui.menu,name:survey.menu_survey_page_form1
 #: view:survey.page:0
 msgid "Survey Pages"
-msgstr ""
+msgstr "问卷页面"
 
 msgid "Response Count"
 msgstr ""
@@ -687,4 +687,4 @@ msgstr ""
 #. module: survey
 #: field:survey.name.wiz,page:0
 msgid "Page Position"
-msgstr ""
+msgstr "页面位置"

@@ -14,8 +14,8 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2011-06-18 05:12+0000\n"
-"X-Generator: Launchpad (build 13168)\n"
+"X-Launchpad-Export-Date: 2011-08-13 05:08+0000\n"
+"X-Generator: Launchpad (build 13674)\n"
 
 #. module: carrier_picking
 #: field:res.partner.address,plate:0
@@ -25,10 +25,10 @@ msgstr "Matrícula"
 #. module: carrier_picking
 #: constraint:ir.ui.view:0
 msgid "Invalid XML for View Architecture!"
-msgstr "XML invàlid per a la definició de la vista!"
+msgstr "﻿XML invàlid per a la definició de la vista!"
 
 #. module: carrier_picking
-#: model:ir.module.module,description:carrier_picking.module_name_translation
+#: model:ir.module.module,description:carrier_picking.module_meta_information
 msgid ""
 "Carrier picking module:\n"
 "\n"
@@ -37,19 +37,19 @@ msgid ""
 msgstr ""
 "Mòdul transportista en els albarans:\n"
 "\n"
-"* Afegeix l'adreça del transportista als albarans i un camp per emmagatzemar "
-"informació addicional (per exemple la matrícula) a les adreces d'empresa i "
-"els albarans."
+"* Afegeix l'adreça del transportista en els albarans i un camp per "
+"emmagatzemar informació addicional (per exemple la matrícula del vehicle) a "
+"les adreces d'empresa i els albarans."
 
 #. module: carrier_picking
 #: help:res.partner.address,plate:0
 msgid "Vehicle's plate"
-msgstr "Matrícula del vehículo"
+msgstr "Matrícula del vehicle"
 
 #. module: carrier_picking
 #: model:ir.module.module,shortdesc:carrier_picking.module_name_translation
 msgid "Carrier picking"
-msgstr "Transportista en els albarans"
+msgstr "Transportista en los albaranes"
 
 #. module: carrier_picking
 #: field:stock.picking,address_carrier_id:0
@@ -64,4 +64,4 @@ msgstr "Info. transportista"
 #. module: carrier_picking
 #: help:stock.picking,carrier_name:0
 msgid "Additional carrier information (vehicle's plate, ...)"
-msgstr "Informació addicional transportista (matrícula vehicle, ...)"
+msgstr "Informació addicional del transportista (matrícula del vehicle, ...)"

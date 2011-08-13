@@ -14,11 +14,11 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2011-06-18 05:11+0000\n"
-"X-Generator: Launchpad (build 13168)\n"
+"X-Launchpad-Export-Date: 2011-08-13 05:07+0000\n"
+"X-Generator: Launchpad (build 13674)\n"
 
 #. module: radiotv
-#: rml:radiotv.broadcast.declaration.report:0
+#: report:radiotv.broadcast.declaration.report:0
 msgid "Company name:"
 msgstr "Nom de l'empresa:"
 
@@ -28,7 +28,7 @@ msgid "Channels, programs and categories export"
 msgstr "Exportació de canals"
 
 #. module: radiotv
-#: rml:radiotv.broadcast.declaration.report:0
+#: report:radiotv.broadcast.declaration.report:0
 #: field:radiotv.program,production_country_id:0
 msgid "Production country"
 msgstr "País de producció"
@@ -60,7 +60,7 @@ msgid "Publication"
 msgstr "Data publicació"
 
 #. module: radiotv
-#: rml:radiotv.broadcast.declaration.report:0
+#: report:radiotv.broadcast.declaration.report:0
 #: field:radiotv.program,original_language:0
 msgid "Original language"
 msgstr "Idioma original"
@@ -71,14 +71,14 @@ msgid "Deleted podcasts"
 msgstr "Podcasts eliminats"
 
 #. module: radiotv
-#: rml:radiotv.broadcast.declaration.report:0
+#: report:radiotv.broadcast.declaration.report:0
 msgid "Program name"
 msgstr "Nom del programa"
 
 #. module: radiotv
-#: code:addons/radiotv/wizard/wizard_export_channels_programs.py:0
-#: code:addons/radiotv/wizard/wizard_export_broadcasts.py:0
-#: code:addons/radiotv/wizard/wizard_export_podcasts.py:0
+#: code:addons/radiotv/wizard/wizard_export_broadcasts.py:73
+#: code:addons/radiotv/wizard/wizard_export_channels_programs.py:54
+#: code:addons/radiotv/wizard/wizard_export_podcasts.py:73
 #, python-format
 msgid ""
 "No website defined!\n"
@@ -98,7 +98,7 @@ msgid "to"
 msgstr "fins a"
 
 #. module: radiotv
-#: rml:radiotv.broadcast.declaration.report:0
+#: report:radiotv.broadcast.declaration.report:0
 #: selection:radiotv.program,classification:0
 msgid "For everybody"
 msgstr "Per a tothom"
@@ -110,28 +110,28 @@ msgid "Podcast"
 msgstr "Podcast"
 
 #. module: radiotv
-#: rml:radiotv.broadcast.report:0
+#: report:radiotv.broadcast.report:0
 msgid "Day"
 msgstr "Dia"
 
 #. module: radiotv
-#: rml:radiotv.broadcast.compact.report:0
+#: report:radiotv.broadcast.compact.report:0
 msgid "evening"
 msgstr "Vespre/Nit"
 
 #. module: radiotv
-#: field:radiotv.category,program_ids:0
-#: field:radiotv.channel,program_ids:0
 #: model:ir.ui.menu,name:radiotv.menu_radiotv_program_form
 #: view:radiotv.category:0
+#: field:radiotv.category,program_ids:0
 #: view:radiotv.channel:0
+#: field:radiotv.channel,program_ids:0
 #: view:radiotv.program:0
 msgid "Programs"
 msgstr "Programes"
 
 #. module: radiotv
-#: rml:radiotv.broadcast.report:0
 #: field:radiotv.broadcast,url:0
+#: report:radiotv.broadcast.report:0
 #: field:radiotv.web,url:0
 msgid "URL"
 msgstr "URL"
@@ -147,9 +147,9 @@ msgid "Explicit"
 msgstr "Explícit"
 
 #. module: radiotv
-#: code:addons/radiotv/wizard/wizard_export_channels_programs.py:0
-#: code:addons/radiotv/wizard/wizard_export_broadcasts.py:0
-#: code:addons/radiotv/wizard/wizard_export_podcasts.py:0
+#: code:addons/radiotv/wizard/wizard_export_broadcasts.py:73
+#: code:addons/radiotv/wizard/wizard_export_channels_programs.py:54
+#: code:addons/radiotv/wizard/wizard_export_podcasts.py:73
 #, python-format
 msgid "Error!"
 msgstr "Error!"
@@ -160,7 +160,7 @@ msgid "Program category"
 msgstr "Categoria de programa"
 
 #. module: radiotv
-#: rml:radiotv.broadcast.declaration.report:0
+#: report:radiotv.broadcast.declaration.report:0
 msgid "Period: From"
 msgstr "Període: des de"
 
@@ -182,7 +182,7 @@ msgid "Subtitle"
 msgstr "Subtítol"
 
 #. module: radiotv
-#: rml:radiotv.broadcast.declaration.report:0
+#: report:radiotv.broadcast.declaration.report:0
 #: selection:radiotv.program,classification:0
 msgid "Especially recommended for the children"
 msgstr "Especialment recomenat per a nens"
@@ -199,7 +199,7 @@ msgid "Program broadcasts"
 msgstr "Emissions del programa"
 
 #. module: radiotv
-#: rml:radiotv.broadcast.compact.report:0
+#: report:radiotv.broadcast.compact.report:0
 msgid "morning"
 msgstr "Matí"
 
@@ -225,15 +225,15 @@ msgid "Website configuration"
 msgstr "Configuració del lloc web"
 
 #. module: radiotv
-#: rml:radiotv.broadcast.report:0
+#: field:radiotv.broadcast,dt_end:0
 #: wizard_field:radiotv.broadcast.compact.report,init,d_to:0
 #: wizard_field:radiotv.broadcast.declaration.report,init,d_to:0
 #: wizard_button:radiotv.broadcast.export,export,end:0
+#: report:radiotv.broadcast.report:0
 #: wizard_button:radiotv.channel_program.export,init,end:0
 #: wizard_button:radiotv.podcast.export,export,end:0
-#: field:radiotv.broadcast,dt_end:0
 msgid "End"
-msgstr "Fi"
+msgstr "Final"
 
 #. module: radiotv
 #: wizard_field:radiotv.podcast.export,export,podcast_update:0
@@ -267,7 +267,7 @@ msgid "State"
 msgstr "Estat"
 
 #. module: radiotv
-#: rml:radiotv.broadcast.declaration.report:0
+#: report:radiotv.broadcast.declaration.report:0
 #: field:radiotv.program,editor:0
 msgid "Editor"
 msgstr "Editor"
@@ -284,7 +284,7 @@ msgid "radiotv.category"
 msgstr "radiotv.categoria"
 
 #. module: radiotv
-#: rml:radiotv.broadcast.declaration.report:0
+#: report:radiotv.broadcast.declaration.report:0
 msgid "Type"
 msgstr "Tipus"
 
@@ -295,11 +295,11 @@ msgstr "Correu electrònic"
 
 #. module: radiotv
 #: model:ir.actions.act_window,name:radiotv.action_radiotv_channel_form
-#: rml:radiotv.broadcast.report:0
-#: wizard_field:radiotv.broadcast.compact.report,init,channel_id:0
-#: wizard_field:radiotv.broadcast.declaration.report,init,channel_id:0
-#: wizard_field:radiotv.broadcast.copy,init,channel_id:0
 #: field:radiotv.broadcast,channel_id:0
+#: wizard_field:radiotv.broadcast.compact.report,init,channel_id:0
+#: wizard_field:radiotv.broadcast.copy,init,channel_id:0
+#: wizard_field:radiotv.broadcast.declaration.report,init,channel_id:0
+#: report:radiotv.broadcast.report:0
 #: view:radiotv.channel:0
 msgid "Channel"
 msgstr "Canal"
@@ -310,9 +310,9 @@ msgid "New programs"
 msgstr "Programes nous"
 
 #. module: radiotv
-#: field:radiotv.program,channel_ids:0
 #: model:ir.ui.menu,name:radiotv.menu_radiotv_channel_form
 #: view:radiotv.channel:0
+#: field:radiotv.program,channel_ids:0
 msgid "Channels"
 msgstr "Canals"
 
@@ -322,12 +322,12 @@ msgid "Radio TV broadcast compact report"
 msgstr "Informe de les emissions diàries"
 
 #. module: radiotv
-#: rml:radiotv.broadcast.compact.report:0
+#: report:radiotv.broadcast.compact.report:0
 msgid "/"
 msgstr "/"
 
 #. module: radiotv
-#: rml:radiotv.broadcast.declaration.report:0
+#: report:radiotv.broadcast.declaration.report:0
 #: field:radiotv.program,production_year:0
 msgid "Production year"
 msgstr "Any de producció"
@@ -412,7 +412,7 @@ msgid "Approximate duration in minutes"
 msgstr "Durada aproximada en minuts"
 
 #. module: radiotv
-#: rml:radiotv.broadcast.declaration.report:0
+#: report:radiotv.broadcast.declaration.report:0
 #: field:radiotv.program,production_type:0
 msgid "Production type"
 msgstr "Tipus de producció"
@@ -420,16 +420,16 @@ msgstr "Tipus de producció"
 #. module: radiotv
 #: model:ir.model,name:radiotv.model_radiotv_web
 msgid "RadioTV website configuration"
-msgstr "Config. web RadioTV"
+msgstr "Configuració del lloc web de Radio TV"
 
 #. module: radiotv
-#: rml:radiotv.broadcast.declaration.report:0
+#: report:radiotv.broadcast.declaration.report:0
 #: selection:radiotv.program,classification:0
 msgid "Not recommended for minors of 18"
 msgstr "No recomenat per a menors de 18 anys"
 
 #. module: radiotv
-#: rml:radiotv.broadcast.declaration.report:0
+#: report:radiotv.broadcast.declaration.report:0
 msgid "Owner"
 msgstr "Pròpia"
 
@@ -444,14 +444,14 @@ msgstr ""
 "destí seran eliminades."
 
 #. module: radiotv
+#: view:radiotv.category:0
 #: field:radiotv.podcast,category:0
 #: field:radiotv.program,category_id:0
-#: view:radiotv.category:0
 msgid "Category"
 msgstr "Categoria"
 
 #. module: radiotv
-#: rml:radiotv.broadcast.declaration.report:0
+#: report:radiotv.broadcast.declaration.report:0
 msgid "Operator name:"
 msgstr "Nom de l'operador:"
 
@@ -470,30 +470,30 @@ msgid "Updated channels"
 msgstr "Canals actualitzats"
 
 #. module: radiotv
-#: rml:radiotv.broadcast.report:0
+#: field:radiotv.broadcast,dt_start:0
 #: wizard_field:radiotv.broadcast.compact.report,init,d_from:0
 #: wizard_field:radiotv.broadcast.declaration.report,init,d_from:0
-#: field:radiotv.broadcast,dt_start:0
+#: report:radiotv.broadcast.report:0
 msgid "Start"
 msgstr "Inici"
 
 #. module: radiotv
 #: model:ir.actions.act_window,name:radiotv.action_radiotv_program_form
-#: rml:radiotv.broadcast.report:0
 #: field:radiotv.broadcast,program_id:0
+#: report:radiotv.broadcast.report:0
 #: view:radiotv.program:0
 msgid "Program"
 msgstr "Programa"
 
 #. module: radiotv
-#: rml:radiotv.broadcast.declaration.report:0
+#: report:radiotv.broadcast.declaration.report:0
 #: selection:radiotv.program,classification:0
 msgid "Not recommended for minors of 7"
 msgstr "No recomenat per a menors de 7 anys"
 
 #. module: radiotv
-#: wizard_field:radiotv.broadcast.copy,init,d_to:0
 #: wizard_field:radiotv.broadcast.copy,init,d_from:0
+#: wizard_field:radiotv.broadcast.copy,init,d_to:0
 #: wizard_field:radiotv.broadcast.export,init,d_from:0
 #: wizard_field:radiotv.podcast.export,init,d_from:0
 msgid "From"
@@ -506,20 +506,20 @@ msgstr "Lloc web"
 
 #. module: radiotv
 #: model:ir.actions.act_window,name:radiotv.action_radiotv_broadcast_form
-#: field:radiotv.podcast,broadcast_id:0
 #: view:radiotv.broadcast:0
+#: field:radiotv.podcast,broadcast_id:0
 msgid "Broadcast"
 msgstr "Emissió"
 
 #. module: radiotv
 #: selection:radiotv.program,state:0
 msgid "Unpublish"
-msgstr "Despublicat"
+msgstr "Inèdit"
 
 #. module: radiotv
-#: wizard_view:radiotv.broadcast.copy,init:0
 #: model:ir.actions.wizard,name:radiotv.wizard_copy_broadcast
 #: model:ir.ui.menu,name:radiotv.menu_wizard_copy_broadcast
+#: wizard_view:radiotv.broadcast.copy,init:0
 msgid "Copy broadcasts from a day to other"
 msgstr "Copia emissions d'un interval de dies a un altre"
 
@@ -550,7 +550,7 @@ msgid "Deleted programs"
 msgstr "Programes eliminats"
 
 #. module: radiotv
-#: rml:radiotv.broadcast.report:0
+#: report:radiotv.broadcast.report:0
 msgid "RadioTV broadcasts"
 msgstr "Emissions de RadioTV"
 
@@ -565,7 +565,7 @@ msgid "Synchronize"
 msgstr "Sincronitza"
 
 #. module: radiotv
-#: rml:radiotv.broadcast.declaration.report:0
+#: report:radiotv.broadcast.declaration.report:0
 #: selection:radiotv.program,classification:0
 msgid "Not recommended for minors of 13"
 msgstr "No recomenat per a menors de 13 anys"
@@ -576,15 +576,15 @@ msgid "Program categories exported"
 msgstr "Categories de programes exportades"
 
 #. module: radiotv
-#: rml:radiotv.broadcast.declaration.report:0
+#: report:radiotv.broadcast.declaration.report:0
 #: field:radiotv.program,classification:0
 msgid "Classification"
 msgstr "Classificació"
 
 #. module: radiotv
-#: wizard_view:radiotv.broadcast.export,init:0
 #: model:ir.actions.wizard,name:radiotv.wizard_export_broadcast
 #: model:ir.ui.menu,name:radiotv.menu_wizard_export_broadcast
+#: wizard_view:radiotv.broadcast.export,init:0
 msgid "Export broadcasts"
 msgstr "Exporta emissions"
 
@@ -612,8 +612,8 @@ msgstr "Emissions avui"
 
 #. module: radiotv
 #: wizard_button:radiotv.broadcast.compact.report,init,end:0
-#: wizard_button:radiotv.broadcast.declaration.report,init,end:0
 #: wizard_button:radiotv.broadcast.copy,init,end:0
+#: wizard_button:radiotv.broadcast.declaration.report,init,end:0
 #: wizard_button:radiotv.broadcast.export,init,end:0
 #: wizard_button:radiotv.podcast.export,init,end:0
 msgid "Cancel"
@@ -638,7 +638,7 @@ msgid "Introduction"
 msgstr "Introducció"
 
 #. module: radiotv
-#: rml:radiotv.broadcast.declaration.report:0
+#: report:radiotv.broadcast.declaration.report:0
 #: field:radiotv.program,broadcast_language:0
 msgid "Broadcast language"
 msgstr "Idioma d'emissió"
@@ -651,7 +651,7 @@ msgid "To"
 msgstr "Fins el"
 
 #. module: radiotv
-#: rml:radiotv.broadcast.compact.report:0
+#: report:radiotv.broadcast.compact.report:0
 msgid "RadioTV broadcasts:"
 msgstr "Emissions de RadioTV:"
 
@@ -667,12 +667,12 @@ msgid "Podcast Export"
 msgstr "Exporta podcasts"
 
 #. module: radiotv
-#: rml:radiotv.broadcast.declaration.report:0
+#: report:radiotv.broadcast.declaration.report:0
 msgid "Broadcast days/hours:"
 msgstr "Dies/hores emissió:"
 
 #. module: radiotv
-#: rml:radiotv.broadcast.declaration.report:0
+#: report:radiotv.broadcast.declaration.report:0
 msgid "-"
 msgstr "-"
 
@@ -682,7 +682,7 @@ msgid "Copy"
 msgstr "Copia"
 
 #. module: radiotv
-#: rml:radiotv.broadcast.compact.report:0
+#: report:radiotv.broadcast.compact.report:0
 msgid "afternoon"
 msgstr "Migdia"
 
@@ -706,7 +706,7 @@ msgid "Updated broadcasts"
 msgstr "Emissions actualitzades"
 
 #. module: radiotv
-#: rml:radiotv.broadcast.declaration.report:0
+#: report:radiotv.broadcast.declaration.report:0
 #: selection:radiotv.program,production_type:0
 msgid "Foreign"
 msgstr "Externa"
@@ -722,7 +722,7 @@ msgid "radiotv.program"
 msgstr "radiotv.programa"
 
 #. module: radiotv
-#: rml:radiotv.broadcast.declaration.report:0
+#: report:radiotv.broadcast.declaration.report:0
 #: field:radiotv.program,approx_duration:0
 msgid "Approx. duration"
 msgstr "Durada aprox."
@@ -734,8 +734,8 @@ msgid "Tomorrow broadcasts"
 msgstr "Emissions demà"
 
 #. module: radiotv
-#: rml:radiotv.broadcast.report:0
 #: field:radiotv.broadcast,description:0
+#: report:radiotv.broadcast.report:0
 #: field:radiotv.category,description:0
 #: field:radiotv.channel,description:0
 #: field:radiotv.podcast,description:0
@@ -805,3 +805,6 @@ msgstr "Podcasts exportats"
 #: model:ir.ui.menu,name:radiotv.menu_radiotv_broadcast_form21
 msgid "Previous week broadcasts"
 msgstr "Setmana anterior"
+
+#~ msgid "Tiny ERP TV & Radio Program Grid Module"
+#~ msgstr "Mòdul de graella de programes per TV i Radio per a OpenERP"

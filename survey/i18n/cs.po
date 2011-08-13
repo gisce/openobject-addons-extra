@@ -14,8 +14,8 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2011-06-18 05:10+0000\n"
-"X-Generator: Launchpad (build 13168)\n"
+"X-Launchpad-Export-Date: 2011-08-13 05:06+0000\n"
+"X-Generator: Launchpad (build 13674)\n"
 
 #. module: survey
 #: model:ir.actions.act_window,name:survey.action_survey_form1
@@ -37,7 +37,7 @@ msgstr "Otázky průzkumu"
 #. module: survey
 #: view:survey:0
 msgid "Set to draft"
-msgstr ""
+msgstr "Nastavit jako rozpracované"
 
 #. module: survey
 #: constraint:ir.actions.act_window:0
@@ -47,7 +47,7 @@ msgstr "Špatný název modelu v definici akce"
 #. module: survey
 #: field:survey.history,date:0
 msgid "Date started"
-msgstr ""
+msgstr "Datum začátku"
 
 #. module: survey
 #: field:survey,history:0
@@ -178,7 +178,7 @@ msgstr "Varování !"
 #: view:survey.send.invitation:0
 #: field:survey.send.invitation,send_mail_existing:0
 msgid "Send reminder for existing user"
-msgstr ""
+msgstr "Poslat připomenutí existujícímu uživateli"
 
 msgid "New Survey Question"
 msgstr "Nová otázka průzkumu"
@@ -209,7 +209,7 @@ msgstr "Druh odpovědia"
 #. module: survey
 #: field:survey.name.wiz,transfer:0
 msgid "Page Transfer"
-msgstr ""
+msgstr "Přesun stránky"
 
 #. module: survey
 #: field:survey.answer,question_id:0
@@ -229,10 +229,10 @@ msgid "#Response"
 msgstr "#Odpověď"
 
 msgid "Response Answer"
-msgstr ""
+msgstr "Odpověď"
 
 msgid "Response Summary"
-msgstr ""
+msgstr "Souhrn odpovědi"
 
 #. module: survey
 #: view:survey.send.invitation:0
@@ -269,16 +269,16 @@ msgid "Invalid XML for View Architecture!"
 msgstr "Invalidní XML pro zobrazení architektury!"
 
 msgid "Survey Response Answer"
-msgstr ""
+msgstr "Odpověď na otázku z dotazníku"
 
 msgid "Page :-"
-msgstr ""
+msgstr "Strana :-"
 
 msgid "Maximum Response per User"
-msgstr ""
+msgstr "Maximální počet odpovědí jednoho uživatele"
 
 msgid "Total Started Survey :-"
-msgstr ""
+msgstr "Celkem zahájených průzkumů :-"
 
 #. module: survey
 #: field:survey.response.answer,comment_field:0
@@ -287,10 +287,10 @@ msgid "Comment"
 msgstr "komentář"
 
 msgid "Modify Date"
-msgstr ""
+msgstr "Datum změny"
 
 msgid "Answered Question"
-msgstr ""
+msgstr "Zodpovězených otázek"
 
 #. module: survey
 #: code:addons/survey/wizard/survey_selection.py:134
@@ -304,7 +304,7 @@ msgid "Manually"
 msgstr ""
 
 msgid "All Surveys"
-msgstr ""
+msgstr "Všechny průzkumy"
 
 #. module: survey
 #: field:survey,users:0
@@ -406,19 +406,28 @@ msgid ""
 "invitation of the survey\n"
 "    "
 msgstr ""
+"\n"
+"    Tento modul slouží k průzkumům. Závisí na odpovědích a recenzích různých "
+"uživatelů.\n"
+"    Průzkum může mít více stránek. Každá stánka může obsahovat více otázek, "
+"z nichž každá může mít více odpovědí. \n"
+"    Průzkum je konán na základě odpovědí na otázky od různých uživatelů. \n"
+"    Partnerům jsou k průzkumům také zasílány e-mailové pozvánky s "
+"uživatelským jménem a heslem.\n"
+"    "
 
 #. module: survey
 #: view:survey:0
 #: view:survey.name.wiz:0
 msgid "Survey Details"
-msgstr ""
+msgstr "Podrobnosti průzkumu"
 
 #. module: survey
 #: view:survey:0
 #: view:survey.page:0
 #: view:survey.question:0
 msgid "Required Answer"
-msgstr ""
+msgstr "Povinná odpověď"
 
 #. module: survey
 #: field:survey.history,user_id:0
@@ -437,15 +446,15 @@ msgid "Response"
 msgstr ""
 
 msgid "New Survey"
-msgstr ""
+msgstr "Nový průzkum"
 
 msgid "Survey Management"
-msgstr ""
+msgstr "Správa průzkumů"
 
 #. module: survey
 #: selection:survey.response.line,state:0
 msgid "Skiped"
-msgstr ""
+msgstr "Přeskočeno"
 
 #. module: survey
 #: model:ir.model,name:survey.model_survey_answer
@@ -455,7 +464,7 @@ msgstr ""
 #: view:survey.response.answer:0
 #: view:survey.response.line:0
 msgid "Survey Answer"
-msgstr ""
+msgstr "Odpověď na průzkum"
 
 #, python-format
 msgid "Attention!"
@@ -480,10 +489,10 @@ msgstr ""
 #: field:survey.request,survey_id:0
 #: field:survey.response,survey_id:0
 msgid "Survey"
-msgstr ""
+msgstr "Průzkum"
 
 msgid "Total Completed Survey :-"
-msgstr ""
+msgstr "Celkem odevzdaných dotazníků :-"
 
 #. module: survey
 #: view:survey:0
@@ -501,10 +510,10 @@ msgstr ""
 #. module: survey
 #: field:survey,tot_comp_survey:0
 msgid "Total Completed Survey"
-msgstr ""
+msgstr "Celkem odevzdaných dotazníků"
 
 msgid "Response Percentage"
-msgstr ""
+msgstr "Procento odpovědí"
 
 #. module: survey
 #: field:survey.question.wiz,name:0
@@ -512,7 +521,7 @@ msgid "Number"
 msgstr ""
 
 msgid "Survey Title :-"
-msgstr ""
+msgstr "Název průzkumu"
 
 #. module: survey
 #: view:survey.request:0
@@ -522,7 +531,7 @@ msgstr ""
 
 #, python-format
 msgid "'\" + que_rec[0]['question'] + \"' This question requires an answer."
-msgstr ""
+msgstr "'\" + que_rec[0]['question'] + \"' Povinná odpověď."
 
 #. module: survey
 #: view:survey:0
@@ -549,7 +558,7 @@ msgstr ""
 #. module: survey
 #: field:survey,tot_start_survey:0
 msgid "Total Started Survey"
-msgstr ""
+msgstr "Celkem zahájených průzkumů"
 
 #. module: survey
 #: constraint:ir.model:0
@@ -558,18 +567,18 @@ msgid ""
 msgstr ""
 
 msgid "Survey Response"
-msgstr ""
+msgstr "Odpověď na průzkum"
 
 #. module: survey
 #: field:survey.answer,average:0
 msgid "#Avg"
-msgstr ""
+msgstr "#Prům"
 
 #. module: survey
 #: view:survey:0
 #: field:survey,responsible_id:0
 msgid "Responsible"
-msgstr ""
+msgstr "Zodpovědná osoba"
 
 #. module: survey
 #: selection:survey.response.line,state:0
@@ -585,12 +594,12 @@ msgstr ""
 #: model:ir.actions.act_window,name:survey.action_view_survey_send_invitation
 #: view:survey.send.invitation:0
 msgid "Send Invitation"
-msgstr ""
+msgstr "Poslat pozvání"
 
 #. module: survey
 #: field:survey,title:0
 msgid "Survey Title"
-msgstr ""
+msgstr "Název průzkumu"
 
 msgid "%"
 msgstr ""
@@ -607,23 +616,23 @@ msgstr ""
 #. module: survey
 #: view:survey.name.wiz:0
 msgid "Select Survey"
-msgstr ""
+msgstr "Vybrat průzkum"
 
 msgid "New Survey Page"
-msgstr ""
+msgstr "Nová stránka dotazníku"
 
 #. module: survey
 #: view:survey:0
 #: view:survey.page:0
 #: field:survey.question,page_id:0
 msgid "Survey Page"
-msgstr ""
+msgstr "Strana dotazníku"
 
 #. module: survey
 #: model:ir.actions.report.xml,name:survey.survey_browse_response
 #: field:survey.browse.answer,response_id:0
 msgid "Survey Answers"
-msgstr ""
+msgstr "Odpovědi na průzkum"
 
 #. module: survey
 #: view:survey.page:0
@@ -631,7 +640,7 @@ msgid "#Questions"
 msgstr "#Otázky"
 
 msgid "Que:"
-msgstr ""
+msgstr "Ot:"
 
 #. module: survey
 #: field:survey,page_ids:0
@@ -643,7 +652,7 @@ msgstr ""
 #. module: survey
 #: view:survey.send.invitation.log:0
 msgid "User creation"
-msgstr ""
+msgstr "Vytvoření uživatele"
 
 #. module: survey
 #: field:survey.answer,sequence:0
@@ -654,18 +663,18 @@ msgstr ""
 #. module: survey
 #: view:survey.send.invitation.log:0
 msgid "Results :"
-msgstr ""
+msgstr "Výsledky:"
 
 #. module: survey
 #: code:addons/survey/wizard/survey_send_invitation.py:74
 #, python-format
 msgid "%sSurvey is not in open state"
-msgstr ""
+msgstr "%sPrůzkum není otevřen"
 
 #. module: survey
 #: view:survey.send.invitation:0
 msgid "Select Partner"
-msgstr ""
+msgstr "Vybrat partnera"
 
 #. module: survey
 #: field:survey.response,date_create:0
@@ -679,12 +688,12 @@ msgstr ""
 #: model:ir.ui.menu,name:survey.menu_survey_page_form1
 #: view:survey.page:0
 msgid "Survey Pages"
-msgstr ""
+msgstr "Stránky dotazníku"
 
 msgid "Response Count"
-msgstr ""
+msgstr "Počítadlo odpovědí"
 
 #. module: survey
 #: field:survey.name.wiz,page:0
 msgid "Page Position"
-msgstr ""
+msgstr "Poloha stránky"
