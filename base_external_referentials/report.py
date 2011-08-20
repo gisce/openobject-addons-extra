@@ -82,6 +82,7 @@ class external_report(osv.osv):
         return True
 
     def retry_failed_lines(self, cr, uid, ids, context=None):
+        retry_cr = pooler.get_db(cr.dbname).cursor()
         logger = netsvc.Logger()
         logger.notifyChannel('retry_failed_lines', netsvc.LOG_INFO, "retry the failed lines of the reports ids %s" % (ids,))
         if isinstance(ids, int):
@@ -89,13 +90,15 @@ class external_report(osv.osv):
         if not context:
             context={}
         context['origin'] = 'retry'
-        for report in self.read(cr, uid, ids, ['failed_line_ids'], context=context):
+        for report in self.read(retry_cr, uid, ids, ['failed_line_ids'], context=context):
             failed_line_ids = report['failed_line_ids']
             if failed_line_ids:
                 context['external_report_id'] = report['id']
-                self.start_report(cr, uid, report['id'], context=context)
-                self.pool.get('external.report.line').retry(cr, uid, failed_line_ids, context=context)
-                self.end_report(cr, uid, report['id'], context=context)
+                self.start_report(retry_cr, uid, report['id'], context=context)
+                self.pool.get('external.report.line').retry(retry_cr, uid, failed_line_ids, context=context)
+                self.end_report(retry_cr, uid, report['id'], context=context)
+        retry_cr.commit()
+        retry_cr.close()
         return True
 
     def start_report(self, cr, uid, id=None, ref=None, name=None,
@@ -115,6 +118,7 @@ class external_report(osv.osv):
                                                external_referential_id,
                                                name,
                                                context)
+                                               
         log_cr = pooler.get_db(cr.dbname).cursor()
         try:
             if report_id:
