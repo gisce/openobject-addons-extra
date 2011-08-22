@@ -26,7 +26,7 @@ import time
 from datetime import datetime, timedelta
 from dateutil.relativedelta import relativedelta
 
-class external_shop_group(external_osv.external_osv):
+class external_shop_group(osv.osv):
     _name = 'external.shop.group'
     _description = 'External Referential Shop Group'
     
@@ -74,8 +74,7 @@ class product_category(osv.osv):
     
 product_category()
 
-
-class sale_shop(external_osv.external_osv):
+class sale_shop(osv.osv):
     _inherit = "sale.shop"
 
     def _get_exportable_product_ids(self, cr, uid, ids, name, args, context=None):
@@ -131,21 +130,29 @@ class sale_shop(external_osv.external_osv):
         context['shop_id'] = shop.id
         self.pool.get('product.category').ext_export(cr, uid, [categ_id for categ_id in categories], [shop.referential_id.id], {}, context)
        
-    def export_products_collection(self, cr, uid, shop, products, context):
-        self.pool.get('product.product').ext_export(cr, uid, [product.id for product in shop.exportable_product_ids] , [shop.referential_id.id], {}, context)
+    def export_products_collection(self, cr, uid, shop, context):
+        product_to_export = context.get('force_product_ids', [product.id for product in shop.exportable_product_ids])
+        self.pool.get('product.product').ext_export(cr, uid, product_to_export, [shop.referential_id.id], {}, context)
 
     def export_products(self, cr, uid, shop, context):
-        self.export_products_collection(cr, uid, shop, shop.exportable_product_ids, context)
+        self.export_products_collection(cr, uid, shop, context)
     
     def export_catalog(self, cr, uid, ids, context=None):
         if context is None:
             context = {}
+        report_obj = self.pool.get('external.report')
         for shop in self.browse(cr, uid, ids):
             context['shop_id'] = shop.id
+            report_id = report_obj.start_report(cr, uid,
+                                                ref='export_catalog',
+                                                external_referential_id=shop.referential_id.id,
+                                                context=context)
+            context['external_report_id'] = report_id
             context['conn_obj'] = self.external_connection(cr, uid, shop.referential_id)
             self.export_categories(cr, uid, shop, context)
             self.export_products(cr, uid, shop, context)
             shop.write({'last_products_export_date' : time.strftime('%Y-%m-%d %H:%M:%S')})
+            report_obj.end_report(cr, uid, report_id, context=context)
         self.export_inventory(cr, uid, ids, context)
         return False
             
@@ -157,7 +164,8 @@ class sale_shop(external_osv.external_osv):
             context['conn_obj'] = self.external_connection(cr, uid, shop.referential_id)
             product_ids = [product.id for product in shop.exportable_product_ids]
             if shop.last_inventory_export_date:
-                recent_move_ids = self.pool.get('stock.move').search(cr, uid, [('date', '>', shop.last_inventory_export_date), ('product_id', 'in', product_ids), ('state', '!=', 'draft'), ('state', '!=', 'cancel')])
+                # we do not exclude canceled moves because it means some stock levels could have increased since last export
+                recent_move_ids = self.pool.get('stock.move').search(cr, uid, [('write_date', '>', shop.last_inventory_export_date), ('product_id', 'in', product_ids), ('state', '!=', 'draft')])
             else:
                 recent_move_ids = self.pool.get('stock.move').search(cr, uid, [('product_id', 'in', product_ids)])
             product_ids = [move.product_id.id for move in self.pool.get('stock.move').browse(cr, uid, recent_move_ids) if move.product_id.state != 'obsolete']
@@ -216,8 +224,8 @@ class sale_shop(external_osv.external_osv):
                 ids = self.pool.get('sale.order').search(cr, uid, [('id', '=', result[0])])
                 if ids:
                     id = ids[0]
-                    order = self.pool.get('sale.order').browse(cr, uid, id, context)            
-                    order_ext_id = result[1].split('sale.order_')[1]
+                    order = self.pool.get('sale.order').browse(cr, uid, id, context)
+                    order_ext_id = result[1].split('sale_order/')[1]
                     self.update_shop_orders(cr, uid, order, order_ext_id, context)
                     logger.notifyChannel('ext synchro', netsvc.LOG_INFO, "Successfully updated order with OpenERP id %s and ext id %s in external sale system" % (id, order_ext_id))
             self.pool.get('sale.shop').write(cr, uid, shop.id, {'last_update_order_export_date': time.strftime('%Y-%m-%d %H:%M:%S')})
@@ -242,12 +250,16 @@ class sale_shop(external_osv.external_osv):
             context['conn_obj'] = self.external_connection(cr, uid, shop.referential_id)        
         
             cr.execute("""
-                select stock_picking.id, sale_order.id, count(pickings.id) from stock_picking
+                select stock_picking.id, sale_order.id, count(pickings.id),
+                       delivery_carrier.export_needs_tracking, stock_picking.carrier_tracking_ref
+                from stock_picking
                 left join sale_order on sale_order.id = stock_picking.sale_id
                 left join stock_picking as pickings on sale_order.id = pickings.sale_id
                 left join ir_model_data on stock_picking.id = ir_model_data.res_id and ir_model_data.model='stock.picking'
+                left join delivery_carrier on delivery_carrier.id = stock_picking.carrier_id
                 where shop_id = %s and ir_model_data.res_id ISNULL and stock_picking.state = 'done'
-                Group By stock_picking.id, sale_order.id
+                Group By stock_picking.id, sale_order.id,
+                         delivery_carrier.export_needs_tracking, stock_picking.carrier_tracking_ref
                 """, (shop.id,))
             results = cr.fetchall()
             for result in results:
@@ -255,6 +267,11 @@ class sale_shop(external_osv.external_osv):
                     picking_type = 'complete'
                 else:
                     picking_type = 'partial'
+
+               # only export the shipping if a tracking number exists when the flag
+               # export_needs_tracking is flagged on the delivery carrier
+                if result[3] and not result[4]:
+                    continue
                 
                 ext_shipping_id = self.pool.get('stock.picking').create_ext_shipping(cr, uid, result[0], picking_type, shop.referential_id.id, context)
 
@@ -268,6 +285,7 @@ class sale_shop(external_osv.external_osv):
                       }
                     self.pool.get('ir.model.data').create(cr, uid, ir_model_data_vals)
                     logger.notifyChannel('ext synchro', netsvc.LOG_INFO, "Successfully creating shipping with OpenERP id %s and ext id %s in external sale system" % (result[0], ext_shipping_id))
+        return True
 
 sale_shop()
 
@@ -284,8 +302,13 @@ class sale_order(osv.osv):
     }
 
     def payment_code_to_payment_settings(self, cr, uid, payment_code, context=None):
-        payment_setting_ids = self.pool.get('base.sale.payment.type').search(cr, uid, [['name', 'ilike', payment_code]])
-        return payment_setting_ids and self.pool.get('base.sale.payment.type').browse(cr, uid, payment_setting_ids[0], context) or False
+        pay_type_obj = self.pool.get('base.sale.payment.type')
+        payment_setting_ids = pay_type_obj.search(cr, uid, [['name', 'like', payment_code]])
+        payment_setting_id = False
+        for type in pay_type_obj.read(cr, uid, payment_setting_ids, fields=['name'], context=context):
+            if payment_code in [x.strip() for x in type['name'].split(';')]:
+                payment_setting_id = type['id']
+        return payment_setting_id and pay_type_obj.browse(cr, uid, payment_setting_id, context) or False
 
     def generate_payment_with_pay_code(self, cr, uid, payment_code, partner_id, amount, payment_ref, entry_name, date, paid, context):
         payment_settings = self.payment_code_to_payment_settings(cr, uid, payment_code, context)
@@ -325,60 +348,70 @@ class sale_order(osv.osv):
         return statement_id
 
 
-    def oe_status(self, cr, uid, order_id, paid = True, context = None):
+    def oe_status(self, cr, uid, ids, paid = True, context = None):
+        if type(ids) in [int, long]:
+            ids =[ids]
         wf_service = netsvc.LocalService("workflow")
         logger = netsvc.Logger()
-        order = self.browse(cr, uid, order_id, context)
-        payment_settings = self.payment_code_to_payment_settings(cr, uid, order.ext_payment_method, context)
-                
-        if payment_settings:
-            if payment_settings.payment_term_id:
-                self.write(cr, uid, order.id, {'payment_term': payment_settings.payment_term_id.id})
+        for order in self.browse(cr, uid, ids, context):
+            payment_settings = self.payment_code_to_payment_settings(cr, uid, order.ext_payment_method, context)
+            
+            if payment_settings:
+                if payment_settings.payment_term_id:
+                    self.write(cr, uid, order.id, {'payment_term': payment_settings.payment_term_id.id})
 
-            if payment_settings.check_if_paid and not paid:
-                if order.state == 'draft' and datetime.strptime(order.date_order, '%Y-%m-%d') < datetime.now() - relativedelta(days=payment_settings.days_before_order_cancel or 30):
-                    wf_service.trg_validate(uid, 'sale.order', order.id, 'cancel', cr)
-                    self.write(cr, uid, order.id, {'need_to_update': False})
-                    self.log(cr, uid, order.id, "order %s canceled in OpenERP because older than % days and still not confirmed" % (order.id, payment_settings.days_before_order_cancel or 30))
-                    #TODO eventually call a trigger to cancel the order in the external system too
-                    logger.notifyChannel('ext synchro', netsvc.LOG_INFO, "order %s canceled in OpenERP because older than % days and still not confirmed" % (order.id, payment_settings.days_before_order_cancel or 30))
-                else:
-                    self.write(cr, uid, order.id, {'need_to_update': True})
-            else:
-                if payment_settings.validate_order:
-                    try:
-                        wf_service.trg_validate(uid, 'sale.order', order.id, 'order_confirm', cr)
+                if payment_settings.check_if_paid and not paid:
+                    if order.state == 'draft' and datetime.strptime(order.date_order, '%Y-%m-%d') < datetime.now() - relativedelta(days=payment_settings.days_before_order_cancel or 30):
+                        wf_service.trg_validate(uid, 'sale.order', order.id, 'cancel', cr)
                         self.write(cr, uid, order.id, {'need_to_update': False})
-                    except Exception, e:
-                        self.log(cr, uid, order.id, "ERROR could not valid order")
+                        self.log(cr, uid, order.id, "order %s canceled in OpenERP because older than % days and still not confirmed" % (order.id, payment_settings.days_before_order_cancel or 30))
+                        #TODO eventually call a trigger to cancel the order in the external system too
+                        logger.notifyChannel('ext synchro', netsvc.LOG_INFO, "order %s canceled in OpenERP because older than % days and still not confirmed" % (order.id, payment_settings.days_before_order_cancel or 30))
+                    else:
+                        self.write(cr, uid, order.id, {'need_to_update': True})
+                else:
+                    if payment_settings.validate_order:
+                        try:
+                            wf_service.trg_validate(uid, 'sale.order', order.id, 'order_confirm', cr)
+                            self.write(cr, uid, order.id, {'need_to_update': False})
+                        except Exception, e:
+                            self.log(cr, uid, order.id, "ERROR could not valid order")
+                        
+                        if payment_settings.validate_picking:
+                            self.pool.get('stock.picking').validate_picking_from_order(cr, uid, order.id)
+                        
+                        cr.execute('select * from ir_module_module where name=%s and state=%s', ('mrp','installed'))
+                        if payment_settings.validate_manufactoring_order and cr.fetchone(): #if mrp module is installed
+                            self.pool.get('stock.picking').validate_manufactoring_order(cr, uid, order.name, context)
 
-                    if order.order_policy == 'prepaid':
-                        if payment_settings.validate_invoice:
-                            for invoice in order.invoice_ids:
-                                wf_service.trg_validate(uid, 'account.invoice', invoice.id, 'invoice_open', cr)
-                                if payment_settings.is_auto_reconcile:
-                                    invoice.auto_reconcile(context=context)
-        
-                    elif order.order_policy == 'manual':
-                        if payment_settings.create_invoice:
-                           invoice_id = self.pool.get('sale.order').action_invoice_create(cr, uid, [order_id])
-                           if payment_settings.validate_invoice:
-                               wf_service.trg_validate(uid, 'account.invoice', invoice_id, 'invoice_open', cr)
-                               if payment_settings.is_auto_reconcile:
-                                   self.pool.get('account.invoice').auto_reconcile(cr, uid, [invoice_id], context=context)
-        
-                    # IF postpaid DO NOTHING
-        
-                    elif order.order_policy == 'picking':
-                        if payment_settings.create_invoice:
-                            try:
-                                invoice_id = self.pool.get('stock.picking').action_invoice_create(cr, uid, [picking.id for picking in order.picking_ids])
-                            except Exception, e:
-                                self.log(cr, uid, order.id, "Cannot create invoice from picking for order %s" %(order.name,))
+                        if order.order_policy == 'prepaid':
                             if payment_settings.validate_invoice:
-                                wf_service.trg_validate(uid, 'account.invoice', invoice_id, 'invoice_open', cr)
-                                if payment_settings.is_auto_reconcile:
-                                    self.pool.get('account.invoice').auto_reconcile(cr, uid, [invoice_id], context=context)
+                                for invoice in order.invoice_ids:
+                                    wf_service.trg_validate(uid, 'account.invoice', invoice.id, 'invoice_open', cr)
+                                    if payment_settings.is_auto_reconcile:
+                                        invoice.auto_reconcile(context=context)
+            
+                        elif order.order_policy == 'manual':
+                            if payment_settings.create_invoice:
+                               wf_service.trg_validate(uid, 'sale.order', order.id, 'manual_invoice', cr)
+                               invoice_id = self.browse(cr, uid, order.id).invoice_ids[0].id
+                               if payment_settings.validate_invoice:
+                                   wf_service.trg_validate(uid, 'account.invoice', invoice_id, 'invoice_open', cr)
+                                   if payment_settings.is_auto_reconcile:
+                                       self.pool.get('account.invoice').auto_reconcile(cr, uid, [invoice_id], context=context)
+            
+                        # IF postpaid DO NOTHING
+            
+                        elif order.order_policy == 'picking':
+                            if payment_settings.create_invoice:
+                                try:
+                                    invoice_id = self.pool.get('stock.picking').action_invoice_create(cr, uid, [picking.id for picking in order.picking_ids])
+                                except Exception, e:
+                                    self.log(cr, uid, order.id, "Cannot create invoice from picking for order %s" %(order.name,))
+                                if payment_settings.validate_invoice:
+                                    wf_service.trg_validate(uid, 'account.invoice', invoice_id, 'invoice_open', cr)
+                                    if payment_settings.is_auto_reconcile:
+                                        self.pool.get('account.invoice').auto_reconcile(cr, uid, [invoice_id], context=context)
 
         return True
 
@@ -430,6 +463,8 @@ class base_sale_payment_type(osv.osv):
         'validate_payment': fields.boolean('Validate Payment?'),
         'create_invoice': fields.boolean('Create Invoice?'),
         'validate_invoice': fields.boolean('Validate Invoice?'),
+        'validate_picking': fields.boolean('Validate Picking?'),
+        'validate_manufactoring_order': fields.boolean('Validate Manufactoring Order?'),
         'check_if_paid': fields.boolean('Check if Paid?'),
         'days_before_order_cancel': fields.integer('Days Delay before Cancel', help='number of days before an unpaid order will be cancelled at next status update from Magento'),
         'invoice_date_is_order_date' : fields.boolean('Force Invoice Date?', help="If it's check the invoice date will be the same as the order date"),
@@ -463,4 +498,39 @@ class account_invoice(osv.osv):
         return True
 
 account_invoice()
+
+class stock_picking(osv.osv):
+    _inherit = "stock.picking"
+    
+    def validate_picking_from_order(self, cr, uid, order_id, context=None):
+        so_name = self.pool.get('sale.order').read(cr, uid, order_id, ['name'])['name']
+        picking_id = self.search(cr, uid, [('origin', '=', so_name)])[0]
+        return self.validate_picking(cr, uid, [picking_id], context=context)
+        
+    def validate_picking(self, cr, uid, ids, context=None):
+        for picking in self.browse(cr, uid, ids, context=context):
+            self.force_assign(cr, uid, [picking.id])
+            partial_data = {}
+            for move in picking.move_lines:
+                partial_data["move" + str(move.id)] = {'product_qty': move.product_qty}
+            self.do_partial(cr, uid, [picking.id], partial_data)
+        return True
+        
+    def validate_manufactoring_order(self, cr, uid, origin, context=None): #we do not create class mrp.production to avoid dependence with the module mrp
+        if context == None:
+            context = {}
+        wf_service = netsvc.LocalService("workflow")
+        mrp_prod_obj = self.pool.get('mrp.production')
+        mrp_product_produce_obj = self.pool.get('mrp.product.produce')
+        production_ids = mrp_prod_obj.search(cr, uid, [('origin', 'ilike', origin)])
+        for production in mrp_prod_obj.browse(cr, uid, production_ids):
+            mrp_prod_obj.force_production(cr, uid, [production.id])
+            wf_service.trg_validate(uid, 'mrp.production', production.id, 'button_produce', cr)
+            context.update({'active_model': 'mrp.production', 'active_ids': [production.id], 'search_default_ready': 1, 'active_id': production.id})
+            produce = mrp_product_produce_obj.create(cr, uid, {'mode': 'consume_produce', 'product_qty': production.product_qty}, context)
+            mrp_product_produce_obj.do_produce(cr, uid, [produce], context)
+            self.validate_manufactoring_order(cr, uid, production.name, context)
+        return True
+        
+stock_picking()
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
