@@ -193,6 +193,30 @@ event_group()
 
 class event_registration(osv.osv):
 
+    def create(self, cr, uid, vals, *args, **kwargs):
+#       Overwrite the name fields to set next sequence according to the sequence in the legalization type (type_id)
+        if vals['name'] == 'Registration:' or vals['name'] == 'Registration':
+            vals['name'] = False # to be sure to have the contact name with 'Registration'
+        print "inside 1"
+        print vals
+        vals['badge_name'] = vals['badge_title'] = vals['badge_partner'] = False
+        if not vals['badge_name'] or not vals['name']:
+            newvals = self.onchange_contact_id(cr, uid, [], vals['contact_id'], vals['partner_id'] )
+            if newvals['value'].has_key('badge_name'):
+                vals.update({'badge_name':newvals['value']['badge_name']})
+            if newvals['value'].has_key('badge_title'):
+                vals.update({'badge_title':newvals['value']['badge_title']})
+            if newvals['value'].has_key('name'):
+                vals.update({'name':newvals['value']['name']})
+            if newvals['value'].has_key('email_from'):
+                vals.update({'email_from':newvals['value']['email_from']})
+        if not vals['badge_partner']:
+            newvals =  self.onchange_partner_id(cr, uid, [], vals['partner_id'], vals['event_id'], False)
+            if newvals['value'].has_key('badge_partner'):
+                vals.update({'badge_partner':newvals['value']['badge_partner']})
+            # maybe unit_price and partner_invoice_id
+        return super(event_registration,self).create(cr, uid, vals, *args, **kwargs)
+
     def cci_event_reg_draft(self, cr, uid, ids, *args):
         self.write(cr, uid, ids, {'state':'draft',})
         self.pool.get('event.registration')._history(cr, uid, ids, 'Draft', history=True)
@@ -302,33 +326,44 @@ class event_registration(osv.osv):
             "payment_ids":fields.many2many("account.move.line","move_line_registration", "reg_id", "move_line_id","Payment", readonly=True),
             "training_authorization":fields.char('Training Auth.',size=12,help='Formation Checks Authorization number',readonly=True),
             "check_amount":fields.function(cal_check_amount,method=True,type='float', string='Check Amount'),
-            "nbr_event_check": fields.function(get_nbr_checks, method=True, type='integer', string="Number of Checks", help="This field simply computes the number of event check records for this registration")
-
+            "nbr_event_check": fields.function(get_nbr_checks, method=True, type='integer', string="Number of Checks", help="This field simply computes the number of event check records for this registration"),
+            "comments": fields.text('Comments'),
+            "ask_attest": fields.boolean('Ask an attestation'),
     }
     _defaults = {
         'name': lambda *a: 'Registration',
     }
 
-    def write(self, cr, uid, *args, **argv):
-        if 'partner_invoice_id' in args[1] and args[1]['partner_invoice_id']:
-            data_partner = self.pool.get('res.partner').browse(cr,uid,args[1]['partner_invoice_id'])
-            if data_partner:
-                args[1]['training_authorization'] = data_partner.training_authorization
-        return super(event_registration, self).write(cr, uid, *args, **argv)
-
+#    def onchange_contact_id(self, cr, uid, ids, contact, partner):
+#        data = super(event_registration,self).onchange_contact_id(cr, uid, ids, contact, partner)
+#        if not contact:
+#            return data
+#        contact = self.pool.get('res.partner.contact').browse(cr, uid, contact)
+#        if contact.badge_name:
+#            data['value']['badge_name'] = contact.badge_name
+#        if contact.badge_title:
+#            data['value']['badge_title'] = contact.badge_title
+#        return data
+    # overwrites complety the parent (event) method to accomodate to CCI way of life
     def onchange_contact_id(self, cr, uid, ids, contact, partner):
-        data = super(event_registration,self).onchange_contact_id(cr, uid, ids, contact, partner)
+        data ={}
         if not contact:
             return data
-        contact = self.pool.get('res.partner.contact').browse(cr, uid, contact)
-        if contact.badge_name:
-            data['value']['badge_name'] = contact.badge_name
-        if contact.badge_title:
-            data['value']['badge_title'] = contact.badge_title
-        return data
+        contact_id = self.pool.get('res.partner.contact').browse(cr, uid, contact)
+        data['badge_name'] = contact_id.badge_name and contact_id.badge_name or ( contact_id.name + ' ' + contact_id.first_name ).strip()
+        if partner:
+            partner_addresses = self.pool.get('res.partner.address').search(cr, uid, [('partner_id','=',partner)])
+            job_ids = self.pool.get('res.partner.job').search(cr, uid, [('contact_id','=',contact),('address_id','in',partner_addresses)])
+            if job_ids:
+                data['email_from'] = self.pool.get('res.partner.job').browse(cr, uid, job_ids[0]).email
+                data['badge_title'] = contact_id.badge_title and contact_id.badge_title or self.pool.get('res.partner.job').browse(cr, uid, job_ids[0]).function_label
+        d = self.onchange_badge_name(cr, uid, ids,data['badge_name'])
+        data.update(d['value'])
+
+        return {'value':data}
 
     def onchange_partner_id(self, cr, uid, ids, part, event_id, email=False):
-    #raise an error if the partner cannot participate to event.
+        #raise an error if the partner cannot participate to event.
         badge_part = False
         warning = False
         if part:

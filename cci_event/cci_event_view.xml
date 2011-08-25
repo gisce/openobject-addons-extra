@@ -540,6 +540,7 @@
                         <field name="som" select="2"/>
                         <button name="add_reply" string="Add Last Mail for Replying"
                             states="open" type="object" colspan="2"/>
+                        <separator string="description" colspan="4"/>
                         <field name="description" colspan="2" select="2" nolabel="1"/>
                         <button name="case_log_reply"
                             string="Send Partner &amp; Historize" states="open"
@@ -607,9 +608,8 @@
 		<field name="inherit_id" ref="event.event_registration_form"/>
 		<field name="arch" type="xml">
 			<field name="badge_partner" position="after">
-				<separator colspan="4" string=""/>
                 <field name="grp_id"/>
-                <field name="cavalier"/>
+                <field name="comments" colspan="4"/>
 			</field>
 		</field>
 	</record>
@@ -639,6 +639,19 @@
                 <field name="arch" type="xml">
                         <field name="event_id" position="replace">
                             <field name="event_id" select="1" on_change="onchange_event(event_id, partner_invoice_id)" domain="[('state','not in',('cancel','close'))]"/>
+                        </field>
+                </field>
+        </record>
+
+        <record model="ir.ui.view" id="registration_form_inherit_attestation">
+                <field name="name">event.registration.form</field>
+                <field name="type">form</field>
+                <field name="model">event.registration</field>
+                <field name="inherit_id" ref="event.event_registration_form"/>
+                <field name="arch" type="xml">
+                        <field name="attendance" position="after">
+                            <field name="ask_attest"/>
+                            <field name="cavalier"/>
                         </field>
                 </field>
         </record>
