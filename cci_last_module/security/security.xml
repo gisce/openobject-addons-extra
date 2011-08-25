@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<openerp>
+<data>
+
+	<!-- Users Groups -->
+    <record model="res.groups" id="group_cci_last_module_modsalesman">
+        <field name="name">CCI Salesman on Partner Manager</field>
+    </record>
+
+</data>
+</openerp>
+

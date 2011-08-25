@@ -1,6 +1,6 @@
 # -*- encoding: utf-8 -*-
 ##############################################################################
-#    
+#
 #    OpenERP, Open Source Management Solution
 #    Copyright (C) 2004-2009 Tiny SPRL (<http://tiny.be>).
 #
@@ -15,29 +15,10 @@
 #    GNU Affero General Public License for more details.
 #
 #    You should have received a copy of the GNU Affero General Public License
-#    along with this program.  If not, see <http://www.gnu.org/licenses/>.     
+#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-{
-    'name': 'cci last module',
-    'category': 'Data Module',
-    'init_xml':[],
-    'author': 'Tiny',
-    #'depends': ['profile_cci'],
-    'depends': [],
-    'version': '1.1',
-    'active': False,
-    'demo_xml': [],
-    'update_xml':[
-        'cci_partner.xml',
-        'cci_partner_address.xml',
-        'cci_partner_contact.xml',
-        'cci_partner_job.xml',
-        #'cci_last_module_wizard.xml',
-        'cci_last_module_report.xml',
-        'security/security.xml'
-    ],
-    'installable': True
-}
+import print_partner_data_commercial
+import print_partner_data_internal
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
 

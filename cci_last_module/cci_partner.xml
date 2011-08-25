@@ -1,0 +1,315 @@
+<?xml version="1.0" ?>
+<openerp>
+<data>
+
+        <record model="ir.ui.view" id="view_partner_form_new" ><!--cci_view_partner_form-->
+            <field name="name">res.partner.new.form</field><!--cci.view.partner - Partenaires CCI-->
+            <field name="model">res.partner</field>
+            <field name="type">form</field>
+            <field name="priority">1</field>
+            <field name="arch" type="xml">
+                <form string="Partners">
+                    <!-- Champs au dessus des onglets -->
+                    <group col="6" colspan="4">
+                            <field name="name" select="1"/>
+                            <field string="État actuel d'adhésion" name="membership_state" select="1"/>
+                            <field name="customer" select="2"/>
+                            <newline/>
+                            <field name="user_id_readonly" select="1" readonly="True"/>
+                            <field string="Chiffre d'affaire" name="turnover_last_12m" select="2" readonly="True"/>
+                            <field name="supplier" select="2"/>
+                            <newline/>
+                            <field name="state_id" select="2"/>
+                            <field name="vat" select="1"/>
+                            <field name="vat_subjected" string="Assujetti à la TVA"/>   
+                    </group>
+                    <notebook colspan="4">
+                        <!-- Onglet Général -->
+                        <page string="General">
+           					<field name="address" mode="form,tree" colspan="4" nolabel="1" select="1" string="Adresses">
+			                    <form string="Adresses">
+                                    <field name="type" select="2"/>
+                                    <field name="name" select="2"/>
+                                    <field name="street" select="1"/>
+                                    <field name="phone" on_change="on_change_phone_num(phone)" select="2"/>
+                                    <field name="street2" />
+                                    <field name="fax"/>
+                                    <field name="zip_id" select="1"/>
+                                    <field name="email" select="2"  widget="email"/>
+                                    <field name="country_id" completion="1" select="1"/>
+                                    <field name="magazine_subscription" select="2"/>
+                                    <field name="sequence_partner" />
+                                    <field name="magazine_subscription_source" select="2"/>
+                                    <field name="notdelivered" />
+                                    <group colspan="2" col="8"><label string="-&gt;" colspan="6" align="1.0"/><field name="active" select="2"/></group>
+                                    <field name="job_ids" mode="tree,form" colspan="4" nolabel="1">
+                                        <tree string="Fonctions" editable="top">
+                                            <field name="sequence_partner" string="Séq./Part."/>
+                                            <field name="contact_id"/>
+                                            <field name="function_code_label"/>
+                                            <field name="function_label"/>
+                                            <field name="phone" on_change="on_change_phone_num(phone)"/>
+                                            <field name="mobile_contact" string="GSM"/>
+                                            <field name="email" string="E-Mail prof."/>
+                                        </tree>
+                                        <form string="Job">
+                                            <field name="contact_id"/>
+                                            <field name="email" widget="email"/> 
+                                            <field name="function_label"/>
+                                            <field name="function_code_label"/>
+                                            <field name="phone" on_change="on_change_phone_num(phone)"/>
+                                            <field name="fax"/>
+                                            <field name="date_start"/>
+                                            <field name="sequence_partner"/>
+                                            <field name="date_stop"/>
+                                            <field name="sequence_contact"/>
+                                            <field name="magazine_subscription" select="2"/>
+                                            <field name="sequence_yearbook"/>
+                                            <field name="magazine_subscription_source" select="2"/>
+                                            <group colspan="2" col="10"><label string="-&gt;" colspan="8" align="1.0"/><field name="dir_presence"/></group>
+
+                                            <label string="" colspan="2"/>
+                                            <group colspan="2" col="12"><label string="-&gt;" colspan="10" align="1.0"/><field name="active" select="2"/></group>
+                                        </form>
+                                    </field>
+
+		                    	</form>
+			                    <tree string="Addresses">
+			                        <field name="type"/>
+			                        <field name="name"/>
+			                        <field name="zip_id"/>
+                                    <field name="country_id"/>
+			                        <field name="phone" on_change="on_change_phone_num(phone)"/>
+			                        <field name="job_ids"/>
+			                    </tree>
+			                </field>
+                        </page>
+                        <page string="Extra Information">
+                            <field name="name_official"/>
+                            <field string="Forme juridique" domain="[('domain', '=', 'partner')]" name="title"/>
+                            <newline/>
+                            <field name="name_old"/>
+                            <field name="website" widget="url"/>
+                            <newline/>
+                            <field string="Client - Total à recevoir" name="credit" select="2"/>
+                            <field name="state_id2"/>
+                            <newline/>
+                            <field string="Fournis. - Total à payer" name="debit" select="2"/>
+                            <field string="Niveau rappel actuel" name="followup_max_level"/>
+                            <newline/>
+                            <field name="ref" select="1"/>
+                            <group colspan="2" col="8"><label string="-&gt;" colspan="6" align="1.0"/><field string="Fiche Partenaire active" name="active"/></group>
+                            <newline/>
+                            <field name="lang"/>
+                            <group colspan="2" col="8"><label string="-&gt;" colspan="6" align="1.0"/><field name="wall_exclusion"/></group>
+                            <field name="relation_ids" mode="tree, form" nolabel="1" colspan="4">
+                                <form string="Liens vers autres partenaires">
+                                    <field name="type_id" select="1"/>
+                                    <field name="percent" />
+                                    <newline/>
+                                    <field name="partner_id" select="1" colspan="4"/>
+                                    <newline/>
+                                    <field name="description" colspan="4"/>
+                                </form>
+                                <tree string="Partner Link">
+                                    <field name="type_id" select="1"/>
+                                    <field name="partner_id" select="1"/>
+                                </tree>
+                            </field>
+                            <separator string="Pays d'import-export" colspan="4"/>
+                            <field name="export_procent"/>
+                            <field name="export_year"/>
+                            <field name="import_procent"/>
+                            <field name="import_year"/>
+                            <field name="country_relation" colspan="4" nolabel="1"/>
+                        </page>
+                        <page string="Membership">
+                            <group colspan="2" col="2">
+                                <separator string="employees" colspan="2"/>
+                                <field name="employee_nbr" select="2"/>
+                                <field name="employee_nbr_total"/>
+                            </group>
+                            <group colspan="2" col="2">
+                                <separator string="Appel à cotisation" colspan="2"/>
+                                <field name="membership_amount" select="2" string="Cotisation à demander (HTVA)"/>
+                                <!-- <field name="membership_vcs"/> -->
+                            </group>
+                            <group colspan="2" col="2">
+                                <separator string="Dates" colspan="2"/>
+                                <field name="membership_start"/>
+                                <field name="membership_stop" />
+                                <field name="membership_cancel" string="Date d'annulation d'adhésion"/>
+                                <field name="membership_first_year"/>
+                            </group>
+                            <group colspan="2" col="2">
+                                <separator string="Spécial" colspan="2"/>
+                                <field name="associate_member"/>
+                                <field name="free_member" string="Membre gratuit"/>
+                                <field name="refuse_membership" select="2"/>
+                                <field string="Raison refus" name="reason_id" colspan="4" attrs="{'readonly':[('refuse_membership','=',False)]}" widget="selection"/>
+                            </group>
+                            <field name="member_lines" colspan="4" nolabel="1">
+                                <tree string="Historique d'adhésion">
+                                    <field name="date_from"/>
+                                    <field name="date_to"/>
+                                    <field name="state"/>
+                                    <field string="Sous-total" name="subtotal"/>
+                                    <field string="N° facture" name="number"/>
+                                </tree>
+                                <form string="Membership">
+                                    <field name="date_from"/>
+                                    <field name="date_to"/>
+                                    <field name="date_cancel"/>
+                                    <field name="date_invoice"/>
+                                    <field name="account_invoice_line"/>
+                                    <field name="number"/>
+                                    <field name="subtotal"/>
+                                </form>
+                            </field>
+                            <separator string="Explications d'adhésion" colspan="4"/>
+                            <field name="membership_explanation" colspan="4" nolabel="1"/>
+                        </page>
+                        <page string="CCI">
+                            <separator string="Rencontres" colspan="4"/>
+                            <field name="training_authorization"/>
+                            <field name="badge_partner"/>
+                            <newline/>
+                            <separator string="Note" colspan="4"/>
+                            <field name="comment" colspan="4" nolabel="1"/>
+                            <newline/>
+                            <separator string="Alertes" colspan="4"/>
+                            <field name="alert_advertising"/>
+                            <field name="alert_legalisations" string="Alerte sur Légalisations"/>
+                            <field name="alert_events" string="Alerte sur Rencontres"/>
+                            <field name="alert_membership"/>
+                            <field name="alert_others"/>
+                            <newline/>
+                            <field name="alert_explanation" colspan="4" string="Message d'alerte"/>
+                        </page>
+                        <page string="Activities">
+                            <separator string="Activity Description" colspan="4"/>
+                            <field name="activity_description" colspan="4" nolabel="1"/>
+                            <field name="activity_code_ids" nolabel="1" select="2"  default_get="{'activities': activity_code_ids}">
+                                <tree string="Codes Activités" editable="bottom">
+                                    <field name="importance"/>
+                                    <field name="activity_id"/>
+                                </tree>
+                                <form string="Code Activité">
+                                    <field name="importance"/>
+                                    <field name="activity_id"/>
+                                </form>
+                            </field>
+                        </page>
+                        <page string="Tags &amp; Catégories">
+                            <separator colspan="4" string="Categories"/>
+                            <field colspan="4" name="category_id" nolabel="1" select="2" height="90"/>
+                            <separator colspan="4" string="Tags"/>
+                            <button string="Use a questionnaire" name="%(crm_profiling.wizard_open_questionnaire)d" type="action" colspan="1" icon="gtk-justify-fill"/>
+                            <newline/>
+                            <field name="answers_ids" colspan="4" nolabel="1"/>
+                        </page>
+                        <page string="Publications" groups="cci_partner.group_partner_pubdpt">
+                            <separator string="Directory" colspan="4"/>
+                            <field name="dir_name"/>
+                            <field name="dir_date_last"/>
+                            <field name="dir_name2"/>
+                            <field name="dir_date_accept"/>
+                            <field name="dir_name3"/>
+                            <field name="dir_date_publication"/>
+                            <field name="dir_presence"/>
+                            <field name="dir_exclude"/>
+                            <separator string="Articles"/>
+                            <field name="article_ids" colspan="4" nolabel="1"/>
+                        </page>
+                        <page string="Missions" groups="cci_mission.group_cci_missions_user">
+                            <group colspan="2" col="2">
+                                <separator string="Asker Info" colspan="2"/>
+                                <field name="asker_name"/>
+                                <field name="asker_address"/>
+                                <field name="asker_zip_id"/>
+                            </group>
+                            <group colspan="2" col="2">
+                                <separator string="Sender Info" colspan="4"/>
+                                <field name="sender_name"/>
+                            </group>
+                            <group colspan="2" col="2">
+                                <separator string="ATA infos" colspan="4"/>
+                                <field name="insurer_id" />
+                            </group>
+                            <group colspan="2" col="2">
+                                <separator string="Translation info" colspan="4"/>
+                                <field name="awex_eligible"/>
+                            </group>
+                        </page>
+                        <page string="Accounting" groups="account.group_account_user" >
+                            <separator string="Client" colspan="4"/>
+                            <field name="property_payment_term" widget="selection"/>
+                            <field name="property_account_position" widget="selection"/>
+                            <separator string="Factures" colspan="4"/>
+                            <field string="Nbr de facture(s) à imprimer" name="invoice_nbr"/>
+                            <field name="invoice_paper"/>
+                            <field name="invoice_public"/>
+                            <field name="invoice_special"/>
+                            <separator string="Domiciliation" colspan="4"/>
+                            <field name="domiciliation"/>
+                            <field name="domiciliation_bool" string="Domiciliation (Cotisation)"/>
+                            <separator string="miscalleanous" colspan="4"/>
+                            <field name="property_account_receivable"/>
+                            <field name="property_account_payable"/>
+                            <field string="Informations bancaires" colspan="4" context="address=address" name="bank_ids" nolabel="1" select="2">
+                                <form string="Bank account">
+                                    <field name="state" select="2"/>
+                                    <newline/>
+                                    <field name="acc_number" select="1"/>
+                                    <field name="iban"/>
+                                    <newline/>
+                                    <field name="bank"/>
+                                    <newline/>
+                                    <field name="sequence"/>
+                                    <field colspan="4" name="name" select="2"/>
+                                    <separator colspan="4" string="Bank account owner"/>
+                                    <field colspan="4" name="owner_name"/>
+                                    <field colspan="4" name="street"/>
+                                    <newline/>
+                                    <field name="zip"/>
+                                    <field name="city"/>
+                                    <newline/>
+                                    <field completion="1" name="country_id"/>
+                                    <field name="state_id"/>
+                                </form>
+                                <tree string="Informations bancaires">
+                                    <field name="state"/>
+                                    <field string="N° de compte" name="acc_number"/>
+                                    <field string="N° IBAN" name="iban"/>
+                                </tree>
+                        </field>
+                        <field name="purchase_warn"/>
+                        <field name="purchase_warn_msg"/>
+                        </page>
+                        <page string="Protected" groups="cci_last_module.group_cci_last_module_modsalesman" >
+                            <field name="user_id"/>
+                        </page>
+                    </notebook>
+                </form>
+            </field>
+        </record>
+        <record model="ir.ui.view" id="view_partner_tree_new" ><!--not given by nicolas-->
+            <field name="name">res.partner.tree</field>
+            <field name="model">res.partner</field>
+            <field name="type">tree</field>
+            <field name="priority">1</field>
+            <field name="arch" type="xml">
+                <tree string="Partners">
+                    <field name="name"/>
+                    <field name="main_street" select="2"/>
+                    <field name="main_zipcode" select="2"/>
+                    <field name="city" select="1"/>
+                    <field name="main_phone"/>
+                    <field name="website"/>
+                    <field name="user_id_readonly"/>
+                    <field name="membership_state"/>
+                </tree>
+            </field>
+        </record>
+</data>
+</openerp>
