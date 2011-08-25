@@ -36,7 +36,7 @@ class account_bank_statement_import(osv.osv):
         'partner_id': fields.many2one('res.partner', 'Bank Partner'),
         'journal_id': fields.many2one('account.journal', 'Journal'),
         'transferts_account_id':fields.many2one('account.account', 'Transferts Account'),
-        'referential_id':fields.many2one('external.referential', 'Referential'),
+        'shop_id':fields.many2one('sale.shop', 'Sale Shop'),
         'credit_account_id':fields.many2one('account.account', 'Credit Account'),
         'fee_account_id':fields.many2one('account.account', 'Fee Account'),
         'scheduler': fields.many2one('ir.cron', 'scheduler', readonly=True),

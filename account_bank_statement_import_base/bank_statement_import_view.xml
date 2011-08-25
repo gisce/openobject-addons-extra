@@ -23,7 +23,7 @@
 				    <field name="transferts_account_id" />
 			        <field name="journal_id" />
                     <field name="partner_id" />
-			        <field name="referential_id" />
+			        <field name="shop_id" />
 			        <field name="credit_account_id" />
 			        <field name="fee_account_id" />
 			        <field name="scheduler"/>
@@ -59,7 +59,7 @@
 				    <field name="name" select="1"/>
 				    <field name="transferts_account_id" />
 			        <field name="journal_id" />
-			        <field name="referential_id" />
+			        <field name="shop_id" />
 			        <field name="credit_account_id" />
 			        <field name="fee_account_id" />
 			    </tree>
