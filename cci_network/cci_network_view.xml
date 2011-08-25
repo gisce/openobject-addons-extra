@@ -1,0 +1,74 @@
+<?xml version="1.0"?>
+<openerp>
+	<data>
+
+<!-- MATERIAL -->
+	<record model="ir.ui.view" id="edit_cci_network_material_form_ext1">
+		<field name="name">network.material.form.cci_ext1</field>
+		<field name="model">network.material</field>
+		<field name="inherit_id" ref="network.edit_network"/>
+		<field name="arch" type="xml">
+			<field name="ip_addr" position="after">
+				<field name="active" select="2"/>
+                <field name="current_user_id" select="1"/>
+                <field name="cost"/>
+                <field name="invoice_id"/>
+                <field name="planned_replacement" select="2"/>
+			</field>
+		</field>
+	</record>
+
+<!-- SOFTWARE -->
+	<record model="ir.ui.view" id="view_cci_network_software_form_ext1">
+		<field name="name">network.software.form.cci_ext1"</field>
+		<field name="model">network.software</field>
+		<field name="inherit_id" ref="network.software_form"/>
+		<field name="arch" type="xml">
+			<field name="material_id" position="after">
+				<field name="license_id"/>
+			</field>
+		</field>
+	</record>
+
+<!-- LICENSE -->
+
+	<record model="ir.ui.view" id="network_license_form">
+		<field name="name">network.license.form</field>
+		<field name="model">network.license</field>
+		<field name="type">form</field>
+		<field name="arch" type="xml">
+            <form string="License">
+                <field name="name" select="1" />
+                <field name="count"/>
+                <field name="unit_cost"/>
+                <newline/>
+                <field name="supplier_id" select="2"/>
+                <field name="invoice_id"/>
+                <field name="date"/>
+                <field name="validity"/>
+                <field name="source_license_id"/>
+                <field name="note" colspan="4"/>
+            </form>
+		</field>
+	</record>
+	<record model="ir.ui.view" id="network_license_tree">
+		<field name="name">network.license.form</field>
+		<field name="model">network.license</field>
+		<field name="type">tree</field>
+		<field name="arch" type="xml">
+            <tree string="License">
+                <field name="name"/>
+                <field name="date"/>
+            </tree>
+		</field>
+	</record>
+
+	<record model="ir.actions.act_window" id="action_network_license">
+		<field name="name">License</field>
+		<field name="res_model">network.license</field>
+		<field name="view_mode">tree,form</field>
+	</record>
+	<menuitem name="License" parent="network.menu_network" id="menu_action_license" action="action_network_license" groups="network.group_network_manager"/>
+
+	</data>
+</openerp>

@@ -1,0 +1,130 @@
+# Translation of OpenERP Server.
+# This file contains the translation of the following modules:
+#	* cci_network
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: OpenERP Server 5.0.12\n"
+"Report-Msgid-Bugs-To: support@openerp.com\n"
+"POT-Creation-Date: 2011-07-02 15:00:57+0000\n"
+"PO-Revision-Date: 2011-07-02 15:00:57+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: cci_network
+#: field:network.license,date:0
+msgid "Purchase Date"
+msgstr "Purchase Date"
+
+#. module: cci_network
+#: constraint:ir.model:0
+msgid "The Object name must start with x_ and not contain any special character !"
+msgstr "The Object name must start with x_ and not contain any special character !"
+
+#. module: cci_network
+#: model:ir.module.module,shortdesc:cci_network.module_meta_information
+msgid "CCI Network"
+msgstr "CCI Network"
+
+#. module: cci_network
+#: field:network.material,planned_replacement:0
+msgid "Planned Replacement Date"
+msgstr "Planned Replacement Date"
+
+#. module: cci_network
+#: field:network.license,note:0
+msgid "Note"
+msgstr "Note"
+
+#. module: cci_network
+#: field:network.license,count:0
+msgid "Number of licenses in this bundle"
+msgstr "Number of licenses in this bundle"
+
+#. module: cci_network
+#: constraint:ir.actions.act_window:0
+msgid "Invalid model name in the action definition."
+msgstr "Invalid model name in the action definition."
+
+#. module: cci_network
+#: field:network.license,supplier_id:0
+msgid "Supplier"
+msgstr "Supplier"
+
+#. module: cci_network
+#: model:ir.model,name:cci_network.model_network_license
+msgid "A bundle of licenses"
+msgstr "A bundle of licenses"
+
+#. module: cci_network
+#: model:ir.module.module,description:cci_network.module_meta_information
+msgid "CCI Network - an extension to Network and network_extension for account links"
+msgstr "CCI Network - an extension to Network and network_extension for account links"
+
+#. module: cci_network
+#: field:network.license,unit_cost:0
+msgid "Cost by unit"
+msgstr "Cost by unit"
+
+#. module: cci_network
+#: field:network.material,current_user_id:0
+msgid "Current User"
+msgstr "Current User"
+
+#. module: cci_network
+#: field:network.license,source_license_id:0
+msgid "Source License"
+msgstr "Source License"
+
+#. module: cci_network
+#: field:network.material,active:0
+msgid "Active"
+msgstr "Active"
+
+#. module: cci_network
+#: constraint:ir.ui.view:0
+msgid "Invalid XML for View Architecture!"
+msgstr "Invalid XML for View Architecture!"
+
+#. module: cci_network
+#: field:network.license,name:0
+msgid "Name"
+msgstr "Name"
+
+#. module: cci_network
+#: model:ir.actions.act_window,name:cci_network.action_network_license
+#: model:ir.ui.menu,name:cci_network.menu_action_license
+#: view:network.license:0
+msgid "License"
+msgstr "License"
+
+#. module: cci_network
+#: field:network.license,validity:0
+msgid "Valid until"
+msgstr "Valid until"
+
+#. module: cci_network
+#: field:network.material,cost:0
+msgid "Cost"
+msgstr "Cost"
+
+#. module: cci_network
+#: field:network.license,software_ids:0
+msgid "Software using"
+msgstr "Software using"
+
+#. module: cci_network
+#: field:network.license,invoice_id:0
+#: field:network.material,invoice_id:0
+msgid "Invoice"
+msgstr "Invoice"
+
+#. module: cci_network
+#: field:network.software,license_id:0
+msgid "Used license"
+msgstr "Used license"
+
