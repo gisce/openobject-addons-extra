@@ -525,13 +525,14 @@ class res_partner(osv.osv):
             total = 0
             for line in lines:
                 # computes new turnovers
-                if not res[0]['years']:
+                if 'years' in res[0] and not res[0]['years']:
                     res[0]['years'] = int(time.strftime('%Y'))
                 
                 if context and context.has_key('years'):
                     res[0]['years'] = context['years']
 
-                if ids[0] == line[1] and int(res[0]['years']) == int(line[2]):
+                if 'years' in res[0] and ids[0] == line[1] and \
+                    int(res[0]['years']) == int(line[2]):
                     data = {
                         'cci_product': line[0],
                         'partner': line[1],
