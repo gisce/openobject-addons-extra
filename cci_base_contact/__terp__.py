@@ -31,7 +31,7 @@
     "depends" : ["base", "base_contact","project"],
     "init_xml" : [],
     "demo_xml" : [],
-    "update_xml" : ['cci_base_contact_view.xml','security/ir.model.access.csv'],
+    "update_xml" : ['cci_base_contact_view.xml','cci_base_contact_wizard.xml','security/ir.model.access.csv'],
     "active": False,
     "installable": True
 }

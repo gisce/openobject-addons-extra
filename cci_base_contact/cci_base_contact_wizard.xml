@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <wizard id="wizard_cci_base_contact_create_website_data" 
+                model="res.partner.contact" 
+                name="cci_base_contact.create_website_data" 
+                menu="False"
+                string="Create Login-PW-Token"/>
+
+        <wizard id="wizard_cci_base_contact_send_website_data" 
+                model="res.partner.contact" 
+                name="cci_base_contact.send_website_data" 
+                string="Resend Login-PW by mail"/>
+
+        <wizard id="wizard_cci_base_contact_remove_website_data" 
+                model="res.partner.contact" 
+                name="cci_base_contact.remove_website_data" 
+                menu="False"
+                string="Cancel Login"/>
+    </data>
+</openerp>

@@ -287,6 +287,7 @@
                 <field name="login_name"/>
                 <field name="password"/>
                 <field name="token"/>
+                <field name="forced_login"/>
             </field>
         </field>
     </record>

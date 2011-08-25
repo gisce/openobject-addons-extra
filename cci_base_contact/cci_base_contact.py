@@ -24,7 +24,7 @@ from osv import fields, osv
 class res_partner_contact(osv.osv):
     _inherit = "res.partner.contact"
     _columns = {
-        'data_private': fields.boolean('Private data'),
+        'data_private': fields.boolean('Private data',help="The data on this screen are private, don't diffuse them outside the CCI"),
         'self_sufficent':fields.boolean('Keep contact',help='This contact will not be removed even if all his addresses are deleted'),
         'who_date_accept':fields.date('Accept Date'),
         'who_date_last':fields.date('Last Modification'),
@@ -32,9 +32,13 @@ class res_partner_contact(osv.osv):
         'who_presence':fields.boolean('In WsW'),
         'who_description':fields.text('WsW Description',translate=True),
         'origin':fields.char('Origin',size=20,help='The DB from which the info is coming from'),
-        'fse_work_status':fields.char('FSE Work Status',size=20),
-        'fse_work_experience':fields.char('FSE Work Exp.',size=20),
-        'fse_studies':fields.char('FSE Studies',size=20),
+        #'fse_work_status':fields.char('FSE Work Status',size=20),
+        #'fse_work_experience':fields.char('FSE Work Exp.',size=20),
+        #'fse_studies':fields.char('FSE Studies',size=20),
+        'fse_nationality':fields.selection( [('belgian','Belgian'),('european','European Union'),('world','Outside European Union'),('none','No nationality'),('unknown','Unknown')], "FSE Nationality"),
+        'fse_work_experience':fields.selection( [('few','< 5 years'),('year59','5 - 9 years'),('year1014','10 - 14 years'),('year1519','15 - 19 years'),('more','20 years and more')], 'FSE Work Exp.'),
+        'fse_work_status':fields.selection( [('worker','Ouvrier'),('employee','Employé'),('manager','Cadre'),('independent','Indépendant'),('temporary','Intérimaire'),('workingmarried','Conjoint aidant')], 'FSE Work Status'),
+        'fse_studies': fields.selection( [('primary','Primary'),('lowersecondary','Secondaire inférieur'),('uppersecondary','Secondaire supérieur'),('non-academic','Supérieur non universitaire'),('academic','Universitaire')], 'FSE Studies'),
         'country_ids': fields.many2many('res.country','res_country_rel','contact','country',"Expertize's Countries"),
         'link_ids':fields.one2many('res.partner.contact.link','current_contact_id','Contact Link'),
         'canal_id': fields.many2one('res.partner.canal', 'Favourite Channel'),
@@ -47,15 +51,22 @@ class res_partner_contact(osv.osv):
         'login_name': fields.char('Login', size=240),
         'password': fields.char('Password', size=60),
         'token': fields.char('Website token',size=36),
+        'forced_login':fields.boolean('Forced login for non-member'),
         'gender':fields.selection([('man','Man'),('women','Women')],"Gender"),
+        'job_email':fields.related('job_id','email',type='char',size=240,string='Main Job Email'),
+        'job_phone':fields.related('job_id','phone',type='char',size=60,string='Main Job Phone'),
+        'note':fields.text('Note'),
         'write_date' : fields.datetime('Last Modification'),
         'write_uid' : fields.many2one('res.users','Last Modifier',help='The last person who has modified this contact'),
+        'partner_id':fields.related('job_ids','address_id','partner_id',type='many2one', relation='res.partner', string='Main Employer'),
+        'main_title':fields.related('job_ids','function_label',type='string', string='Main Title'),
     }
     _defaults = {
         'data_private' : lambda *a : False,
         'self_sufficent': lambda *a : False,
         'who_presence': lambda *a : True,
         'gender': lambda *a: 'man',
+        'forced_login': lambda *a: False,
     }
     def name_get(self, cr, user, ids, context={}):
         #will return name and first_name (courtesy)
@@ -72,7 +83,6 @@ class res_partner_contact(osv.osv):
             res.append((r['id'], addr))
         return res
 res_partner_contact()
-
 
 class res_partner_contact_link_type(osv.osv):
     _name = "res.partner.contact.link.type"
@@ -107,6 +117,7 @@ class res_partner_job(osv.osv):
         'login_name': fields.char('Login Name',size=80),
         'password': fields.char('Password',size=50),
         'token': fields.char('Token',size=40),
+        'mobile_contact':fields.related('contact_id','mobile',type='char',string='Contact Mobile'),
         'write_date' : fields.datetime('Last Modification'),
         'write_uid' : fields.many2one('res.users','Last Modifier',help='The last person who has modified this job'),
     }
