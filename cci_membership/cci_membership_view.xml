@@ -17,6 +17,56 @@
 
 <!-- end-->
 
+<!-- added by philmer to permit the correction of partner on membership_line -->
+        <record model="ir.ui.view" id="membership_line_tree">
+            <field name="name">Membership Lines</field>
+            <field name="model">membership.membership_line</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Membership lines">
+                    <field name="date_from"/>
+                    <field name="date_to"/>
+                    <field name="date_cancel"/>
+                    <field name="date_invoice"/>
+                    <field name="partner"/>
+                    <field name="invoice_id"/>
+                    <field name="state"/>
+                    <field name="number"/>
+                    <field name="subtotal"/>
+                    <field name="account_invoice_line"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="membership_line_form">
+            <field name="name">Membership lines</field>
+            <field name="model">membership.membership_line</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Membership lines">
+                    <field name="date_from" select="1"/>
+                    <field name="date_to" select="1"/>
+                    <field name="date_cancel"/>
+                    <field name="date_invoice" select="1"/>
+                    <field name="partner" select="1"/>
+                    <field name="invoice_id"/>
+                    <field name="state" select="1"/>
+                    <field name="number"/>
+                    <field name="subtotal"/>
+                    <field name="account_invoice_line"/>
+                </form>
+            </field>
+        </record>
+        <record model="ir.actions.act_window" id="action_membership_membership_lines">
+            <field name="name">Membership Lines</field>
+            <field name="res_model">membership.membership_line</field>
+        </record>
+        <menuitem name="Membership lines" parent="membership.menu_conf"
+            id="menu_membership_membership_lines"
+            action="action_membership_membership_lines"/>
+
+<!-- end addition philmer -->
+
          <record id="view_membership_line_invoice" model="ir.ui.view">
             <field name="name">res.partner.form.invoice.inherit</field>
             <field name="model">res.partner</field>

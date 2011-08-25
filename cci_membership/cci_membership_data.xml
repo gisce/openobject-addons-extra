@@ -13,7 +13,7 @@
             <field eval="'res.partner'" name="model"/>
             <field eval="'_membership_state_job'" name="function"/>
             <field eval="'()'" name="args"/>
-            <field eval="time.strftime('%Y-%m-%d 22:30:00')" name="nextcall"/>
+            <field eval="time.strftime('%Y-%m-%d 23:20:00')" name="nextcall"/>
         </record>
 
     </data>

@@ -23,14 +23,29 @@ import datetime
 
 from osv import fields, osv
 
+STATE = [
+    ('none', 'Non Member'),
+    ('canceled', 'Canceled Member'),
+    ('old', 'Old Member'),
+    ('waiting', 'Waiting Member'),
+    ('invoiced', 'Invoiced Member'),
+    ('free', 'Free Member'),
+    ('paid', 'Paid Member'),
+]
+
+STATE_PRIOR = {
+        'none' : 0,
+        'canceled' : 1,
+        'old' : 2,
+        'waiting' : 3,
+        'invoiced' : 4,
+        'free' : 6,
+        'paid' : 7
+        }
+
 class membership_line(osv.osv):
     _inherit = 'membership.membership_line'
-    _columns = {
-        'subtotal': fields.related('account_invoice_line', 'price_subtotal', type='float', string='Subtotal', readonly=True),
-        'invoice_id': fields.related('account_invoice_line', 'invoice_id', type='many2one', string='Account', relation='account.invoice', readonly=True),
-        'number': fields.related('invoice_id', 'number', type='char', string='Invoice Number', relation='account.invoice', readonly=True),
-        'date_invoice': fields.related('invoice_id', 'date_invoice', type='date', string="Date Invoiced", readonly=True),
-                }
+
     def _state(self, cr, uid, ids, name, args, context=None):
         '''Compute the state lines'''
         # this method replaces the super() method because we want to change to status of invoice partially
@@ -76,6 +91,14 @@ class membership_line(osv.osv):
                 state = 'canceled'
             res[line.id] = state
         return res
+
+    _columns = {
+        'subtotal': fields.related('account_invoice_line', 'price_subtotal', type='float', string='Subtotal', readonly=True),
+        'invoice_id': fields.related('account_invoice_line', 'invoice_id', type='many2one', string='Account', relation='account.invoice', readonly=True),
+        'number': fields.related('invoice_id', 'number', type='char', string='Invoice Number', relation='account.invoice', readonly=True),
+        'date_invoice': fields.related('invoice_id', 'date_invoice', type='date', string="Date Invoiced", readonly=True),
+        'state': fields.function(_state, method=True, string='State', type='selection', selection=STATE),
+                }
 
 membership_line()
 
