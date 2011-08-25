@@ -289,6 +289,10 @@ class res_partner(osv.osv):
         'article_ids' : fields.many2many('res.partner.article','res_partner_article_rel','partner_id','article_id','Articles'),
         'badge_partner':fields.char('Badge Partner',size=128),
         'user_id_readonly': fields.function(_get_salesman, fnct_search=_salesman_search, method=True, string='Salesman', type='many2one', relation='res.users'),
+        'turnover_last_12m':fields.float('Turnover Last 12 Months',help="Turnover last 12 complete months, excluding the current one, without missions"),
+        'main_phone': fields.related('address','phone',type='char', string='Main Phone'),
+        'main_street':fields.related('address','street',type='char', string='Main street'),
+        'main_zipcode':fields.related('address','zip',type='char', string='Main Zip Code'),
         'write_date' : fields.datetime('Last Modification'),
         'write_uid' : fields.many2one('res.users','Last Modifier',help='The last person who has modified this address'),
         #Never,Always,Managed_by_Poste,Prospect
@@ -666,6 +670,7 @@ class res_partner_contact(osv.osv):
     _inherit='res.partner.contact'
     _columns = {
         'article_ids': fields.many2many('res.partner.article','res_partner_contact_article_rel','contact_id','article_id','Articles'),
+        'fse_zip_id':fields.many2one('res.partner.zip','FSE Private Zip Code'),
     }
 
 res_partner_contact()
