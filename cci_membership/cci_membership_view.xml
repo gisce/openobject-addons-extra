@@ -67,7 +67,7 @@
 
 <!-- end addition philmer -->
 
-         <record id="view_membership_line_invoice" model="ir.ui.view">
+         <!--<record id="view_membership_line_invoice" model="ir.ui.view">
             <field name="name">res.partner.form.invoice.inherit</field>
             <field name="model">res.partner</field>
             <field name="inherit_id" ref="base.view_partner_form"/>
@@ -79,7 +79,7 @@
                 	<field name="subtotal"/>
                 </field>
             </field>
-        </record>
+        </record>-->
 
         <record model="ir.ui.view" id="cci_membership_check_tree">
             <field name="name">Membership Check</field>
