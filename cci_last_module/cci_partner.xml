@@ -161,7 +161,7 @@
                                     <field name="date_to"/>
                                     <field name="date_cancel"/>
                                     <field name="date_invoice"/>
-                                    <!--<field name="account_invoice_line"/>-->
+                                    <field name="account_invoice_line"/>
                                     <field name="number"/>
                                     <field name="subtotal"/>
                                 </form>
