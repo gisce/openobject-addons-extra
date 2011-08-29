@@ -799,7 +799,7 @@ TODO: revoir la vue tree aussi
 	=====================
 	-->
 
-	<record model="ir.ui.view" id="view_partner_address_form_inherited1">
+	<!--<record model="ir.ui.view" id="view_partner_address_form_inherited1">
 		<field name="name">Partner addresses inherited</field>
 		<field name="model">res.partner.address</field>
 		<field name="inherit_id" ref="base_contact.view_partner_address_form_inherited5"/>
@@ -829,7 +829,7 @@ TODO: revoir la vue tree aussi
 				</field>
 			</field>
 		</field>
-	</record>
+	</record>-->
 
         <record model="ir.ui.view" id="view_partner_address_form_inheritedbis">
                 <field name="name">Partner addresses inherited bis</field>
