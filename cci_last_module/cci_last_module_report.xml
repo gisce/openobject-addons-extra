@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<openerp>
+	<data>
+		<report
+			string="Print Commercial Template"
+			model="res.partner"
+			name="partner.commercial"
+			auto="False"
+            header="False"
+			rml="cci_last_module/report/partner_commercial.rml"
+			id="partner_print_commercial"/>
+
+		<report
+			string="Print Internal Template"
+			model="res.partner"
+			name="partner.internal"
+			auto="False"
+            header="False"
+			rml="cci_last_module/report/partner_internal.rml"
+			id="partner_print_internal"/>
+	</data>
+</openerp>
+

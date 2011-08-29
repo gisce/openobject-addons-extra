@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <wizard id="wizard_cci_last_module_print_partner_data" 
+                model="res.partner" 
+                name="cci_last_module.print_partner_data" 
+                string="Print Partner"/>
+
+    </data>
+</openerp>
