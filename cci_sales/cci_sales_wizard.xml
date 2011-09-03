@@ -1,0 +1,10 @@
+<?xml version="1.0" ?>
+<openerp>
+	<data>
+	<wizard string="Extract Proofs of Parution"
+			model="sale.advertising.issue"
+			menu="True"
+			name="cci_sales.extract_proofs"
+			id="wizard_extract_proofs" />
+	</data>
+</openerp>

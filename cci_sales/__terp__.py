@@ -20,7 +20,7 @@
 ##############################################################################
 {
     "name" : "CCI Sales",
-    "version" : "1.0",
+    "version" : "1.1",
     "author" : "Tiny",
     "website" : "http://www.openerp.com",
     "category" : "Generic Modules/CCI",
@@ -30,7 +30,7 @@
     "depends" : ["sale_advertising","crm"],
     "init_xml" : [],
     "demo_xml" : [],
-    "update_xml" : ["cci_sales_view.xml"],
+    "update_xml" : ["cci_sales_view.xml","cci_sales_wizard.xml"],
     "active": False,
     "installable": True
 }
