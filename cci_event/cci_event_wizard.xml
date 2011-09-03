@@ -53,5 +53,11 @@
 			menu="True"
 			name="event.create_registrations"
 			id="wizard_create_registration" />
+
+	<wizard string="Extract Registrations"
+			model="event.event"
+			menu="True"
+			name="cci_event.extract_registrations"
+			id="wizard_extract_registrations" />
 	</data>
 </openerp>
