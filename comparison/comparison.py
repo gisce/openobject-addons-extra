@@ -21,6 +21,7 @@
 ##############################################################################
 
 from osv import osv, fields
+from tools.translate import _
 
 class comparison_user(osv.osv):
     _name = 'comparison.user'
@@ -161,10 +162,11 @@ class comparison_factor(osv.osv):
         def export_line(fp, line):
             md = self.pool.get('ir.model.data')
             ids = md.search(cr, uid, [('module','=','comparison'),('res_id','=',line.id),('model','=','comparison.factor')])
-            lid = md.browse(cr, uid, ids[0], context).name
-            fp.writerow([lid, line.name, (line.type=='view' or line.child_ids) and 'category' or ''])
-            for o in line.child_ids:
-                export_line(fp, o)
+            if ids:
+                lid = md.browse(cr, uid, ids[0], context).name
+                fp.writerow([lid, line.name, (line.type=='view' or line.child_ids) and 'category' or ''])
+                for o in line.child_ids:
+                    export_line(fp, o)
 
         ids = self.search(cr, uid, [('parent_id','=',False)])
         for obj in self.browse(cr, uid, ids, context):

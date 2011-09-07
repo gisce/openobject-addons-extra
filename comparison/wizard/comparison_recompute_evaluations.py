@@ -1,43 +1,38 @@
-# -*- encoding: utf-8 -*-
+# -*- coding: utf-8 -*-
 ##############################################################################
 #
-#    OpenERP, Open Source Management Solution    
-#    Copyright (C) 2004-2008 Tiny SPRL (<http://tiny.be>). All Rights Reserved
-#    $Id$
+#    OpenERP, Open Source Management Solution
+#    Copyright (C) 2004-2010 Tiny SPRL (<http://tiny.be>).
 #
 #    This program is free software: you can redistribute it and/or modify
-#    it under the terms of the GNU General Public License as published by
-#    the Free Software Foundation, either version 3 of the License, or
-#    (at your option) any later version.
+#    it under the terms of the GNU Affero General Public License as
+#    published by the Free Software Foundation, either version 3 of the
+#    License, or (at your option) any later version.
 #
 #    This program is distributed in the hope that it will be useful,
 #    but WITHOUT ANY WARRANTY; without even the implied warranty of
 #    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#    GNU General Public License for more details.
+#    GNU Affero General Public License for more details.
 #
-#    You should have received a copy of the GNU General Public License
+#    You should have received a copy of the GNU Affero General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-import wizard
-import pooler
 
-form="""<?xml version="1.0"?>
-<form string="Evaluation Computation" colspan="4">
-    <label string="All the evaluations have been recomputed successfully." />
-</form>
-"""
+from osv import osv
+from tools.translate import _
+import netsvc
 
-fields = {}
-
-class wizard_recompute_votes(wizard.interface):
+class comparison_recompute_evaluations(osv.osv_memory):
+    _name = "comparison.recompute.evaluations"
+    _description = "Evaluation Computation"
     
-    def _recompute(self, cr, uid, data, context):
+    def recompute(self, cr, uid, data, context):
         # This method re-calculates all the VOTED evaluations
-        pool = pooler.get_pool(cr.dbname)        
-        obj_factor = pool.get('comparison.factor')
-        obj_item = pool.get('comparison.item')
-        obj_factor_result = pool.get('comparison.factor.result')
+#        pool = pooler.get_pool(cr.dbname)        
+        obj_factor = self.pool.get('comparison.factor')
+        obj_item = self.pool.get('comparison.item')
+        obj_factor_result = self.pool.get('comparison.factor.result')
         
         #Itemwise calculation based on available votes will be easier
         item_ids = obj_item.search(cr, uid, [])
@@ -87,14 +82,9 @@ class wizard_recompute_votes(wizard.interface):
                             
                     factor = factor.parent_id or False
         
-        return {}
+        return {'type': 'ir.actions.act_window_close'}
 
-    states = {
-        'init' : {
-            'actions' : [_recompute],
-            'result' : {'type' : 'form' , 'arch' : form,'fields' : fields,'state' : [('end','Ok')]}
-        },
-    }
-wizard_recompute_votes("recompute.evaluations")
+
+comparison_recompute_evaluations()
 
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

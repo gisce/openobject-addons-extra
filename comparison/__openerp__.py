@@ -22,8 +22,8 @@
 
 {
         "name" : "ERP Comparisons",
-        "version" : "0.1",
-        "author" : "Tiny",
+        "version" : "1.0",
+        "author" : "OpenERP SA",
         "website" : "http://www.openerp.com",
         "category" : "Tools",
         "description": """
@@ -43,6 +43,7 @@ different products.
         "update_xml" : [
             'comparison_view.xml',
             'security/comparison_security.xml',
+            'wizard/comparison_recompute_evaluations.xml',
             'security/ir.model.access.csv',
             ],
         "active" : False,

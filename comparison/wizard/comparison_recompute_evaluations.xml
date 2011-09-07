@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <record id="view_comparison_recompute_evaluations" model="ir.ui.view">
+            <field name="name">Recompute All Evaluations</field>
+            <field name="model">comparison.recompute.evaluations</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Evaluation Computation">
+                    <label string="All the evaluations have been recomputed successfully." />
+                    <newline />
+                    <separator string="" colspan="4"/>
+                    <group colspan="4">
+                        <button special="cancel" string="Close" icon="gtk-cancel"/>
+                        <button name="recompute" string="Ok" type="object" icon="gtk-go-forward"/>
+                    </group>
+                 </form>
+            </field>
+        </record>
+
+        <record id="action_comparison_recompute_evaluations" model="ir.actions.act_window">
+            <field name="name">Recompute All Evaluations</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">comparison.recompute.evaluations</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+        
+        <menuitem action="action_comparison_recompute_evaluations" id="menu_wizard_recompute_evaluations22" parent="menu_periodical"/>
+        
+    </data>
+</openerp>
