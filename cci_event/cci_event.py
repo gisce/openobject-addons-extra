@@ -350,7 +350,7 @@ class event_registration(osv.osv):
         if not contact:
             return data
         contact_id = self.pool.get('res.partner.contact').browse(cr, uid, contact)
-        data['badge_name'] = contact_id.badge_name and contact_id.badge_name or ( contact_id.name + ' ' + contact_id.first_name ).strip()
+        data['badge_name'] = contact_id.badge_name and contact_id.badge_name or ( contact_id.name + ' ' + ( contact_id.first_name  or '' ) ).strip()
         if partner:
             partner_addresses = self.pool.get('res.partner.address').search(cr, uid, [('partner_id','=',partner)])
             job_ids = self.pool.get('res.partner.job').search(cr, uid, [('contact_id','=',contact),('address_id','in',partner_addresses)])
