@@ -32,7 +32,7 @@
                 <field name="name" select="1" />
                 <field string="E-Mail prof." name="job_email" readonly="1"/>
                 <field name="first_name" select="1" />
-                <field name="mobile" />
+                <field name="mobile" on_change="on_change_phone_num(mobile)"/>
                 <notebook colspan="4">
                     <page string="General">
                         <field string="Civilité" name="title" select="1" />
@@ -56,6 +56,35 @@
                                 <field name="phone" on_change="on_change_phone_num(phone)"/>
                                 <field name="email"/>
                             </tree>
+                            <form string="Fonctions">
+                                <notebook colspan="4">
+                                    <page string="Général">
+                                        <field name="name" select="1"/>
+                                        <field name="address_id" select="1"/>
+                                        <field name="function_label" select="1"/>
+                                        <field name="function_code_label" select="1"/>
+                                        <field string="E-Mail professionnel" name="email" widget="email" select="1"/>
+                                        <field name="phone" on_change="on_change_phone_num(phone)"/>
+                                        <field name="fax"/>
+                                        <field name="sequence_partner"/>
+                                        <field name="date_start"/>
+                                        <field name="sequence_contact"/>
+                                        <field name="date_stop"/>
+                                        <field name="sequence_yearbook"/>
+                                        <field name="magazine_subscription" select="1"/>
+                                        <field name="sequence_directory"/>
+                                        <field name="magazine_subscription_source" select="1"/>
+                                        <!--<group colspan="2" col="10"><label string="-&gt;" colspan="8" align="1.0"/><field name="dir_presence"/></group>
+                                        <label string="" colspan="2"/>-->
+                                        <group colspan="2" col="12"><label string="-&gt;" colspan="10" align="1.0"/><field name="active" select="2"/></group>
+                                    </page>
+                                    <page string="Tags">
+                                        <button string="Use a questionnaire" name="%(crm_profiling.wizard_open_questionnaire)d" type="action" colspan="1"/>
+                                        <newline/>
+                                        <field name="answers_ids" colspan="4" nolabel="1"/>
+                                    </page>
+                                </notebook>
+                            </form>
                         </field>
                     </page>
                     <page string="Info supplémentaire">

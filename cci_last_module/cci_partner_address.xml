@@ -72,30 +72,11 @@
                                 <field name="magazine_subscription" select="2"/>
                                 <field name="sequence_yearbook"/>
                                 <field name="magazine_subscription_source" select="2"/>
-                                <group colspan="2" col="10"><label string="-&gt;" colspan="8" align="1.0"/><field name="dir_presence"/></group>
+                                <field name="sequence_directory"/>
+                                <!--<label string="" colspan="2"/>
+                                <group colspan="2" col="10"><label string="-&gt;" colspan="8" align="1.0"/><field name="dir_presence"/></group>-->
                                 <label string="" colspan="2"/>
                                 <group colspan="2" col="12"><label string="-&gt;" colspan="10" align="1.0"/><field name="active" select="2"/></group>
-                                <!--old
-                                <field name="contact_id"/>
-                                <field name="name"/>
-                                <newline/>
-                                <field name="function_code_label"/>
-                                <field name="function_label"/>
-                                <newline/>
-                                <field name="address_id" colspan="2"/>
-                                <newline/>
-                                <field name="phone" on_change="on_change_phone_num(phone)"/>
-                                <field name="fax"/>
-                                <field name="email" widget="email"/> 
-                                <newline/>
-                                <field name="canal_id"/>
-                                <field name="department"/>
-                                <newline/>
-                                <field name="who_presence"/>
-                                <newline/>
-                                <field name="dir_presence"/>
-                                <newline/>
-                                <field name="active"/>-->
                             </form>
                         </field>
                     </page>
