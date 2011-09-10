@@ -67,7 +67,7 @@
 
 <!-- end addition philmer -->
 
-         <!--<record id="view_membership_line_invoice" model="ir.ui.view">
+         <record id="view_membership_line_invoice" model="ir.ui.view">
             <field name="name">res.partner.form.invoice.inherit</field>
             <field name="model">res.partner</field>
             <field name="inherit_id" ref="base.view_partner_form"/>
@@ -79,7 +79,7 @@
                 	<field name="subtotal"/>
                 </field>
             </field>
-        </record>-->
+        </record>
 
         <record model="ir.ui.view" id="cci_membership_check_tree">
             <field name="name">Membership Check</field>
@@ -113,5 +113,39 @@
         </record>
 
         <menuitem name="Membership Check" parent="membership.menu_conf" id="menu_cci_membership_check" action="action_cci_membership_check"/>
+
+        <!-- products screens -->
+        <record model="ir.ui.view" id="membership_products_tree">
+            <field name="name">Membership products</field>
+            <field name="model">product.product</field>
+            <field name="inherit_id" ref="membership.membership_products_tree"/>
+            <field name="arch" type="xml">
+                <field name="membership_date_to" position="after">
+                    <field name="membership_year"/>
+                </field>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="membership_products_form">
+            <field name="name">Membership products</field>
+            <field name="model">product.product</field>
+            <field name="inherit_id" ref="membership.membership_products_form"/>
+            <field name="arch" type="xml">
+                <field name="membership_date_to" position="after">
+                    <field name="membership_year"/>
+                </field>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="product_normal_form_view">
+            <field name="name">Membership product</field>
+            <field name="model">product.product</field>
+            <field name="inherit_id" ref="membership.product_normal_form_view"/>
+            <field name="arch" type="xml">
+                <field name="membership_date_to" position="after">
+                    <field name="membership_year" readonly="0" attrs="{'required':[('membership','=',True)]}" />
+                </field>
+            </field>
+        </record>
 	</data>
 </openerp>

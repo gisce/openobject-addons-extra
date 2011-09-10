@@ -249,5 +249,16 @@ class membership_check(osv.osv):
     }
     _order = 'name desc'
 membership_check()
+
+class Product(osv.osv):
+    '''Product'''
+    _inherit = 'product.product'
+    _description = 'product.product'
+
+    _columns = {
+            'membership_year': fields.integer('Membership Year', help='Year of membership concerned by this product'),
+            }
+Product()
+
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
 

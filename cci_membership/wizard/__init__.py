@@ -23,5 +23,6 @@ import show_partners
 import cci_invoice_membership
 import cci_check_membership
 import cci_validate_membership
+import select_invoices_by_year
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
 
