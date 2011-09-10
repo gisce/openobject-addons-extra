@@ -272,7 +272,10 @@ class participation(osv.osv):
             return []
         res = []
         for part in self.read(cr,uid,ids, ['contact_id','group_id'] ):
-            res.append( (part['id'], "%s - %s" % (part['contact_id'][1], part['group_id'][1] ) ) )
+            if part['group_id']:
+                res.append( (part['id'], "%s - %s" % (part['contact_id'][1], part['group_id'] )))
+            else:
+                res.append( (part['id'], "%s - %s" % (part['contact_id'][1], 'no-group' )))
         return res
 
     def onchange_partner(self, cr, uid, ids, partner_id, group_id, contact_id):
@@ -452,7 +455,10 @@ class session(osv.osv):
             return []
         res = []
         for session in self.read(cr,uid,ids, ['group_id','date'] ):
-            res.append( (session['id'], "%s - %s" % (session['date'], session['group_id'][1] ) ) )
+            if session['group_id']:
+                res.append( (session['id'], "%s - %s" % (session['date'], session['group_id'][1] ) ) )
+            else:
+                res.append( (session['id'], "%s - %s" % (session['date'], 'no-group' ) ) )
         return res
 session()
 
@@ -472,6 +478,7 @@ class attendance(osv.osv):
     _name = "cci_club.attendance"
     _description = "The attendance of a person in a club's session"
     _columns = {
+
         'participation_id' : fields.many2one('cci_club.participation','Participer',required=True),
         'session_id' : fields.many2one('cci_club.session','Session',required=True),
         'state' : fields.many2one('cci_club.attendance_state','State',required=True),
