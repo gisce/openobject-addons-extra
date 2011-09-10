@@ -435,7 +435,8 @@ class res_partner_job(osv.osv):
         'who_presence':fields.boolean('In Whos Who'),
         'dir_presence':fields.boolean('In Directory'),
         'department': fields.char('Department',size=20),
-        'sequence_yearbook': fields.integer('Sequence Yearbook'),
+        'sequence_yearbook': fields.integer('Sequence Yearbook',help='Sequence for printing in the Yearbook - 99 will not be printed'),
+        'sequence_directory': fields.integer('Sequence Directory',help='Sequence for printing in the Directory - 99 will not be printed'),
     }
 
     _defaults = {
@@ -443,6 +444,7 @@ class res_partner_job(osv.osv):
         'dir_presence' : lambda *a: True,
         'active' : lambda *a: True,
         'sequence_yearbook' : lambda *a: 0,
+        'sequence_directory' : lambda *a: 0,
     }
 
 res_partner_job()
