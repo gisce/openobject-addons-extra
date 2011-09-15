@@ -14,8 +14,8 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2011-08-19 04:47+0000\n"
-"X-Generator: Launchpad (build 13697)\n"
+"X-Launchpad-Export-Date: 2011-09-15 04:56+0000\n"
+"X-Generator: Launchpad (build 13921)\n"
 
 #. module: bookstore
 #: view:res.partner:0
@@ -30,13 +30,13 @@ msgstr "¡XML inválido para la definición de la vista!"
 #. module: bookstore
 #: model:product.category,name:bookstore.product_categ_livre
 msgid "Livre"
-msgstr ""
+msgstr "Libro"
 
 #. module: bookstore
 #: field:account.invoice,to_update:0
 #: field:res.partner,to_update:0
 msgid "To update"
-msgstr ""
+msgstr "Para actualizar"
 
 #. module: bookstore
 #: view:sale.order:0
@@ -46,12 +46,12 @@ msgstr "Líneas del pedido de ventas"
 #. module: bookstore
 #: field:res.partner.category,export_enabled:0
 msgid "Export this category to financial software"
-msgstr ""
+msgstr "Exportar esta categoría a software financiero"
 
 #. module: bookstore
 #: field:account.invoice,export_date:0
 msgid "Export time"
-msgstr ""
+msgstr "Exportar tiempo"
 
 #. module: bookstore
 #: constraint:product.category:0
@@ -66,7 +66,7 @@ msgstr "Efectivo"
 #. module: bookstore
 #: help:res.partner,partner_ref:0
 msgid "The reference of my company for this partner"
-msgstr ""
+msgstr "La referencia de mi compañía para esta empresa"
 
 #. module: bookstore
 #: field:res.partner,number:0
@@ -87,7 +87,7 @@ msgstr ""
 #: field:account.invoice,to_export:0
 #: field:res.partner,to_export:0
 msgid "To export"
-msgstr ""
+msgstr "Para exportar"
 
 #. module: bookstore
 #: constraint:res.partner:0

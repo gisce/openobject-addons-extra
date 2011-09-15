@@ -14,8 +14,8 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2011-08-13 05:08+0000\n"
-"X-Generator: Launchpad (build 13674)\n"
+"X-Launchpad-Export-Date: 2011-09-15 04:57+0000\n"
+"X-Generator: Launchpad (build 13921)\n"
 
 #. module: multi_company_account
 #: model:ir.module.module,description:multi_company_account.module_meta_information
@@ -80,7 +80,7 @@ msgstr "Nombre de modelo no válido en la definición de la acción."
 #. module: multi_company_account
 #: field:wizard.company.header.footer.setup,rml_header2:0
 msgid "RML Internal Header"
-msgstr ""
+msgstr "Encabezado interno RML"
 
 #. module: multi_company_account
 #: field:wizard.company.header.footer.setup,rml_header:0
