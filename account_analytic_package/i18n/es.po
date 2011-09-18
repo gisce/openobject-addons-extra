@@ -8,14 +8,14 @@ msgstr ""
 "Project-Id-Version: openobject-addons\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2009-11-24 12:16+0000\n"
-"PO-Revision-Date: 2011-08-17 23:22+0000\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"PO-Revision-Date: 2011-09-17 23:31+0000\n"
+"Last-Translator: mgaja (GrupoIsep.com) <Unknown>\n"
 "Language-Team: Spanish <es@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2011-09-15 04:52+0000\n"
-"X-Generator: Launchpad (build 13921)\n"
+"X-Launchpad-Export-Date: 2011-09-18 05:02+0000\n"
+"X-Generator: Launchpad (build 13955)\n"
 
 #. module: account_analytic_package
 #: constraint:ir.model:0
@@ -205,7 +205,7 @@ msgstr "Cantidad"
 #. module: account_analytic_package
 #: field:crm.case.section,analytic_account_id:0
 msgid "Main Analytic Account"
-msgstr ""
+msgstr "Cuenta analítica general"
 
 #. module: account_analytic_package
 #: field:account.analytic.account,package_ok:0
