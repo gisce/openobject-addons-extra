@@ -241,9 +241,9 @@ class external_report_lines(osv.osv):
         'date': fields.datetime('Date', required=True, readonly=True),
         'external_id': fields.char('External ID', size=64, readonly=True),
         'error_message': fields.text('Error Message', readonly=True),
-        'data_record': fields.struct('External Data', readonly=True),
-        'origin_defaults': fields.struct('Defaults', readonly=True),
-        'origin_context': fields.struct('Context', readonly=True),
+        'data_record': fields.serialized('External Data', readonly=True),
+        'origin_defaults': fields.serialized('Defaults', readonly=True),
+        'origin_context': fields.serialized('Context', readonly=True),
     }
 
     _defaults = {
