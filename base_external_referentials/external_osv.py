@@ -25,6 +25,20 @@ import base64
 import time
 import datetime
 import netsvc
+import pooler
+
+class MappingError(Exception):
+     def __init__(self, value, name):
+         self.value = value
+         self.mapping_name = name
+     def __str__(self):
+         return repr(self.value)
+        
+class ExtConnError(Exception):
+     def __init__(self, value):
+         self.value = value
+     def __str__(self):
+         return repr(self.value)
 
 class external_osv(osv.osv):
     pass #FIXME remove! only here for compatibility purpose for now
@@ -87,17 +101,19 @@ def get_modified_ids(self, cr, uid, date=False, context=None):
             res += [[p[0], p[1]]]
     return sorted(res, key=lambda date: date[1])
 
-def external_connection(self, cr, uid, DEBUG=False):
+def external_connection(self, cr, uid, referential, DEBUG=False):
     """Should be overridden to provide valid external referential connection"""
     return False
 
 def oeid_to_extid(self, cr, uid, id, external_referential_id, context=None):
     """Returns the external id of a resource by its OpenERP id.
     Returns False if the resource id does not exists."""
+    if type(id) == list:
+        id = id[0]
     model_data_ids = self.pool.get('ir.model.data').search(cr, uid, [('model', '=', self._name), ('res_id', '=', id), ('external_referential_id', '=', external_referential_id)])
     if model_data_ids and len(model_data_ids) > 0:
         prefixed_id = self.pool.get('ir.model.data').read(cr, uid, model_data_ids[0], ['name'])['name']
-        ext_id = int(self.id_from_prefixed_id(prefixed_id))
+        ext_id = self.id_from_prefixed_id(prefixed_id)
         return ext_id
     return False
 
@@ -142,7 +158,7 @@ def oevals_from_extdata(self, cr, uid, external_referential_id, data_record, key
         #Type cast if the expression exists
         if each_mapping_line['external_field'] in data_record.keys():
             try:
-                if each_mapping_line['external_type'] and type(data_record.get(each_mapping_line['external_field'], False)) != unicode:
+                if each_mapping_line['external_type'] and type(data_record.get(each_mapping_line['external_field'], False)):
                     type_casted_field = eval(each_mapping_line['external_type'])(data_record.get(each_mapping_line['external_field'], False))
                 else:
                     type_casted_field = data_record.get(each_mapping_line['external_field'], False)
@@ -150,6 +166,8 @@ def oevals_from_extdata(self, cr, uid, external_referential_id, data_record, key
                     type_casted_field = False
             except Exception, e:
                 type_casted_field = False
+                if not context.get('dont_raise_error', False):
+                    raise MappingError(e, each_mapping_line['external_field'])
             #Build the space for expr
             space = {
                         'self':self,
@@ -174,6 +192,9 @@ def oevals_from_extdata(self, cr, uid, external_referential_id, data_record, key
                 del(space['__builtins__'])
                 logger.notifyChannel('extdata_from_oevals', netsvc.LOG_DEBUG, "Mapping Context: %r" % (space,))
                 logger.notifyChannel('extdata_from_oevals', netsvc.LOG_DEBUG, "Exception: %r" % (e,))
+                if not context.get('dont_raise_error', False):
+                    raise MappingError(e, each_mapping_line['external_field'])
+            
             result = space.get('result', False)
             #If result exists and is of type list
             if result and type(result) == list:
@@ -190,6 +211,43 @@ def oevals_from_extdata(self, cr, uid, external_referential_id, data_record, key
 def get_external_data(self, cr, uid, conn, external_referential_id, defaults=None, context=None):
     """Constructs data using WS or other synch protocols and then call ext_import on it"""
     return {'create_ids': [], 'write_ids': []}
+
+#TODO the same function for export
+
+def import_with_try(self, cr, uid, callback, data_record, external_referential_id, defaults, context=None):
+    if not context:
+        context={}
+    res={}
+    report_line_obj = self.pool.get('external.report.line')
+    report_line_id = report_line_obj._log_base(cr, uid, self._name, callback.im_func.func_name, 
+                                    state='fail', external_id=context.get('external_object_id', False),
+                                    defaults=defaults, data_record=data_record, 
+                                    context=context)
+    context['report_line_id'] = report_line_id
+    import_cr = pooler.get_db(cr.dbname).cursor()
+    res = callback(import_cr, uid, data_record, external_referential_id, defaults, context=context)
+    try:
+        pass
+        #res = callback(import_cr, uid, data_record, external_referential_id, defaults, context=context)
+    except MappingError as e:
+        import_cr.rollback()
+        report_line_obj.write(cr, uid, report_line_id, {
+                        'error_message': 'Error with the mapping : %s. Error details : %s'%(e.mapping_name, e.value),
+                        }, context=context)
+    except osv.except_osv as e:
+        import_cr.rollback()
+        raise osv.except_osv(*e)
+    except Exception as e:
+        import_cr.rollback()
+        raise Exception(e)
+    else:
+        report_line_obj.write(cr, uid, report_line_id, {
+                    'state': 'success',
+                    }, context=context)
+        import_cr.commit()
+    finally:
+        import_cr.close()
+    return res
 
 def ext_import(self, cr, uid, data, external_referential_id, defaults=None, context=None):
     if defaults is None:
@@ -214,7 +272,8 @@ def ext_import(self, cr, uid, data, external_referential_id, defaults=None, cont
                 for each_row in data:
                     vals = self.oevals_from_extdata(cr, uid, external_referential_id, each_row, for_key_field, mapping_lines, defaults, context)
                     #perform a record check, for that we need foreign field
-                    external_id = vals.get(for_key_field, False) or each_row.get(for_key_field, False) or each_row.get('external_id', False)
+                    #TODO seb asked : did the option "vals.get(for_key_field, False)" and "each_row.get('external_id', False)" are still usefull??
+                    external_id = vals.get('external_id', False) or vals.get(for_key_field, False) or each_row.get(for_key_field, False) or each_row.get('external_id', False)
                     #del vals[for_key_field] looks like it is affecting the import :(
                     #Check if record exists
                     existing_ir_model_data_id = self.pool.get('ir.model.data').search(cr, uid, [('model', '=', self._name), ('name', '=', self.prefixed_id(external_id)), ('external_referential_id', '=', external_referential_id)])
@@ -248,7 +307,6 @@ def ext_import(self, cr, uid, data, external_referential_id, defaults=None, cont
                         }
                         self.pool.get('ir.model.data').create(cr, uid, ir_model_data_vals)
                         logger.notifyChannel('ext synchro', netsvc.LOG_INFO, "Created in OpenERP %s from External Ref with external_id %s and OpenERP id %s successfully" %(self._name, external_id, crid))
-                    cr.commit()
 
     return {'create_ids': create_ids, 'write_ids': write_ids}
 
@@ -294,7 +352,8 @@ def extdata_from_oevals(self, cr, uid, external_referential_id, data_record, map
                 del(space['__builtins__'])
                 logger.notifyChannel('extdata_from_oevals', netsvc.LOG_DEBUG, "Mapping Context: %r" % (space,))
                 logger.notifyChannel('extdata_from_oevals', netsvc.LOG_DEBUG, "Exception: %r" % (e,))
-
+                if context.get('raise_error', False):
+                    raise MappingError(e, each_mapping_line['external_field'])
             result = space.get('result', False)
             #If result exists and is of type list
             if result and type(result) == list:
@@ -451,8 +510,22 @@ def report_action_mapping(self, cr, uid, context=None):
         the method to launch when we replay the action.
         """
         mapping = {
-            'export': self.retry_export,
-            'import': self.retry_import,
+            'export': {'method': self.retry_export, 
+                       'fields': {'id': 'log.res_id',
+                                  'ext_id': 'log.external_id',
+                                  'external_referential_id': 'log.external_report_id.external_referential_id.id',
+                                  'defaults': 'log.origin_defaults',
+                                  'context': 'log.origin_context',
+                                  },
+                    },
+            'import': {'method': self.retry_import,
+                       'fields': {'id': 'log.res_id',
+                                  'ext_id': 'log.external_id',
+                                  'external_referential_id': 'log.external_report_id.external_referential_id.id',
+                                  'defaults': 'log.origin_defaults',
+                                  'context': 'log.origin_context',
+                                  },
+                    }
         }
         return mapping
 
@@ -469,6 +542,7 @@ osv.osv.extid_to_existing_oeid = extid_to_existing_oeid
 osv.osv.extid_to_oeid = extid_to_oeid
 osv.osv.oevals_from_extdata = oevals_from_extdata
 osv.osv.get_external_data = get_external_data
+osv.osv.import_with_try = import_with_try
 osv.osv.ext_import = ext_import
 osv.osv.retry_import = retry_import
 osv.osv.oe_update = oe_update

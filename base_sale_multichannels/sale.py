@@ -23,6 +23,7 @@ from sets import Set as set
 import netsvc
 from tools.translate import _
 import time
+import decimal_precision as dp
 from datetime import datetime, timedelta
 from dateutil.relativedelta import relativedelta
 
@@ -93,7 +94,36 @@ class sale_shop(osv.osv):
                 product_ids = self.pool.get("product.product").search(cr, uid, [('categ_id', 'in', all_categories)])
             res[shop.id] = product_ids
         return res
+    
+    def _get_referential_id(self, cr, uid, ids, name, args, context=None):
+        res = {}
+        for shop in self.browse(cr, uid, ids, context=context):
+            if shop.shop_group_id:
+                res[shop.id] = shop.shop_group_id.referential_id.id
+            else:
+                #path to fix orm bug indeed even if function field are store, the value is never read for many2one fields
+                cr.execute('select referential_id from sale_shop where id=%s', (shop.id,))
+                result = cr.fetchone()
+                res[shop.id] = result[0]
+        return res
+                
+    def _set_referential_id(self, cr, uid, id, name, value, arg, context=None):
+        shop = self.browse(cr, uid, id, context=context)
+        if shop.shop_group_id:
+            raise osv.except_osv(_("User Error"), _("You can not change the referential of this shop, please change the referential of the shop group!"))
+        else:
+            if value == False:
+                cr.execute('update sale_shop set referential_id = NULL where id=%s', (id,))
+            else:
+                cr.execute('update sale_shop set referential_id = %s where id=%s', (value, id))
+        return True
 
+    def _get_shop_id(self, cr, uid, ids, context=None):
+        shop_ids=[]
+        for group in self.pool.get('external.shop.group').browse(cr, uid, ids, context=context):
+            shop_ids.append([shop.id for shop in group.shop_ids])
+        return shop_ids
+        
     _columns = {
         #'exportable_category_ids': fields.function(_get_exportable_category_ids, method=True, type='one2many', relation="product.category", string='Exportable Categories'),
         'exportable_root_category_ids': fields.many2many('product.category', 'shop_category_rel', 'categ_id', 'shop_id', 'Exportable Root Categories'),
@@ -103,13 +133,25 @@ class sale_shop(osv.osv):
         'last_images_export_date': fields.datetime('Last Images Export Time'),
         'last_update_order_export_date' : fields.datetime('Last Order Update  Time'),
         'last_products_export_date' : fields.datetime('Last Product Export  Time'),
-        'referential_id': fields.related('shop_group_id', 'referential_id', type='many2one', relation='external.referential', string='External Referential'),
+        'referential_id': fields.function(_get_referential_id, fnct_inv = _set_referential_id, type='many2one',
+                relation='external.referential', string='External Referential', method=True,
+                store={
+                    'external.shop.group': (_get_shop_id, ['referential_id'], 10),
+                 }),
         'is_tax_included': fields.boolean('Prices Include Tax?', help="Requires sale_tax_include module to be installed"),
         'sale_journal': fields.many2one('account.journal', 'Sale Journal'),
+        'order_prefix': fields.char('Order Prefix', size=64),
+        'default_payment_method': fields.char('Default Payment Method', size=64),
+        'default_language': fields.many2one('res.lang', 'Default Language'),
+        'default_fiscal_position': fields.many2one('account.fiscal.position', 'Default Fiscal Position'),
+        'default_customer_account': fields.many2one('account.account', 'Default Customer Account'),
+        'auto_import': fields.boolean('Automatic Import'),
+        
     }
     
     _defaults = {
         'payment_default_id': lambda * a: 1, #required field that would cause trouble if not set when importing
+        'auto_import': lambda * a: True,
     }
 
     def _get_pricelist(self, cr, uid, shop):
@@ -182,11 +224,22 @@ class sale_shop(osv.osv):
         if context is None:
             context = {}
         for shop in self.browse(cr, uid, ids):
-            context['conn_obj'] = self.external_connection(cr, uid, shop.referential_id)
             defaults = {
                             'pricelist_id':self._get_pricelist(cr, uid, shop),
                             'shop_id': shop.id,
+                            'fiscal_position': shop.default_fiscal_position.id,
+                            'property_account_receivable': shop.default_customer_account.id,
+                            'order_prefix': shop.order_prefix,
+                            'ext_payment_method': shop.default_payment_method,
                         }
+            
+            context.update({
+                            'conn_obj': self.external_connection(cr, uid, shop.referential_id),
+                            'shop_name': shop.name,
+                            'shop_id': shop.id,
+                            'external_referential_type': shop.referential_id.type_id.name,
+                        })
+            
             if self.pool.get('ir.model.fields').search(cr, uid, [('name', '=', 'company_id'), ('model', '=', 'sale.shop')]): #OpenERP v6 needs a company_id field on the sale order but v5 doesn't have it, same for shop...
                 if not shop.company_id.id:
                     raise osv.except_osv(_('Warning!'), _('You have to set a company for this OpenERP sale shop!'))
@@ -201,7 +254,8 @@ class sale_shop(osv.osv):
         return False
             
     def import_shop_orders(self, cr, uid, shop, defaults, context):
-        raise osv.except_osv(_("Not Implemented"), _("Not Implemented in abstract base module!"))
+        '''Not Implemented in abstract base module!'''
+        return False
 
     def update_orders(self, cr, uid, ids, context=None):
         if context is None:
@@ -295,11 +349,50 @@ class sale_order(osv.osv):
 
     _columns = {
                 'ext_payment_method': fields.char('External Payment Method', size=32, help = "Spree, Magento, Oscommerce... Payment Method"),
-                'need_to_update': fields.boolean('Need To Update')
+                'need_to_update': fields.boolean('Need To Update'),
+                'ext_total_amount': fields.float('Origin External Amount', required=True, digits_compute=dp.get_precision('Sale Price'), readonly=True),
     }
+    
     _defaults = {
         'need_to_update': lambda *a: False,
     }
+    
+    def oevals_from_extdata(self, cr, uid, external_referential_id, data_record, key_field, mapping_lines, defaults, context):
+        res = super(sale_order, self).oevals_from_extdata(cr, uid, external_referential_id, data_record, key_field, mapping_lines, defaults, context)
+        payment_method = res.get('ext_payment_method', False) or defaults.get('ext_payment_method', False)
+        payment_settings = self.payment_code_to_payment_settings(cr, uid, payment_method, context)
+        if payment_settings:
+            res['order_policy'] = payment_settings.order_policy
+            res['picking_policy'] = payment_settings.picking_policy
+            res['invoice_quantity'] = payment_settings.invoice_quantity
+        return res    
+    
+    def create_payments(self, cr, uid, order_id, data_record, context):
+        """not implemented in this abstract module"""
+        #TODO use the mapping tools from the data_record to extract the information about the payment
+        return False
+    
+    def oe_status_and_paid(self, cr, uid, order_id, data, external_referential_id, defaults, context):
+        is_paid = self.create_payments(cr, uid, order_id, data, context)
+        self.oe_status(cr, uid, order_id, is_paid, context)
+        return order_id
+    
+    def generate_payment_from_order(self, cr, uid, ids, payment_ref, entry_name=None, paid=True, date=None, context=None):
+        if type(ids) in [int, long]:
+            ids = [ids]
+        res = []
+        for order in self.browse(cr, uid, ids, context=context):
+            id = self.generate_payment_with_pay_code(cr, uid,
+                                                    order.ext_payment_method,
+                                                    order.partner_id.id,
+                                                    order.ext_total_amount or order.amount_total,
+                                                    payment_ref,
+                                                    entry_name or order.name,
+                                                    date or order.date_order,
+                                                    paid,
+                                                    context)
+            id and res.append(id)
+        return res
 
     def payment_code_to_payment_settings(self, cr, uid, payment_code, context=None):
         pay_type_obj = self.pool.get('base.sale.payment.type')
@@ -376,6 +469,7 @@ class sale_order(osv.osv):
                             self.write(cr, uid, order.id, {'need_to_update': False})
                         except Exception, e:
                             self.log(cr, uid, order.id, "ERROR could not valid order")
+                            raise Exception(e)
                         
                         if payment_settings.validate_picking:
                             self.pool.get('stock.picking').validate_picking_from_order(cr, uid, order.id)
@@ -426,7 +520,6 @@ class sale_order(osv.osv):
         inv_obj = self.pool.get('account.invoice')
         wf_service = netsvc.LocalService("workflow")
         res = super(sale_order, self).action_invoice_create(cr, uid, ids, grouped, states, date_inv, context)
-        
         for order in self.browse(cr, uid, ids, context=context):
             payment_settings = self.payment_code_to_payment_settings(cr, uid, order.ext_payment_method, context=context)
             if payment_settings and payment_settings.invoice_date_is_order_date:
@@ -439,9 +532,32 @@ class sale_order(osv.osv):
                             invoice.auto_reconcile(context=context)
         return res
 
-
+    def oe_update(self, cr, uid, existing_rec_id, vals, each_row, external_referential_id, defaults, context):
+        '''Not implemented in this abstract module, if it's not implemented in your module it will raise an error'''
+        # Explication :
+        # sometime customer can do ugly thing like renamming a sale_order and try to reimported it,
+        # sometime openerp run two scheduler at the same time, or the customer launch two openerp at the same time
+        # or the external system give us again an already imported order
+        # As the update of an existing order (this is not the update of the status but the update of the line, the address...)
+        # is not supported by base_sale_multichannels and also not in magentoerpconnect.
+        # It's better to don't allow this feature to avoid hidding a problem.
+        # It's better to have the order not imported and to know it than having order with duplicated line.
+        if not (context and context.get('oe_update_supported', False)):
+            #TODO found a clean solution to raise the osv.except_osv error in the try except of the function import_with_try
+            raise osv.except_osv(_("""Not Implemented, the order with the id %s try to be updated from the external system.
+This feature is not supported. Maybe the import try to reimport an existing sale order"""%(existing_rec_id,)), "  ")
+        return existing_rec_id
 
 sale_order()
+
+class sale_order_line(osv.osv):
+    _inherit='sale.order.line'
+    
+    _columns = {
+        'ext_product_ref': fields.char('Product Ext Ref', help="This is the original external product reference", size=256),
+    }
+
+sale_order_line()
 
 class base_sale_payment_type(osv.osv):
     _name = "base.sale.payment.type"
@@ -503,9 +619,12 @@ class stock_picking(osv.osv):
     _inherit = "stock.picking"
     
     def validate_picking_from_order(self, cr, uid, order_id, context=None):
-        so_name = self.pool.get('sale.order').read(cr, uid, order_id, ['name'])['name']
-        picking_id = self.search(cr, uid, [('origin', '=', so_name)])[0]
-        return self.validate_picking(cr, uid, [picking_id], context=context)
+        order= self.pool.get('sale.order').browse(cr, uid, order_id, context=context)
+        if not order.picking_ids:
+            raise Exception('For an unknow reason the picking for the sale order %s was not created'%order.name)
+        for picking in order.picking_ids:
+            picking.validate_picking(context=context)
+        return True
         
     def validate_picking(self, cr, uid, ids, context=None):
         for picking in self.browse(cr, uid, ids, context=context):
