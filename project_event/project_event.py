@@ -156,7 +156,7 @@ class project_task(osv.osv):
                          task.date_deadline or '', task.planned_hours or 0, \
                          task.remaining_hours or 0, task.total_hours or 0,\
                          task.partner_id and task.partner_id.name or '',\
-                         task.description or '',task.project_id.manager and task.project_id.manager.name or '')
+                         task.description or '',task.project_id.user_id and task.project_id.user_id.name or '')
             task_vals = {
                     'res_id': task.id,
                     'name': task.name,
@@ -182,7 +182,7 @@ class project_task(osv.osv):
             if val.endswith('id') or val.endswith('ids'):
                 continue
             desc += val + ':' + str(vals[val]) + "\n"
-        desc += '\nThanks,\n' + 'Project Manager\n' + (task_data.project_id.manager and task_data.project_id.manager.name) or ''
+        desc += '\nThanks,\n' + 'Project Manager\n' + (task_data.project_id.user_id and task_data.project_id.user_id.name) or ''
         task_vals = {
             'res_id' : ids[0],
             'name' : task.name or '',
