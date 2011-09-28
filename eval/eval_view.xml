@@ -72,7 +72,7 @@
         </record>
 
         <menuitem id="eval_id_menu" name="Evaluation" groups = "base.group_user"/>
-        <menuitem id="grid_id_menu" name="Configuration Grids/Criteria/Sections" parent="eval_id_menu" sequence="1"  groups="hr.group_hr_manager"/>
+        <menuitem id="grid_id_menu" name="Configuration Grids/Criteria/Sections" parent="eval_id_menu" sequence="1"  groups="base.group_hr_manager"/>
         <menuitem action="action_eval_grid_form" id="menu_action_evaluation_form" parent="grid_id_menu" sequence="3"/>
 
            <record id="view_eval_crit_form" model="ir.ui.view">
@@ -160,7 +160,7 @@
                     <field name="name" select="1"/>
                     <field name="next_eval" select="1"/>
                     <field name="employee_id" select="1"/>
-                     <group colspan="4" col="5" groups="hr.group_hr_manager">
+                     <group colspan="4" col="5" groups="base.group_hr_manager">
                     <field name="state" select="1"/>
                     <button name="button_done" string="Confirm and Send Notifications" type="object" states="draft" />
                    <!-- <button name="button_done" string="Confirm and Send Notifications" type="object"  attrs="{'invisible':[('state','!=','draft')]}"/-->
@@ -277,16 +277,16 @@
             <field name="view_mode">tree,form</field>
             <field name="domain">[('state','=','done')]</field>
         </record>
-        <menuitem id="menu_eval_form_id" parent="eval_id_menu" name="Evaluation Forms" sequence="3" groups = "hr.group_hr_user"/>
-        <menuitem id="menu_eval_id" parent="eval_id_menu" name="Evaluations" groups="hr.group_hr_manager" sequence="2"/>
+        <menuitem id="menu_eval_form_id" parent="eval_id_menu" name="Evaluation Forms" sequence="3" groups = "base.group_hr_user"/>
+        <menuitem id="menu_eval_id" parent="eval_id_menu" name="Evaluations" groups="base.group_hr_manager" sequence="2"/>
         <menuitem action="action_eval_form_tosend" id="menu_action_evaltosend" parent="menu_eval_id" sequence="1"/>
         <menuitem action="action_eval_form_curr" id="menu_action_evalcurr_form" parent="menu_eval_id" sequence="2"/>
         <menuitem action="action_eval_form_updated" id="menu_action_evalcurr_form" parent="menu_eval_id" sequence="3"/>
         <menuitem action="action_eval_form_pending" id="menu_action_evalpending_form" parent="menu_eval_id" sequence="4"/>
         <menuitem action="action_eval_form_closed" id="menu_action_evalclosed_form" parent="menu_eval_id" sequence="4"/>
-        <menuitem action="action_eval_hrset_form1" id="m_menu_action_evaluationhr_form" parent="menu_eval_form_id" sequence="5"  groups = "hr.group_hr_manager"/>
-        <menuitem action="action_eval_hrset_form2" id="m_menu_action_evaluation2" parent="menu_eval_form_id" sequence="5" groups = "hr.group_hr_manager"/>
-        <menuitem action="action_eval_hrset12" id="m_menu_action_evaluationhr_form1" parent="menu_eval_form_id" sequence="5" groups = "hr.group_hr_user"/>
+        <menuitem action="action_eval_hrset_form1" id="m_menu_action_evaluationhr_form" parent="menu_eval_form_id" sequence="5"  groups = "base.group_hr_manager"/>
+        <menuitem action="action_eval_hrset_form2" id="m_menu_action_evaluation2" parent="menu_eval_form_id" sequence="5" groups = "base.group_hr_manager"/>
+        <menuitem action="action_eval_hrset12" id="m_menu_action_evaluationhr_form1" parent="menu_eval_form_id" sequence="5" groups = "base.group_hr_user"/>
 
 
         <record model="ir.ui.view" id="view_employee_form">
@@ -301,10 +301,10 @@
                             <field name="grid_id"/>
                             <field name="product_id" domain="[('type', '=', 'service')]"/>
                             <field name="date_entry"/>
-                            <field name="current_salary" groups="hr.group_hr_manager"/>
+                            <field name="current_salary" groups="base.group_hr_manager"/>
                             <field name="skill_id"/>
                             <newline/>
-                            <field name="history_ids" colspan="4" nolabel="1" groups="hr.group_hr_manager" >
+                            <field name="history_ids" colspan="4" nolabel="1" groups="base.group_hr_manager" >
                               <tree string="History" editable="bottom">
                                  <field name="date_eval" select="1"/>
                                   <field name="old_salary" select="1"/>
@@ -358,7 +358,7 @@
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
         </record>
-        <menuitem action="action_skill_form" id="menu_skill_form" parent="hr.menu_open_view_employee_list" groups="hr.group_hr_manager" sequence="1"/>
+        <menuitem action="action_skill_form" id="menu_skill_form" parent="hr.menu_open_view_employee_list" groups="base.group_hr_manager" sequence="1"/>
 
            <record id="view_hrevalsection_form" model="ir.ui.view">
             <field name="name">Evaluation Section</field>
@@ -423,7 +423,7 @@
                     <field name="state" select="1" readonly="1"/>
                     <button name="button_done" string="Con_firm" type="object" states="draft" />
                     <button name="button_cancel" string="Can_cel" type="object"  states="draft,done,review"/>
-                    <button name="button_review" string="Re_viewed by top management" type="object" states="done" groups="hr.group_hr_manager"/>
+                    <button name="button_review" string="Re_viewed by top management" type="object" states="done" groups="base.group_hr_manager"/>
                      </group>
                 </form>
             </field>

@@ -44,19 +44,6 @@ def _get_result(self, cr, uid, data, context):
     for r in res:
         if r['email'] and not r['email'] in emails:
             emails.append( r['email'] )
-    #if os.name == 'nt':
-    #    import win32clipboard
-    #    win32clipboard.OpenClipboard()
-    #    win32clipboard.EmptyClipboard()
-    #    win32clipboard.SetClipboardData( win32clipboard.CF_TEXT, ';'.join(emails) )
-    #    win32clipboard.CloseClipboard()
-    #elif os.name == 'posix':
-    #    import pygtk
-    #    pygtk.require('2.0')
-    #    import gtk
-    #    clipboard = gtk.clipboard_get()
-    #    clipboard.set_text( '; '.join(emails) )
-    #    clipboard.store()
     return {'chained_emails':'; '.join(emails)}
 
 class get_emails_list(wizard.interface):

@@ -25,7 +25,12 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #
 ##############################################################################
-
+# Version 1.1 : Philmer 2011-07-03
+#                added the management of unlink to clubs and participations,
+#                and copy in clubs
+#               Philmer 2011-08-16
+#                added the management of attendances in copy and 
+#                unlink of participations
 import time
 import datetime
 from osv import fields, osv
@@ -78,6 +83,27 @@ class club(osv.osv):
     def write(self, cr, uid, ids,vals,context=None):
         self._get_active_participations(cr, uid, ids, None, None, context)
         return super(osv.osv,self).write(cr, uid, ids,vals, context)
+    def copy(self, cr, uid, id, default=None, context={}):
+        part = self.read(cr,uid,id,['name','code'])
+        if not default:
+            default = {}
+        default.update({
+            'name':part['name']+' (copy)',
+            'code':part['code']+' (copy)',
+            'participation_ids': False,
+            'session_ids':False,
+        })
+        return super(club, self).copy(cr, uid, id, default, context)
+    def unlink(self,cr,uid,ids,context):
+        empty = True
+        for club in self.browse(cr,uid,ids):
+            if len(club.participation_ids) > 0:
+                empty = False
+        if empty:
+            return super(osv.osv,self).unlink(cr,uid,ids,context)
+        else:
+            raise osv.except_osv('Error!',"You can't delete a club with participations !")
+            return False
 
     _name = "cci_club.club"
     _description = "Club/Group"
@@ -110,7 +136,7 @@ class club(osv.osv):
         #'selected_participation_ids' : fields.one2many('cci_club.participation','group_id','Participers',domain=[('current','=',True)]),
         'selected_participation_count' : fields.function(
             _count_active_participations,
-            type='integre',
+            type='integer',
             method=True,
             string='Active Participers'),
         'count_active' : fields.function(
@@ -246,7 +272,10 @@ class participation(osv.osv):
             return []
         res = []
         for part in self.read(cr,uid,ids, ['contact_id','group_id'] ):
-            res.append( (part['id'], "%s - %s" % (part['contact_id'][1], part['group_id'][1] ) ) )
+            if part['group_id']:
+                res.append( (part['id'], "%s - %s" % (part['contact_id'][1], part['group_id'] )))
+            else:
+                res.append( (part['id'], "%s - %s" % (part['contact_id'][1], 'no-group' )))
         return res
 
     def onchange_partner(self, cr, uid, ids, partner_id, group_id, contact_id):
@@ -317,8 +346,20 @@ class participation(osv.osv):
             default = {}
         default.update({
             'order_id': False,
+            'attendance_ids': False,
         })
         return super(participation, self).copy(cr, uid, id, default, context)
+    def unlink(self,cr,uid,ids,context):
+        logs = self.pool.get('cci_club.participation_log')
+        for part in self.browse(cr,uid,ids):
+            log_ids = logs.search(cr,uid,[('participation_id','=',part.id)])
+            logs.unlink(cr,uid,log_ids)
+        attendances = self.pool.get('cci_club.attendance')
+        for part in self.browse(cr,uid,ids):
+            att_ids = attendances.search(cr,uid,[('participation_id','=',part.id)])
+            attendances.unlink(cr,uid,att_ids)
+        return super(osv.osv,self).unlink(cr, uid, ids,context)
+
     def search(self, cr, user, targs, offset=0, limit=None, order=None, context=None, count=False):
         part_ids = []
         for targ in targs:
@@ -414,7 +455,10 @@ class session(osv.osv):
             return []
         res = []
         for session in self.read(cr,uid,ids, ['group_id','date'] ):
-            res.append( (session['id'], "%s - %s" % (session['date'], session['group_id'][1] ) ) )
+            if session['group_id']:
+                res.append( (session['id'], "%s - %s" % (session['date'], session['group_id'][1] ) ) )
+            else:
+                res.append( (session['id'], "%s - %s" % (session['date'], 'no-group' ) ) )
         return res
 session()
 
@@ -434,6 +478,7 @@ class attendance(osv.osv):
     _name = "cci_club.attendance"
     _description = "The attendance of a person in a club's session"
     _columns = {
+
         'participation_id' : fields.many2one('cci_club.participation','Participer',required=True),
         'session_id' : fields.many2one('cci_club.session','Session',required=True),
         'state' : fields.many2one('cci_club.attendance_state','State',required=True),

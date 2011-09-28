@@ -1,0 +1,101 @@
+<?xml version="1.0" ?>
+<openerp>
+<data>
+
+    <record model="ir.ui.view" id="view_partner_address_tree"><!--cci_view_partner_address_tree-->
+        <field name="name">res.partner.address.tree</field><!--cci.view.partner.address - Adresses CCI-->
+        <field name="model">res.partner.address</field>
+        <field name="type">tree</field>
+        <field name="priority" eval="1"/>
+        <field name="arch" type="xml">
+            <tree string="Addresses">
+                <field name="partner_id"/>
+                <field name="street"/>
+                <field name="zip" select="1"/>
+                <field name="city" select="1"/>
+                <field name="job_ids" string="# of Contacts" />
+                <field name="phone" select="1"/>
+                <field name="email"/>
+            </tree>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="view_partner_address_form1"><!--cci_view_partner_address_form-->
+        <field name="name">res.partner.form1</field><!--cci.view.partner.address - Adresses CCI-->
+        <field name="model">res.partner.address</field>
+        <field name="type">form</field>
+        <field name="priority" eval="1"/>
+        <field name="arch" type="xml">
+            <form string="Partner addresses">
+                <notebook>
+                    <page string="General">
+                        <field name="partner_id" colspan="4" select="1"/>
+                        <newline/>
+                        <field name="type" select="1"/>
+                        <field name="name" select="1" string="Nom de l'adresse"/>
+                        <field name="street" select="1"/>
+                        <field name="phone" select="1" on_change="on_change_phone_num(phone)"/>
+                        <field name="street2" select="1"/>
+                        <field name="fax"/>
+                        <field name="zip_id"/>
+                        <field name="email" select="2"  widget="email"/>
+                        <field name="country_id"  completion="1" select="2"/>
+                        <field name="magazine_subscription" select="2"/>
+                        <field name="sequence_partner" />
+                        <field name="magazine_subscription_source" select="2"/>
+                        <field name="notdelivered" />
+                        <group colspan="2" col="8"><label string="-&gt;" colspan="6" align="1.0"/><field name="active" select="2"/></group>
+                        <newline/>
+                        <field name="job_ids" mode="tree,form" colspan="4" nolabel="1">
+                            <tree string="Jobs" editable="top">
+                                <field name="sequence_partner" string="Séq./Part."/>
+                                <field name="contact_id"/>
+                                <field name="function_code_label"/>
+                                <field name="function_label"/>
+                                <field name="phone" on_change="on_change_phone_num(phone)"/>
+                                <field name="mobile_contact" string="GSM"/>
+                                <field name="email" string="E-Mail Prof."/>
+                            </tree>
+                            <form string="Jobs">
+                                <field name="contact_id"/>
+                                <field string="E-Mail professionnel" name="email" widget="email" select="1"/>
+                                <field name="function_label" select="2"/>
+                                <field name="function_code_label" select="1"/>
+                                <field name="name" select="1"/>
+                                <field name="phone" on_change="on_change_phone_num(phone)"/>
+                                <field name="address_id" select="2"/>
+                                <field name="fax"/>
+                                <field name="date_start"/>
+                                <field name="sequence_partner"/>
+                                <field name="date_stop"/>
+                                <field name="sequence_contact"/>
+                                <field name="magazine_subscription" select="2"/>
+                                <field name="sequence_yearbook"/>
+                                <field name="magazine_subscription_source" select="2"/>
+                                <field name="sequence_directory"/>
+                                <!--<label string="" colspan="2"/>
+                                <group colspan="2" col="10"><label string="-&gt;" colspan="8" align="1.0"/><field name="dir_presence"/></group>-->
+                                <label string="" colspan="2"/>
+                                <group colspan="2" col="12"><label string="-&gt;" colspan="10" align="1.0"/><field name="active" select="2"/></group>
+                            </form>
+                        </field>
+                    </page>
+                    <page string="Tags">
+                        <button string="Use a questionnaire" name="%(crm_profiling.wizard_open_questionnaire)d" type="action" colspan="1"/>
+                        <newline/>
+                        <field name="answers_ids" colspan="4" nolabel="1" select="2"/>
+                    </page>
+                    <page string="Répertoire" groups="base.group_partner_manager">
+                        <field name="local_employee" string="Pers. occupées (Site)"/>
+                        <field name="activity_description" colspan="4"/>
+                        <field name="dir_show_name" colspan="4"/>
+                        <field name="dir_sort_name" colspan="4"/>
+                        <field name="dir_exclude" />
+                    </page>
+                </notebook>
+            </form>
+        </field>    
+    </record>
+
+</data>
+</openerp>

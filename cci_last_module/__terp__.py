@@ -25,11 +25,17 @@
     'author': 'Tiny',
     #'depends': ['profile_cci'],
     'depends': [],
-    'version': '1.0',
+    'version': '1.1',
     'active': False,
     'demo_xml': [],
     'update_xml':[
-        'misc_data.xml',
+        'cci_partner.xml',
+        'cci_partner_address.xml',
+        'cci_partner_contact.xml',
+        'cci_partner_job.xml',
+        #'cci_last_module_wizard.xml',
+        'cci_last_module_report.xml',
+        'security/security.xml'
     ],
     'installable': True
 }

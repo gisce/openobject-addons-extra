@@ -14,8 +14,8 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2011-06-18 05:14+0000\n"
-"X-Generator: Launchpad (build 13168)\n"
+"X-Launchpad-Export-Date: 2011-09-28 05:35+0000\n"
+"X-Generator: Launchpad (build 14049)\n"
 
 #. module: point_of_sale_product_pack
 #: help:pos.order.line,sequence:0
@@ -75,78 +75,3 @@ msgstr "El paquet que conté aquest producte."
 #: field:pos.order.line,pack_parent_line_id:0
 msgid "Pack"
 msgstr "Paquet"
-
-#~ msgid "No Discount"
-#~ msgstr "No Discount"
-
-#~ msgid "Included in pack"
-#~ msgstr "Inclòs en el pack"
-
-#~ msgid "Point of Sale"
-#~ msgstr "Point of Sale"
-
-#~ msgid "Lines of Point of Sale"
-#~ msgstr "Lines of Point of Sale"
-
-#~ msgid ""
-#~ "The Object name must start with x_ and not contain any special character !"
-#~ msgstr ""
-#~ "El nom de l'objecte ha de començar amb x_ i no contenir cap caràcter "
-#~ "especial!"
-
-#~ msgid "Mark if pack stock is calcualted from component stock"
-#~ msgstr ""
-#~ "Marqueu aquest camp si l'estoc del paquet es calcula a partir de l'estoc "
-#~ "dels components."
-
-#~ msgid "Product"
-#~ msgstr "Producte"
-
-#~ msgid "Pack Product Lines"
-#~ msgstr "Línies del paquet de productes"
-
-#~ msgid ""
-#~ "If you add products in the 'Pack Products' field, all those products will be "
-#~ "added automatically when a new quotation or order is created."
-#~ msgstr ""
-#~ "Si afegiu productes en el camp \"Paquet de productes\", tots els productes "
-#~ "s'afegiran automàticament quan creeu un nou pressupost o comanda."
-
-#~ msgid "product.pack.line"
-#~ msgstr "producte.paquet.línea"
-
-#~ msgid "Invalid XML for View Architecture!"
-#~ msgstr "XML no vàlid per a la definició de la vista!"
-
-#~ msgid "Stock depends of components"
-#~ msgstr "Estoc depen dels components"
-
-#~ msgid ""
-#~ "Mark this field if the public price of the pack should be fixed. Do not mark "
-#~ "it if the price should be calculated from the sum of the prices of the "
-#~ "products in the pack."
-#~ msgstr ""
-#~ "Marqueu aquest camp si el preu de venda del paquet ha de ser fix. No ho "
-#~ "marqueu si el preu s'ha de calcular a partir de la suma dels preus dels "
-#~ "productes del paquet."
-
-#~ msgid "Quantity"
-#~ msgstr "Quantitat"
-
-#~ msgid "Pack Products"
-#~ msgstr "Productes del paquet"
-
-#~ msgid "Parent Product"
-#~ msgstr "Producte pare"
-
-#~ msgid "Pack has fixed price"
-#~ msgstr "El paquet té un preu fix"
-
-#~ msgid "Pack Product Line"
-#~ msgstr "Línia de paquet de productes"
-
-#~ msgid "List of products that are part of this pack."
-#~ msgstr "Llista de productes que formen part del paquet."
-
-#~ msgid "Multi-Pack"
-#~ msgstr "Paquet"

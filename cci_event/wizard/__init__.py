@@ -27,5 +27,6 @@ import create_job_registration
 import create_partner_registration
 import create_contact_registration
 import create_event_registrations
+import extract_registrations
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
 

@@ -36,5 +36,15 @@
             model="res.partner"
             name="cci_wizard_valid_membership"
             id="cci_membership.wizard_check_membership" />
+
+    <!-- Philmer addition to select invoices of products concerning one year of membership -->
+    <wizard string="Select Invoices by Year"
+			name="select_invoices_by_year"
+			id="cci_membership.select_invoices_by_year"
+			menu="False"/>
+
+	<menuitem name="Select Invoices by Year" id="menu_select_invoices_by_year"
+			action="select_invoices_by_year" type="wizard"
+			parent="membership.menu_membership" />
 	</data>
 </openerp>

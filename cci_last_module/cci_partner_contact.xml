@@ -1,0 +1,155 @@
+<?xml version="1.0" ?>
+<openerp>
+<data>
+
+    <record model="ir.ui.view" id="cci_view_partner_contact_tree">
+        <field name="name">res.partner.contact.tree</field><!--cci.view.partner.contact - Contacts CCI-->
+        <field name="model">res.partner.contact</field>
+        <field name="type">tree</field>
+        <field name="priority" eval="1"/>
+        <field name="arch" type="xml">
+            <tree string="Contacts">
+                <field name="name"/>
+                <field name="first_name"/>
+                <field name="mobile"/>
+                <field name="job_phone"/>
+                <field name="email"/>
+                <field name="partner_id" select="1"/>
+                <field name="main_title"/>
+                <field string="Email professionnel" name="job_email"/>
+                <field name="job_ids"/>
+            </tree>
+        </field>
+    </record>
+    
+    <record model="ir.ui.view" id="cci_view_partner_contact_form">
+        <field name="name">res.partner.contact.form</field><!--cci.view.partner.contact - Contacts CCI-->
+        <field name="model">res.partner.contact</field>
+        <field name="type">form</field>
+        <field name="priority" eval="1"/>
+        <field name="arch" type="xml">
+            <form string="Contact">
+                <field name="name" select="1" />
+                <field string="E-Mail prof." name="job_email" readonly="1"/>
+                <field name="first_name" select="1" />
+                <field name="mobile" on_change="on_change_phone_num(mobile)"/>
+                <notebook colspan="4">
+                    <page string="General">
+                        <field string="Civilité" name="title" select="1" />
+                        <field string="E-Mail personnel" name="email" widget="email" select="1"/>
+                        <field name="gender"  select="1"/>
+                        <field name="website" widget="url"/>
+                        <field name="national_number" />
+                        <group colspan="2" col="8"><label string="-&gt;" colspan="6" align="1.0"/><field name="data_private" select="2"/></group>
+                        <field name="lang_id" />
+                        <group colspan="2" col="8"><label string="-&gt;" colspan="6" align="1.0"/><field name="active"/></group>
+                        <field name="country_id"  select="2"/>
+                        <group colspan="2" col="8"><label string="-&gt;" colspan="6" align="1.0"/><field name="self_sufficent" select="1" string="Conserver ce contact"/></group>
+                        <newline />
+                        <field string="Fonctions" name="job_ids" mode="tree,form" nolabel="1" colspan="4">
+                            <tree string="Fonctions">
+                                <field name="sequence_contact"/>
+                                <field name="function_code_label"/>
+                                <field name="function_label"/>
+                                <field name="name"/>
+                                <field name="address_id"/>
+                                <field name="phone" on_change="on_change_phone_num(phone)"/>
+                                <field name="email"/>
+                            </tree>
+                            <form string="Fonctions">
+                                <notebook colspan="4">
+                                    <page string="Général">
+                                        <field name="name" select="1"/>
+                                        <field name="address_id" select="1"/>
+                                        <field name="function_label" select="1"/>
+                                        <field name="function_code_label" select="1"/>
+                                        <field string="E-Mail professionnel" name="email" widget="email" select="1"/>
+                                        <field name="phone" on_change="on_change_phone_num(phone)"/>
+                                        <field name="fax"/>
+                                        <field name="sequence_partner"/>
+                                        <field name="date_start"/>
+                                        <field name="sequence_contact"/>
+                                        <field name="date_stop"/>
+                                        <field name="sequence_yearbook"/>
+                                        <field name="magazine_subscription" select="1"/>
+                                        <field name="sequence_directory"/>
+                                        <field name="magazine_subscription_source" select="1"/>
+                                        <!--<group colspan="2" col="10"><label string="-&gt;" colspan="8" align="1.0"/><field name="dir_presence"/></group>
+                                        <label string="" colspan="2"/>-->
+                                        <group colspan="2" col="12"><label string="-&gt;" colspan="10" align="1.0"/><field name="active" select="2"/></group>
+                                    </page>
+                                    <page string="Tags">
+                                        <button string="Use a questionnaire" name="%(crm_profiling.wizard_open_questionnaire)d" type="action" colspan="1"/>
+                                        <newline/>
+                                        <field name="answers_ids" colspan="4" nolabel="1"/>
+                                    </page>
+                                </notebook>
+                            </form>
+                        </field>
+                    </page>
+                    <page string="Info supplémentaire">
+                        <field name="birthdate" select="2" colspan="2"/>
+                        <newline />
+                        <field name="link_ids" mode="tree,form" nolabel="1" colspan="4">
+                            <tree string="Lien(s) avec d'autres contacts">
+                                <field string="Lien" name="name" />
+                                <field name="contact_id" />
+                            </tree>
+                        </field>
+                        <separator string="Pays bien connus" colspan="4"/>
+                        <field name="country_ids" colspan="4" nolabel="1">
+                            <tree string="Pays bien connus">
+                                <field name="code"/>
+                                <field name="name"/>
+                            </tree>
+                        </field>
+                    </page>
+                    <page string="CCI">
+                        <separator string="Magazine" colspan="4"/>
+                        <field name="magazine_subscription" />
+                        <field name="canal_id" />
+                        <field name="magazine_subscription_source" />
+                        <newline />
+                        <separator string="Rencontres" colspan="4"/>
+                        <field string="Nom sur le badge" name="badge_name" />
+                        <field string="Titre sur le badge" name="badge_title" />
+                        <newline />
+                        <separator string="Données personnelles FSE" colspan="4"/>
+                        <field name="fse_work_status"  select="2"/>
+                        <field name="fse_work_experience" />
+                        <newline />
+                        <field name="fse_studies" />
+                        <field name="fse_nationality"/>
+                        <field name="fse_zip_id" colspan="4"/>
+                        <newline />
+                        <separator string="Notes" colspan="4"/>
+                        <field name="note" nolabel="1" colspan="4"/>
+                        <newline />
+                    </page>
+                    <page string="Tags">
+                        <separator string="Tags" colspan="4"/>
+                        <button string="Utiliser un questionnaire" name="%(crm_profiling.wizard_open_questionnaire)d" type="action" colspan="4" icon="gtk-justify-fill"/>
+                        <newline/>
+                        <field name="answers_ids" colspan="4" nolabel="1"/>
+                        <newline />
+                    </page>
+                    <page string="Website" groups="cci_partner.group_partner_pubdpt">
+                        <separator string="Accès website CCI" colspan="4"/>
+                        <newline />
+                        <field name="login_name" readonly="1" select="1"/>
+                        <field name="token" readonly="1"/>
+                        <field name="forced_login"/>
+                        <newline/>
+                        <group colspan="4" col="3">
+                            <button string="Créer login-PW-token" name="%(cci_base_contact.wizard_cci_base_contact_create_website_data)d" type="action" icon="gtk-properties" colspan="1"/>
+                            <button string="Réenvoyer par mail" name="%(cci_base_contact.wizard_cci_base_contact_send_website_data)d" type="action" icon="gtk-index" colspan="1"/>
+                            <button string="Radier login" name="%(cci_base_contact.wizard_cci_base_contact_remove_website_data)d" type="action" icon="gtk-undo" colspan="1"/>
+                        </group>
+                    </page>
+                </notebook>
+            </form>
+        </field>
+    </record>
+    
+</data>
+</openerp>

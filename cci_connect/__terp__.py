@@ -28,7 +28,7 @@
     "description": """
         Specific modules for the CCI Connect
     """,
-    "depends" : ["base", "cci_partner", "cci_base_contact", "profile_cci" ],
+    "depends" : ["base", "cci_partner", "cci_base_contact", "profile_cci", "cci_last_module" ],
     "init_xml" : [],
     "demo_xml" : [],
 

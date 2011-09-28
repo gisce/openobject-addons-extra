@@ -21,7 +21,8 @@
 {
     "name" : "Purchases with taxes included",
     "version" : "2.0",
-    "depends" : ["purchase","account_tax_include"],
+###    "depends" : ["purchase","account_tax_include"],
+    "depends" : ["purchase","account"],
     "author" : "Tiny",
     "website" : "http://www.openerp.com",
     "category" : "Generic Modules/Sales & Purchases",

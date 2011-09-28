@@ -18,13 +18,15 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.     
 #
 ##############################################################################
+# version 2.0 Philmer : added the VAT number of the partner, and
+#                       export to a file rather than sending by mail
 import wizard
 import time
 import datetime
 import re
 import tools
 import pooler
-import csv
+import base64
 
 def past_month():
     past_month = str(int(time.strftime('%m'))-1)
@@ -55,30 +57,32 @@ MONTHS = [
 
 param_form = """<?xml version="1.0"?>
 <form string="Select Options">
-    <field name="cert_type" colspan="3"/>
     <field name="month"     colspan="1"/>
     <field name="year"      colspan="1"/>
     <field name="canceled"  colspan="3"/>
-    <field name="email_to"  colspan="3"/>
     <field name="email_rcp" colspan="3"/>
 </form>"""
 
 fields = {
-    'cert_type': {'string' : 'Certificate Type', 'type' : 'many2one', 'required' : True, 'relation':'cci_missions.dossier_type' ,'required':True,'domain' :[('section', '=', 'certificate')] }, 
     'month':     {'string' : 'Month', 'type':'selection','selection': MONTHS ,'required': True,'default' : past_month()},
     'year':      {'string' : 'Year', 'type':'integer','size' : 4,'required': True,'default': year_past_month()},
     'canceled':  {'string' : 'include canceled certificates', 'type' : 'boolean', 'default' : lambda *a: True }, 
-    'email_to':  {'string': 'Sending email', 'type':'char', 'required': True,'size':128 ,'help':'The e-mail address where to send the file', 'default': lambda *a: 'co.woa@taktik.be'},
     'email_rcp': {'string': 'Reception email', 'type':'char', 'required': True,'size':128 ,'help':'The e-mail address where receive the proof of receipt (usually yours)'},
    }
 
 msg_form = """<?xml version="1.0"?>
 <form string="Notification">
-    <label string="E-mail with certificates has been sent successfully!" />
-    <label string="You'll receive an acknowledge/error in a few minutes on the given mailbox."/>
+     <separator string="File has been created."  colspan="4"/>
+     <field name="msg" colspan="4" nolabel="1"/>
+     <field name="file_save" />
 </form>"""
 
-msg_fields = {}
+msg_fields = {
+    'msg': {'string':'File created', 'type':'text', 'size':'100','readonly':True},
+    'file_save':{'string': 'Save File',
+        'type': 'binary',
+        'readonly': True,},
+}
 
 def lengthmonth(year, month):
     if month == 2 and ((year % 4 == 0) and ((year % 100 != 0) or (year % 400 == 0))):
@@ -89,7 +93,7 @@ def lengthmonth(year, month):
 class wizard_cert_fed_send(wizard.interface):
 
     _field_separator  = chr(124)
-    _record_separator = '\n\r'
+    _record_separator = '\r\n'
 
     def make_lines(self,cr,uid,res_file, data):
         lines=[]
@@ -123,7 +127,10 @@ class wizard_cert_fed_send(wizard.interface):
             fields.append( certificate.asker_address or '')
             fields.append( certificate.asker_zip_id.name or '')
             fields.append( certificate.asker_zip_id.city or '')
-            fields.append( '000000000' )
+            if certificate.order_partner_id.vat and certificate.order_partner_id.vat[0:3].lower() == 'be0':
+                fields.append( certificate.order_partner_id.vat[3:12] )
+            else:
+                fields.append( '000000000' )
             fields.append( certificate.dossier_id.sender_name or '')
             fields.append( certificate.dossier_id.destination_id.code or '')
             fields.append( str( int( certificate.dossier_id.goods_value * 100 )) ) # to have the value in cents, without , or .
@@ -147,21 +154,9 @@ class wizard_cert_fed_send(wizard.interface):
         # obj_certificate.write(cr, uid,certificates_ids, {'sending_spf' : time.strftime('%Y-%m-%d')})
         return lines
 
-    def write_txt(self,name,lines):
-        file=open(name, 'w')
-        file.write(self._record_separator.join(lines).encode('utf-8'))
-        file.write(self._record_separator)
-        file.close()
+    def _create_file(self, cr, uid, data, context):
 
-    def _send_mail(self, cr, uid, data, context):
-
-        # Check of the first email address given by the user
-        ptrn = re.compile('(\w+@\w+(?:\.\w+)+)')
-        result=ptrn.search(data['form']['email_to'])
-        if result==None:
-            raise wizard.except_wizard('Error !', 'Enter Valid Destination E-Mail Address.')
-
-        # Check of the first second email address given by the user
+        # Check of the email address given by the user
         ptrn = re.compile('(\w+@\w+(?:\.\w+)+)')
         result=ptrn.search(data['form']['email_rcp'])
         if result==None:
@@ -175,11 +170,10 @@ class wizard_cert_fed_send(wizard.interface):
         period="to_date('" + self.first_day.strftime('%Y-%m-%d') + "','yyyy-mm-dd') and to_date('" + self.last_day.strftime('%Y-%m-%d') +"','yyyy-mm-dd')"
 
         #determine the type of certificates to send
-        certificate_type = data['form']['cert_type']
         cancel_clause = not(data['form']['canceled']) and " and b.state not in ('cancel_customer','cancel_cci')" or ''
-        query = 'select a.id from cci_missions_certificate as a, cci_missions_dossier as b where ( a.dossier_id = b.id ) and ( a.sending_spf is null ) and ( b.type_id = %s ) and ( b.date between %s )' + cancel_clause
+        query = 'select a.id from cci_missions_certificate as a, cci_missions_dossier as b where ( a.dossier_id = b.id ) and ( a.sending_spf is null ) and ( b.date between %s )' + cancel_clause
         #Extraction of corresponding certificates
-        cr.execute(query % (certificate_type,period))
+        cr.execute(query % (period))
         res_file1=cr.fetchall()
 
         #If no records, cancel of the flow
@@ -190,34 +184,22 @@ class wizard_cert_fed_send(wizard.interface):
         root_path=tools.config.options['root_path']
         if res_file1:
             lines=self.make_lines(cr, uid, res_file1, data )
-            self.write_txt(root_path+'/certificates.txt',lines)
+            result_file = self._record_separator.join(lines).encode('utf-8') + self._record_separator
 
-        # Sending of the file as attachment
-        files_attached=[]
-        file1=tools.file_open(root_path+'/certificates.txt','rb',subdir=None)
-        files_attached=[('certificates.txt',file1.read())]
-
-        src = tools.config.options['smtp_user']  # parametre quand on lance le server ou dans bin\tools\config.py
-        dest = [data['form']['email_to']]
-        body = "Hello,\nHere are the certificates files for Federation.\nThink Big Use Tiny."
-        tools.email_send(src,dest,"Federation Sending Files From TinyERP",body,attach=files_attached)
-        pool = pooler.get_pool(cr.dbname)
-        certificates_ids = [x[0] for x in res_file1]
-        obj_certificate = pool.get('cci_missions.certificate')
-        obj_certificate.write(cr, uid, certificates_ids,{'sending_spf':time.strftime('%Y-%m-%d')})
-        return {}
+        data['form']['msg']='Save the File with '".txt"' extension.'
+        data['form']['file_save']=base64.encodestring(result_file)
+        return data['form']
 
     states = {
         'init': {
             'actions': [],
-            'result': {'type':'form', 'arch':param_form, 'fields':fields, 'state':[('end','Cancel'),('send','Send certificates')]},
+            'result': {'type':'form', 'arch':param_form, 'fields':fields, 'state':[('end','Cancel'),('getfile','Get File')]},
         },
-        'send': {
-            'actions': [_send_mail],
+        'getfile': {
+            'actions': [_create_file],
             'result': {'type':'form', 'arch':msg_form, 'fields':msg_fields, 'state':[('end','Ok')]}
         },
     }
-
 wizard_cert_fed_send('cci_mission.send_certificates_federation')
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
 

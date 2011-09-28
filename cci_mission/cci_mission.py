@@ -18,6 +18,7 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
+# Version 5.0.2 : Philmer 2011-06-11 Added support of fiscal_position in product_lines
 from osv import fields, osv
 import time
 from datetime import date,timedelta
@@ -229,7 +230,10 @@ class cci_missions_embassy_folder_line (osv.osv):
                 vals['product_id']=product_id
         return super(osv.osv,self).write( cr, uid, ids,vals, *args, **kwargs)
 
-    def onchange_line_type(self,cr,uid,ids,type,site_id):
+    def onchange_line_type(self,cr,uid,ids,type,site_id=False,partner_id=False):
+        #print type
+        #print site_id
+        #print partner_id
         data={}
         data['courier_cost']=data['customer_amount']=data['account_id']=data['name']=False
 
@@ -237,10 +241,12 @@ class cci_missions_embassy_folder_line (osv.osv):
             return {'value' : data }
 
         data['name']=type
-        site_id = self.pool.get('cci_missions.site').browse(cr, uid, site_id)
-        prod_name= str(type) + str(' Product ') + site_id.name
-        cr.execute('select id from product_template where name='"'%s'"''%str(prod_name))
-        prod=cr.fetchone()
+        prod = False
+        if site_id:
+            site_id = self.pool.get('cci_missions.site').browse(cr, uid, site_id)
+            prod_name= str(type) + str(' Product ') + site_id.name
+            cr.execute('select id from product_template where name='"'%s'"''%str(prod_name))
+            prod=cr.fetchone()
         if not prod:
             return {'value' : data }
 
@@ -253,7 +259,20 @@ class cci_missions_embassy_folder_line (osv.osv):
         if not account:
             account = prod_info.categ_id.property_account_income_categ.id
         data['account_id']=account
-
+        if partner_id:
+            # take fiscal_position into account
+            partner = self.pool.get('res.partner').browse(cr,uid, partner_id)
+            fiscal_position_id = partner.property_account_position and partner.property_account_position.id or False
+            fiscal_position = fiscal_position_id and self.pool.get('account.fiscal.position').browse(cr,uid,fiscal_position_id) or False
+            account_id = self.pool.get('account.fiscal.position').map_account(cr,uid,fiscal_position, data['account_id'])
+            if account_id:
+                data['account_id'] = account_id
+            if data['tax_rate']:
+                taxes = [self.pool.get('account.tax').browse(cr,uid,data['tax_rate'])]
+                tax_id = self.pool.get('account.fiscal.position').map_tax(cr,uid,fiscal_position,taxes)
+                if tax_id:
+                    data['tax_rate'] = tax_id[0]
+            # end fiscal position
         return {'value' : data }
 
     _columns = {
@@ -287,6 +306,7 @@ class cci_missions_dossier_type(osv.osv):
         'warranty_product_1': fields.many2one('product.product', 'Warranty product for ATA carnet if Own Risk'),
         'warranty_product_2': fields.many2one('product.product', 'Warranty product for ATA carnet if not own Risk'),
         'id_letter' : fields.char('ID Letter', size=1, help='for identify the type of certificate by the federation' ),
+        'digital' : fields.boolean('Digital certificate'),
     }
 
 cci_missions_dossier_type()
@@ -490,7 +510,15 @@ class cci_missions_certificate(osv.osv):
 
     def check_digital_no(self,cr, uid, ids):
         for data in self.browse(cr, uid, ids):
+            if data.digital_number and not data.type_id.digital:
+                return False
+            if data.type_id.digital and not data.digital_number:
+                return False
             if data.digital_number and not data.digital_number.isdigit():
+                return False
+            if data.digital_number and len( data.digital_number ) != 11:
+                return False
+            if data.digital_number and len( data.product_ids ) == 0:
                 return False
         return True
 
@@ -512,7 +540,7 @@ class cci_missions_certificate(osv.osv):
     _defaults = {
         'special_reason': lambda *a: 'none',
     }
-    _constraints = [(check_digital_no, 'Only Digits allowed', ['digital_number'])]
+    _constraints = [(check_digital_no, 'Only 11 Digits allowed, for digital certificates only and with associated product !', ['digital_number'])]
 cci_missions_certificate()
 
 class cci_missions_legalization(osv.osv):
@@ -1001,6 +1029,31 @@ class product_lines(osv.osv):
                 a = data_product.categ_id.property_account_income_categ.id
             accnt_dict['account_id']=a
             vals.update(accnt_dict)
+            # support of fiscal_position
+            if vals.has_key('dossier_product_line_id'):
+                # product associated with a certificate or a legalization
+                dossier = self.pool.get('cci_missions.dossier').browse(cr,uid,vals['dossier_product_line_id'])
+                partner = self.pool.get('res.partner').browse(cr,uid, dossier.order_partner_id.id)
+            else:
+                # product associated with a carnet ATA
+                #print 'Vals ATA Carnet : ' + str(vals)
+                carnet_ata = self.pool.get('cci_missions.ata_carnet').browse(cr,uid,vals['product_line_id'])
+                partner = self.pool.get('res.partner').browse(cr,uid, carnet_ata.partner_id.id)
+            fiscal_position_id = partner.property_account_position and partner.property_account_position.id or False
+            fiscal_position = fiscal_position_id and self.pool.get('account.fiscal.position').browse(cr,uid,fiscal_position_id) or False
+            account_id = self.pool.get('account.fiscal.position').map_account(cr,uid,fiscal_position, vals['account_id'])
+            if account_id:
+                vals['account_id'] = account_id
+            if vals['taxes_id']:
+                #vals['taxes_id'] has the format [(6,0,[id,id])]
+                #print 'Before : ' + str(vals['taxes_id'])
+                taxes = self.pool.get('account.tax').browse(cr,uid,vals['taxes_id'][0][2])
+                #print 'Taxes : ' + str(taxes)
+                tax_id = self.pool.get('account.fiscal.position').map_tax(cr,uid,fiscal_position,taxes)
+                #print 'New taxes : ' + str(tax_id)
+                if tax_id:
+                    vals['taxes_id'] = [(6,0,tax_id)]
+            # end of support of fiscal_position
         return super(product_lines,self).create(cr, uid, vals, *args, **kwargs)
 
     def write(self, cr, uid, ids,vals, *args, **kwargs):
@@ -1023,7 +1076,7 @@ class product_lines(osv.osv):
             res[line.id] = line.price_unit * line.quantity
         return res
 
-    def product_id_change(self, cr, uid, ids,product_id,):
+    def product_id_change(self, cr, uid, ids,product_id,partner_id):
         price_unit = uos_id = prod_name = data_partner = False
         sale_taxes = []
         if product_id:
@@ -1227,7 +1280,6 @@ class Product(osv.osv):
                 uom = product.uos_id or product.uom_id
                 res[product.id] = product_uom_obj._compute_price(cr, uid,
                         uom.id, res[product.id], context['uom'])
-
         for product in self.browse(cr, uid, ids, context=context):
             #change the price only for ATA originals
             if product.name.find('ATA - original') != -1:

@@ -26,7 +26,7 @@ import pooler
 from tools.translate import _
 
 final_fields = {
-    'final_text': {'string':'Changes', 'type':'char','size':10000},
+    'final_text': {'string':'Changes', 'type':'text','readonly':True},
     'final_count' : {'string':'Count','type':'integer','readonly':True,'value':-1}
 }
 def _check_membership(self, cr, uid, data, context):
@@ -66,8 +66,8 @@ wizard_arch= """<?xml version="1.0"?>
 
 wizard_final_arch= """<?xml version="1.0"?>
 <form string="Changes">
-    <separator string="------ Result of the re-calculation of the membership state -----" colspan="4"/>
-    <field name="final_text" colspan="4" nolabel="1"/>
+    <separator string="Result of the re-calculation of the membership state" colspan="4"/>
+    <field name="final_text" colspan="4" nolabel="1" width="650" height="200"/>
     <field name="final_count"/>
 </form>"""
 

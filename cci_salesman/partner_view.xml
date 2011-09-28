@@ -23,7 +23,7 @@
 			<field name="model">res.partner</field>
 			<field name="inherit_id" ref="cci_last_module.view_partner_form_new" />
 			<field name="arch" type="xml">
-				<page string="Warnings" position="after">
+				<page string="CCI" position="after">
 					<page string="Marques d'intérets">
 						<field name="interest_year" colspan="4" nolabel="1">
 							<tree string="Marque d'intéret (saison) en cours)">
@@ -77,8 +77,8 @@
 						<field name="years" colspan="4" on_change="year_changed(years)" />
 						<field name="cci_turnovers" nolabel="1" colspan="4">
 							<tree string="Turnover">
-								<field name="cci_product" />
 								<field name="sum_price" />
+								<field name="cci_product" />
 							</tree>
 							<form string="Turnover Details">
 								<field name="details" nolabel="1" colspan="4" readonly="1">

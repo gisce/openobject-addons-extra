@@ -3,7 +3,7 @@
     <data>
         
         <menuitem icon="terp-administration" id="menu_comparison" name="ERP Comparison" sequence="10"/>
-        <menuitem id="menu_config_comparison" name="Configuration" parent="menu_comparison" sequence="1"/>
+        <menuitem id="menu_config_comparison" name="Configuration" parent="menu_comparison" sequence="5"/>
         
         <!-- Configure User -->
         <record id="view_comparison_user_form" model="ir.ui.view">
@@ -12,11 +12,11 @@
             <field name="type">form</field>
             <field name="arch" type="xml">
                 <form string="Comaparison User">
-                    <field name="name" select="1"/>
+                    <field name="name"/>
                     <field name="password" password="True"/>
-                    <field name="email" widget="email" select="1"/>
+                    <field name="email" widget="email"/>
                     <field name="active"/>
-                    <field name="factor_ids" colspan="4" widget="one2many_list">
+                    <field name="factor_ids" colspan="4" widget="one2many_list" nolabel="1">
                     	<tree string="Factors">
 	                    	<field name="name"/>
 		                    <field name="parent_id"/>
@@ -30,14 +30,14 @@
 		                    <field name="state"/>
 	                    </form>
                     </field>
-                    <field name="suggestion_ids" colspan="4" widget="one2many_list">
+                    <field name="suggestion_ids" colspan="4" widget="one2many_list" nolabel="1">
                     	<tree string="Suggested Ponderations">
-		                    <field name="factor_id" select="1"/>
-		                    <field name="ponderation" select="1"/>
-		                    <field name="state" select="2"/>
+		                    <field name="factor_id"/>
+		                    <field name="ponderation"/>
+		                    <field name="state"/>
 	                	</tree>
 	               	</field> 	
-                    <field name="vote_ids" colspan="4"/>
+                    <field name="vote_ids" colspan="4" nolabel="1"/>
                 </form>
             </field>
         </record>
@@ -72,13 +72,13 @@
             <field name="type">form</field>
             <field name="arch" type="xml">
                 <form string="Comaparison Item">
-                    <field name="name" select="1"/>
-                    <field name="code" select="1"/>
+                    <field name="name"/>
+                    <field name="code"/>
                     <field name="version"/>
-                    <field name="user_id" select="1"/>
-                    <field name="load_default" />
+                    <field name="user_id"/>
                     <field name="sequence" />
-                    <field name="result_ids" colspan="4" widget="one2many_list" >
+                    <field name="load_default" />
+                    <field name="result_ids" colspan="4" widget="one2many_list" nolabel="1" >
                     	<tree string="Results">
                     		<field name="factor_id"/>
                     		<field name="result"/>
@@ -91,9 +91,11 @@
                     	</form>
                     </field>
                     <newline/>
-                    <field name="note" colspan="4"/>
+                    <separator string="Description" colspan="4"/>
+                    <field name="note" colspan="4" nolabel="1"/>
                     <newline/>
-                    <field name="state" select="2"/>
+                    <separator string="" colspan="4"/>
+                    <field name="state"/>
                 </form>
             </field>
         </record>
@@ -130,18 +132,17 @@
             <field name="type">form</field>
             <field name="arch" type="xml">
                 <form string="Affecting Factors for Comparison">
-                    <notebook>
+                	<field name="name"/>
+                	<field name="parent_id"/>
+                	<newline/>
+                	<field name="user_id"/>
+                	<field name="type"/>
+                    <notebook colspan="4">
                         <page string="General">
-                            <field name="name" select="1"/>
-                            <field name="parent_id" select="2"/>
-                            <newline/>
-	                        <field name="user_id" select="1"/>
-	                        <field name="ponderation" select="2"/>
-                            <newline/>
-                            <field name="type" select="1"/>
+	                        <field name="ponderation"/>
                             <field name="pond_computed" />
                             <field name="sequence" />
-                            <field name="result_ids" colspan="4" widget="one2many_list" >
+                            <field name="result_ids" colspan="4" widget="one2many_list" nolabel="1" >
                             	<tree string="Results">
 		                    		<field name="item_id"/>
 		                    		<field name="result"/>
@@ -154,8 +155,11 @@
 		                    	</form>
                             </field>
                             <newline/>
-                            <field name="state" select="2"/>
-                            <button name="export_csv" string="Export to CSV" type="object"/>
+                            <separator colspan="4"/>
+                            <group col="3" colspan="4">
+	                            <field name="state"/>
+	                            <button name="export_csv" string="Export to CSV" type="object" icon="terp-check"/>
+	                        </group>
                         </page>
                         <page string="Notes">
                             <field colspan="4" name="note" nolabel="1"/>
@@ -176,9 +180,38 @@
                     <field name="user_id"/>
                     <field name="ponderation"/>
                     <field name="state"/>
+                    <field name="type"/>
                 </tree>
             </field>
         </record>
+        
+        
+<!--         search view -->
+
+		<record id="comparison_factor_search_form_view" model="ir.ui.view">
+            <field name="name">comparison.factor.search.form</field>
+            <field name="model">comparison.factor</field>
+            <field name="type">search</field>
+            <field name="arch" type="xml">
+                <search string="Criterias">
+                   <filter string="Draft" icon="terp-document-new" domain="[('state','=','draft')]" help="Draft Creiterias"/>
+                   <filter string="Open" icon="terp-check" domain="[('state','=','open')]"  help="Open Creiterias"/>
+                   <filter string="Cancel" icon="terp-dialog-close" domain="[('state','=','cancel')]"  help="Cancelled Creiterias"/>
+                   <separator orientation="vertical"/>
+                   <field name="name"/>
+                   <field name="parent_id"/>
+                   <field name="user_id"/>
+                   <newline/>
+                   <group  expand='0' string='Group by...' groups="base.group_extended">
+                       <filter string='Parent Factor' icon="terp-partner" domain="[]" context="{'group_by' : 'parent_id'}" />
+                       <separator orientation="vertical"/>
+                       <filter string='State' icon="terp-stock_effects-object-colorize" domain="[]" context="{'group_by' : 'state'}" />
+                       <filter string='Type' icon="terp-stock_symbol-selection" domain="[]" context="{'group_by' : 'type'}" />
+                   </group>
+                </search>
+            </field>
+        </record>
+        
 
         <record id="view_comparison_factor_tree" model="ir.ui.view">
             <field name="name">comparison.factor.tree</field>
@@ -197,14 +230,14 @@
 
         <record id="action_comparison_factor_list" model="ir.actions.act_window">
             <field name="name">Criterias</field>
+            <field name="type">ir.actions.act_window</field>
             <field name="res_model">comparison.factor</field>
             <field name="view_type">form</field>
-            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="view_comparison_factor_list"/>
+            <field name="search_view_id" ref="comparison_factor_search_form_view"/>
         </record>
         
-        <menuitem action="action_comparison_factor_list" id="menu_action_comparison_factor_list" parent="menu_config_comparison"/>
-
-
+        
         <record id="action_comparison_factor_tree" model="ir.actions.act_window">
             <field name="name">Criterias Structure</field>
             <field name="res_model">comparison.factor</field>
@@ -213,7 +246,7 @@
             <field name="domain">[('parent_id','=',False)]</field>
         </record>
         <menuitem action="action_comparison_factor_tree" id="menu_action_comparison_factor_tree"
-            parent="menu_comparison"/>
+            parent="menu_comparison" sequence="2"/>
 
 
         <!-- Results of the Factors for Comparison -->
@@ -237,24 +270,44 @@
             <field name="type">tree</field>
             <field name="arch" type="xml">
                 <tree string="Results of the Comparisons">
-                    <field name="factor_id" select="1"/>
-                    <field name="item_id" select="1"/>
-                    <field name="result" select="2"/>
-                    <field name="votes" select="2"/>
+                    <field name="factor_id"/>
+                    <field name="item_id"/>
+                    <field name="result"/>
+                    <field name="votes"/>
                 </tree>
             </field>
         </record>
-
-        <record id="action_comparison_factor_result_tree" model="ir.actions.act_window">
-            <field name="name">Results of the Comparisons</field>
-            <field name="res_model">comparison.factor.result</field>
-            <field name="view_type">form</field>
-            <field name="view_mode">tree</field>
-            <field name="view_id" ref="view_comparison_factor_result_tree"/>
+        
+        <record id="comparison_factor_result_search_form_view" model="ir.ui.view">
+            <field name="name">comparison.factor.result.search.form</field>
+            <field name="model">comparison.factor.result</field>
+            <field name="type">search</field>
+            <field name="arch" type="xml">
+                <search string="Criterias">
+                   <field name="factor_id"/>
+                   <field name="item_id"/>
+                   <newline/>
+                   <group expand='0' string='Group by...' groups="base.group_extended">
+                       <filter string="Factor" icon="terp-partner" domain="[]" context="{'group_by' : 'factor_id'}" />
+                       <filter string="Item" icon="terp-partner" domain="[]" context="{'group_by' : 'item_id'}" />
+                   </group>
+                </search>
+            </field>
         </record>
         
-        <menuitem id="menu_comparison_results" name="Reporting" parent="menu_comparison"/>
-        <menuitem action="action_comparison_factor_result_tree" id="menu_action_comparison_factor_result_tree" parent="menu_comparison_results"/>
+        <record id="action_comparison_factor_result_report" model="ir.actions.act_window">
+            <field name="name">Results of the Comparisons </field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">comparison.factor.result</field>
+            <field name="view_type">form</field>
+            <field name="view_id" ref="view_comparison_factor_result_tree"/>
+            <field name="search_view_id" ref="comparison_factor_result_search_form_view"/>
+        </record>
+        
+        
+        
+        <menuitem id="menu_comparison_results" name="Reporting" parent="menu_comparison" sequence="3"/>
+        <menuitem action="action_comparison_factor_result_report" id="menu_action_comparison_factor_result_tree" parent="menu_comparison_results"/>
         
         <!-- Configure Vote values-->
         
@@ -264,8 +317,8 @@
             <field name="type">form</field>
             <field name="arch" type="xml">
                 <form string="Vote Criterias">
-                    <field name="name" select="1"/>
-                    <field name="factor" select="1"/>
+                    <field name="name"/>
+                    <field name="factor"/>
                 </form>
             </field>
         </record>
@@ -290,8 +343,6 @@
             <field name="view_id" ref="view_comparison_vote_values_tree"/>
         </record>
         
-        <menuitem action="action_comparison_vote_values_tree" id="menu_action_comparison_vote_values_tree" parent="menu_config_comparison"/>
-        
         <!-- Add Your vote-->
         
         <record id="view_comparison_vote_form" model="ir.ui.view">
@@ -300,15 +351,17 @@
             <field name="type">form</field>
             <field name="arch" type="xml">
                 <form string="Vote">
-                    <field name="item_id" select="1"/>
-                    <field name="user_id" select="2"/>
-                    <field name="factor_id" select="1"/>
-                    <field name="score_id" select="1"/>
-                    <field colspan="4" name="note" />
-                     <field name="state" colspan="2" select="2"/>
+                    <field name="item_id"/>
+                    <field name="user_id"/>
+                    <field name="factor_id"/>
+                    <field name="score_id"/>
+                    <separator string="Note" colspan="4"/>
+                    <field colspan="4" name="note" nolabel="1"/>
+                    <separator colspan="4"/>
+                     <field name="state" colspan="2"/>
                     <group col="2" colspan="2">
-                    <button name="accept_vote" states="draft" string="Accept" type="object"/>
-                    <button name="cancel_vote" states="draft,valid" string="Reject" type="object"/>
+                    <button name="accept_vote" states="draft" string="Accept" type="object" icon="terp-check" help="Accept Vote"/>
+                    <button name="cancel_vote" states="draft,valid" string="Reject" type="object" icon="gtk-cancel" help="Reject Vote"/>
                     </group>
                 </form>
             </field>
@@ -324,29 +377,11 @@
                     <field name="factor_id"/>
                     <field name="score_id"/>
                     <field name="state"/>
-<!--                    <field name="ponderation"/>-->
+                    <button name="accept_vote" states="draft" string="Accept" type="object" icon="terp-check"/>
+                    <button name="cancel_vote" states="draft,valid" string="Reject" type="object" icon="gtk-cancel"/>
                 </tree>
             </field>
         </record>
-
-        <record id="action_comparison_vote_form" model="ir.actions.act_window">
-            <field name="name">New Vote</field>
-            <field name="res_model">comparison.vote</field>
-            <field name="view_type">form</field>
-            <field name="view_mode">form,tree</field>
-            <field name="view_id" ref="view_comparison_vote_form"/>
-        </record>
-        
-        <record id="action_comparison_votes" model="ir.actions.act_window">
-            <field name="name">Votes</field>
-            <field name="res_model">comparison.vote</field>
-            <field name="view_type">form</field>
-            <field name="view_mode">tree,form</field>
-            <field name="view_id" ref="view_comparison_vote_tree"/>
-        </record>
-        
-        <menuitem id="menu_comparison_votes" parent="menu_comparison" action="action_comparison_votes"/>
-        <menuitem action="action_comparison_vote_form" id="menu_action_comparison_vote_form" parent="menu_comparison_votes"/>
         
         <!-- Suggest for Ponderations-->
         
@@ -356,16 +391,18 @@
             <field name="type">form</field>
             <field name="arch" type="xml">
                 <form string="Suggest Ponderations">
-                    <field name="factor_id" select="1"/>
+                    <field name="factor_id"/>
                     <field name="user_id" />
-                    <field name="ponderation" select="1"/>
-                    <field name="effect" select="2"/>
-                       <newline/>
-                    <field colspan="4" name="note" />
-                    <field name="state" colspan="2" select="2"/>
+                    <field name="ponderation"/>
+                    <field name="effect"/>
+                    <newline/>
+                    <separator string="Suggestion" colspan="4"/>
+                    <field colspan="4" name="note" nolabel="1"/>
+                    <separator colspan="4"/>
+                    <field name="state" colspan="2"/>
                     <group col="2" colspan="2">
-                    <button name="accept_suggestion" states="draft" string="Accept" type="object"/>
-                    <button name="cancel_suggestion" states="draft,done" string="Reject" type="object"/>
+                    <button name="accept_suggestion" states="draft" string="Accept" type="object" icon="terp-check"/>
+                    <button name="cancel_suggestion" states="draft,done" string="Reject" type="object" icon="gtk-cancel"/>
                     </group>
                 </form>
             </field>
@@ -377,33 +414,16 @@
             <field name="type">tree</field>
             <field name="arch" type="xml">
                 <tree string="Suggested Ponderations">
-                    <field name="factor_id" select="1"/>
+                    <field name="factor_id"/>
                     <field name="user_id" />
-                    <field name="ponderation" select="1"/>
+                    <field name="ponderation"/>
                     <field name="effect" />
-                    <field name="state" select="2"/>
+                    <field name="state"/>
+                    <button name="accept_suggestion" states="draft" string="Accept" type="object" icon="terp-check" help="Accept Suggestion"/>
+                    <button name="cancel_suggestion" states="draft,done" string="Reject" type="object" icon="gtk-cancel" help="Reject Suggestion"/>
                 </tree>
             </field>
         </record>
-
-        <record id="action_view_suggest_ponderation_form" model="ir.actions.act_window">
-            <field name="name">New Suggestion</field>
-            <field name="res_model">comparison.ponderation.suggestion</field>
-            <field name="view_type">form</field>
-            <field name="view_mode">form,tree</field>
-            <field name="view_id" ref="view_suggest_ponderation_form"/>
-        </record>
-        
-        <record id="action_suggest_ponderation" model="ir.actions.act_window">
-            <field name="name">Suggestions</field>
-            <field name="res_model">comparison.ponderation.suggestion</field>
-            <field name="view_type">form</field>
-            <field name="view_mode">tree,form</field>
-            <field name="view_id" ref="view_suggest_ponderation_tree"/>
-        </record>
-        
-        <menuitem id="menu_comparison_suggestions" parent="menu_comparison" action="action_suggest_ponderation"/>
-        <menuitem action="action_view_suggest_ponderation_form" id="menu_action_view_suggest_ponderation_form" parent="menu_comparison_suggestions"/>
         
         <record id="view_evaluation_pack_form" model="ir.ui.view">
             <field name="name">evaluation.pack.form</field>
@@ -411,9 +431,11 @@
             <field name="type">form</field>
             <field name="arch" type="xml">
                 <form string="Evaluation Pack">
-                    <field name="name" select="1"/>
+                    <field name="name" />
+                    <label string="" />
                     <newline/>
-                    <field name="item_ids"/>
+                    <separator string="Items" colspan="4"/>
+                    <field name="item_ids" colspan="4" nolabel="1"/>
                 </form>
             </field>
         </record>
@@ -424,7 +446,7 @@
             <field name="type">tree</field>
             <field name="arch" type="xml">
                 <tree string="Evaluation Pack">
-                    <field name="name" select="1"/>
+                    <field name="name"/>
                 </tree>
             </field>
         </record>
@@ -438,73 +460,93 @@
         
         <menuitem action="action_evaluation_pack_tree" id="menu_action_evaluation_pack_tree" parent="menu_config_comparison"/>
         
-        <menuitem id="menu_periodical" name="Periodical Processing" parent="menu_comparison" sequence="2"/>
+        <menuitem id="menu_periodical" name="Periodical Processing" parent="menu_comparison" sequence="1"/>
         <menuitem id="menu_periodical_criterias" name="Criterias" parent="menu_periodical" sequence="1"/>
         <menuitem id="menu_periodical_votes" name="Votes" parent="menu_periodical" sequence="3"/>
         <menuitem id="menu_periodical_suggestions" name="Ponderation Suggestions" parent="menu_periodical" sequence="2"/>
         
-        <!-- Criterias -->
-        
-        <record id="action_criterias_draft" model="ir.actions.act_window">
-            <field name="name">Draft Criterias</field>
-            <field name="res_model">comparison.factor</field>
-            <field name="view_type">form</field>
-            <field name="view_mode">tree,form</field>
-            <field name="domain">[('state','=','draft')]</field>
-        </record>
-        <menuitem action="action_criterias_draft" id="menu_action_criterias_draft" parent="menu_periodical_criterias"/>
-        
-        <record id="action_criterias_cancel" model="ir.actions.act_window">
-            <field name="name">Cancelled Criterias</field>
-            <field name="res_model">comparison.factor</field>
-            <field name="view_type">form</field>
-            <field name="view_mode">tree,form</field>
-            <field name="domain">[('state','=','cancel')]</field>
-        </record>
-        <menuitem action="action_criterias_cancel" id="menu_action_criterias_cancel" parent="menu_periodical_criterias"/>
+        <menuitem action="action_comparison_factor_list" id="menu_action_comparison_factor_list_criterias" parent="menu_periodical_criterias"/>
         
         <!-- Votes -->
         
-        <record id="action_votes_draft" model="ir.actions.act_window">
-            <field name="name">Draft Votes</field>
-            <field name="res_model">comparison.vote</field>
-            <field name="view_type">form</field>
-            <field name="view_mode">tree,form</field>
-            <field name="domain">[('state','=','draft')]</field>
+		<record id="comparison_vote_search_form_view" model="ir.ui.view">
+            <field name="name">comparison.vote.search.form</field>
+            <field name="model">comparison.vote</field>
+            <field name="type">search</field>
+            <field name="arch" type="xml">
+                <search string="Votes">
+                   <filter string="Draft" icon="terp-document-new" domain="[('state','=','draft')]" help="Draft Votes"/>
+                   <filter string="Valid" icon="terp-check" domain="[('state','=','valid')]" help="Valid Votes"/>
+                   <filter string="Cancel" icon="terp-dialog-close" domain="[('state','=','cancel')]" help="Cancelled Votes"/>
+                   <separator orientation="vertical"/>
+                   <field name="item_id"/>
+                   <field name="factor_id"/>
+                   <field name="user_id"/>
+                   <field name="score_id"/>
+                   <newline/>
+                   <group  expand='0' string='Group by...' groups="base.group_extended">
+                       <filter string='Item' icon="terp-accessories-archiver" domain="[]" context="{'group_by' : 'item_id'}" />
+                       <filter string='Factor' icon="terp-accessories-archiver" domain="[]" context="{'group_by' : 'factor_id'}" />
+                       <filter string='Value' icon="terp-accessories-archiver" domain="[]" context="{'group_by' : 'score_id'}" />
+                       <separator orientation="vertical"/>
+                       <filter string='State' icon="terp-stock_effects-object-colorize" domain="[]" context="{'group_by' : 'state'}" />
+                   </group>
+
+                </search>
+            </field>
         </record>
-        <menuitem action="action_votes_draft" id="menu_action_votes_draft" parent="menu_periodical_votes"/>
         
-        <record id="action_votes_cancel" model="ir.actions.act_window">
-            <field name="name">Cancelled Votes</field>
+        
+        <record id="action_votes_all" model="ir.actions.act_window">
+            <field name="name">Votes</field>
+            <field name="type">ir.actions.act_window</field>
             <field name="res_model">comparison.vote</field>
             <field name="view_type">form</field>
-            <field name="view_mode">tree,form</field>
-            <field name="domain">[('state','=','cancel')]</field>
+            <field name="view_id" ref="view_comparison_vote_tree"/>
+            <field name="search_view_id" ref="comparison_vote_search_form_view"/>
         </record>
-        <menuitem action="action_votes_cancel" id="menu_action_votes_cancel" parent="menu_periodical_votes"/>
+        
+        <menuitem action="action_votes_all" id="menu_action_votes_draft" parent="menu_periodical_votes" sequence="2"/>
+        
+        <menuitem action="action_comparison_vote_values_tree" id="menu_action_comparison_vote_values_tree" parent="menu_periodical_votes" sequence="4"/>
         
         <!-- Ponderation Suggestions -->
         
-        <record id="action_ponderation_draft" model="ir.actions.act_window">
-            <field name="name">Draft Suggestions</field>
+       <record id="ponderation_suggestions_search_form_view" model="ir.ui.view">
+            <field name="name">comparison.ponderation.suggestion.search.form</field>
+            <field name="model">comparison.ponderation.suggestion</field>
+            <field name="type">search</field>
+            <field name="arch" type="xml">
+                <search string="Suggestions">
+                   <filter string="Draft" icon="terp-document-new" domain="[('state','=','draft')]" help="Draft Suggestions"/>
+                   <filter string="Done" icon="terp-check" domain="[('state','=','done')]" help="Done Suggestions"/>
+                   <filter string="Cancel" icon="terp-dialog-close" domain="[('state','=','cancel')]"  help="Cancelled Suggestions"/>
+                   <separator orientation="vertical"/>
+                   <field name="factor_id"/>
+                   <field name="user_id"/>
+                   <newline/>
+                   <group  expand='0' string='Group by...' groups="base.group_extended">
+                       <filter string='Factor' icon="terp-accessories-archiver" domain="[]" context="{'group_by' : 'factor_id'}" />
+                       <filter string='Ponderation Effect' icon="terp-accessories-archiver" domain="[]" context="{'group_by' : 'effect'}" />
+                       <filter string='User' icon="terp-partner" domain="[]" context="{'group_by' : 'user_id'}" />
+                       <separator orientation="vertical"/>
+                       <filter string='State' icon="terp-stock_effects-object-colorize" domain="[]" context="{'group_by' : 'state'}" />
+                   </group>
+
+                </search>
+            </field>
+        </record>
+        
+        <record id="action_ponderation_all" model="ir.actions.act_window">
+            <field name="name">Suggestions</field>
+            <field name="type">ir.actions.act_window</field>
             <field name="res_model">comparison.ponderation.suggestion</field>
             <field name="view_type">form</field>
-            <field name="view_mode">tree,form</field>
-            <field name="domain">[('state','=','draft')]</field>
+            <field name="view_id" ref="view_suggest_ponderation_tree"/>
+            <field name="search_view_id" ref="ponderation_suggestions_search_form_view"/>
         </record>
-        <menuitem action="action_ponderation_draft" id="menu_action_ponderation_draft" parent="menu_periodical_suggestions"/>
         
-        <record id="action_ponderation_cancel" model="ir.actions.act_window">
-            <field name="name">Cancelled Suggestions</field>
-            <field name="res_model">comparison.ponderation.suggestion</field>
-            <field name="view_type">form</field>
-            <field name="view_mode">tree,form</field>
-            <field name="domain">[('state','=','cancel')]</field>
-        </record>
-        <menuitem action="action_ponderation_cancel" id="menu_action_ponderation_cancel" parent="menu_periodical_suggestions"/>
-        
-        <wizard id="wizard_recompute_evaluations" menu="False" name="recompute.evaluations" string="Recompute All Evaluations"/>
-        <menuitem action="wizard_recompute_evaluations" id="menu_wizard_recompute_evaluations" parent="menu_periodical" type="wizard"/>
+        <menuitem action="action_ponderation_all" id="menu_action_ponderation_all" parent="menu_periodical_suggestions"  sequence="2"/>
         
     </data>
 </openerp>

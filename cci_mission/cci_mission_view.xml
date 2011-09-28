@@ -41,6 +41,7 @@
                     <field name="id_letter"/>
                     <field name="warranty_product_1" />
                     <field name="warranty_product_2" />
+                    <field name="digital" />
                 </form>
             </field>
         </record>
@@ -204,14 +205,14 @@
                         <field name="member_price"/>
                         <newline/>
                         <field name="embassy_folder_line_ids" nolabel="1" colspan="4">
-                            <tree string="Embassy Foder Lines">
+                            <tree string="Embassy Folder Lines">
                                 <field name="name"/>
                                 <field name="courier_cost"/>
                                 <field name="customer_amount"/>
                                 <field name="tax_rate"/>
                             </tree>
-                            <form string="Embassy Foder Lines">
-                                <field name="type" on_change="onchange_line_type(type,parent.site_id)" />
+                            <form string="Embassy Folder Lines">
+                                <field name="type" on_change="onchange_line_type(type,parent.site_id,parent.partner_id)" />
                                 <newline/>
                                 <field name="name" />
                                 <newline/>
@@ -428,7 +429,7 @@
 	                                <form string="Product Line">
 	                                        <field name="name" select="1" colspan="4"/>
 	                                        <newline/>
-	                                        <field name="product_id" select="1" on_change="product_id_change(product_id)"/>
+	                                        <field name="product_id" select="1" on_change="product_id_change(product_id,parent.order_partner_id)"/>
 	                                        <field name="quantity" select="1"/>
 	                                        <field name="uos_id"/>
 	                                        <field name="price_unit" select="1"/>
@@ -492,7 +493,7 @@
                         <field name="name" select="1"/>
                         <field name="date" select="2"/>
                         <field name="type_id" select="1" domain="[('section','=','certificate')]"/>
-                        <field name="destination_id" select="1" />
+                        <field name="destination_id" select="1" required="1"/>
                         <field name="order_partner_id" on_change="get_certification_details(order_partner_id)" select="1"/>
                         <field name="digital_number" select="2"/>
                         <newline/>
@@ -505,10 +506,10 @@
                         <field name="sender_name" />
                         <field name="special_reason"/>
                         <newline/>
-                        <field name="goods" select="2"/>
+                        <field name="goods" select="2" required="1"/>
                         <field name="to_bill" />
                         <newline/>
-                        <field name="goods_value" />
+                        <field name="goods_value" required="1"/>
                         <field name="quantity_copies" />
                         <field name="state" readonly="1"/>
                         <group col="4" colspan="2">
@@ -528,7 +529,7 @@
 	                                <form string="Product Line">
 	                                    <field name="name" select="1" colspan="4"/>
 	                                    <newline/>
-	                                    <field name="product_id" required="1" select="1" on_change="product_id_change(product_id)"/>
+	                                    <field name="product_id" required="1" select="1" on_change="product_id_change(product_id,parent.order_partner_id)"/>
 	                                    <field name="quantity" select="1"/>
 	                                    <field name="uos_id"/>
 	                                    <field name="price_unit" select="1"/>
@@ -550,8 +551,8 @@
                         <newline/>
                         <field name="sending_spf" readonly="1"/>
                         <newline/>
-                        <field name="origin_ids" />
-                        <field name="customs_ids"/>
+                        <field name="origin_ids" required="1"/>
+                        <field name="customs_ids" required="1"/>
                         <field name="legalization_ids" colspan="4"/>
                     </page>
                 </notebook>
@@ -824,7 +825,7 @@
                 <form string="Product Line">
                             <field name="name" select="1" colspan="4"/>
                             <newline/>
-                            <field name="product_id" required="1" select="1" on_change="product_id_change(product_id)"/>
+                            <field name="product_id" required="1" select="1" on_change="product_id_change(product_id,parent.order_partner_id)"/>
                             <field name="quantity" select="1"/>
                             <field name="uos_id"/>
                             <field name="price_unit" select="1"/>
@@ -835,8 +836,8 @@
                 </form>
             </field>
         </record>
-        <!-- VUES PARTICULIERES SUR LES CERTIFICATS  -->
 
+        <!-- VUES PARTICULIERES SUR LES CERTIFICATS  -->
         <record model="ir.actions.act_window" id="action_certificates_incompleted">
             <field name="name">Incompleted Certificates</field>
             <field name="res_model">cci_missions.certificate</field>

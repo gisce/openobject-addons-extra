@@ -136,8 +136,8 @@ class res_users(osv.osv):
             context = {}
             
         res = {}
-        if 'groups_id' in data and data['groups_id'][0] and \
-            data['groups_id'][0][2]:
+        if 'groups_id' in vals and vals['groups_id'][0] and \
+            vals['groups_id'][0] > 2:
             for group in self.pool.get('res.groups').browse(cr, uid, 
                                                     vals['groups_id'][0][2]):
                 if group.name == 'Sale / Salesman':
@@ -154,7 +154,7 @@ class res_users(osv.osv):
             data['years'] = year
         
         if 'groups_id' in data and data['groups_id'][0] and \
-            len(data['groups_id'][0]) >2:
+            len(data['groups_id'][0]) > 2:
             for group in self.pool.get('res.groups').browse(cr, uid, 
                                                     data['groups_id'][0][2]):
                 if group.name == 'Sale / Salesman':

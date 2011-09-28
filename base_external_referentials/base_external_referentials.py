@@ -58,7 +58,7 @@ class external_mappinglines_template(osv.osv):
         'model':fields.related('model_id', 'model', type='char', string='Model Name'),
         'external_field': fields.char('External Field', size=32),
         'type': fields.selection([('in_out', 'External <-> OpenERP'), ('in', 'External -> OpenERP'), ('out', 'External <- OpenERP')], 'Type'),
-        'external_type': fields.selection([('str', 'String'), ('bool', 'Boolean'), ('int', 'Integer'), ('float', 'Float')], 'External Type'),
+        'external_type': fields.selection([('unicode', 'String'), ('bool', 'Boolean'), ('int', 'Integer'), ('float', 'Float'), ('list', 'List'), ('dict', 'Dictionnary')], 'External Type'),
         'in_function': fields.text('Import in OpenERP Mapping Python Function'),
         'out_function': fields.text('Export from OpenERP Mapping Python Function'),
                 }
@@ -225,7 +225,7 @@ class external_mapping_line(osv.osv):
         'mapping_id': fields.many2one('external.mapping', 'External Mapping', select=True, ondelete='cascade'),
         'related_model_id': fields.related('mapping_id', 'model_id', type='many2one', relation='ir.model', string='Related Model'),
         'type': fields.selection([('in_out', 'External <-> OpenERP'), ('in', 'External -> OpenERP'), ('out', 'External <- OpenERP')], 'Type'),
-        'external_type': fields.selection([('str', 'String'), ('bool', 'Boolean'), ('int', 'Integer'), ('float', 'Float')], 'External Type'),
+        'external_type': fields.selection([('unicode', 'String'), ('bool', 'Boolean'), ('int', 'Integer'), ('float', 'Float'), ('list', 'List'), ('dict', 'Dictionnary')], 'External Type'),
         'in_function': fields.text('Import in OpenERP Mapping Python Function'),
         'out_function': fields.text('Export from OpenERP Mapping Python Function'),
     }
@@ -250,11 +250,23 @@ external_mapping_line()
 
 class ir_model_data(osv.osv):
     _inherit = "ir.model.data"
+    
+    def init(self, cr):
+      #FIXME: migration workaround: we changed the ir_model_data usage to make standard CSV import work again
+      cr.execute("select name from external_referential;")
+      referentials = cr.fetchall()
+      for tuple in referentials:
+          name = "extref." + tuple[0]
+          cr.execute("update ir_model_data set name = replace(name, '_mag_order', '/mag_order') where module = %s;", (name,))
+          cr.execute("update ir_model_data set name = regexp_replace(name, '_([1-9])', E'/\\\\1') where module = %s;", (name,))
+          cr.execute("update ir_model_data set name = replace(name, '.', '_') where module = %s;", (name,))
+          cr.execute("update ir_model_data set module = replace(module, '.','/') where module = %s;", (name,))
+      return True
 
     def _get_external_referential_id(self, cr, uid, ids, name, arg, context=None):
         res = {}
         for model_data in self.browse(cr, uid, ids, context):
-            s = model_data.module.split('.') #we assume a module name with a '.' means external referential
+            s = model_data.module.split('/') #we assume a module name with a '/' means external referential
             if len(s) > 1:
                 ref_ids = self.pool.get('external.referential').search(cr, uid, [['name', '=', s[1]]])
                 if ref_ids:
@@ -271,5 +283,9 @@ class ir_model_data(osv.osv):
         #'create_date': fields.datetime('Created date', readonly=True), #TODO used?
         #'write_date': fields.datetime('Updated date', readonly=True), #TODO used?
     }
+    
+    _sql_constraints = [
+        ('external_reference_uniq_per_object', 'unique(model, res_id, external_referential_id)', 'You cannot have on record with multiple external id for a sae referential'),
+    ]
 
 ir_model_data()
