@@ -43,7 +43,7 @@ class account_tax(osv.osv):
         tin = []
         tex = []
         for tax in taxes:
-            if (partner.employee and tax.expense_include) or tax.price_include:
+            if (partner and partner.employee and tax.expense_include) or tax.price_include:
                 tin.append(tax)
             else:
                 tex.append(tax)
