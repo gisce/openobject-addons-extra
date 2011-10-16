@@ -313,7 +313,7 @@ class external_report_lines(osv.osv):
     def log_failed(self, cr, uid, model, action,
                    res_id=None, external_id=None, exception=None,
                    data_record=None, defaults=None, context=None):
-        return self._log_base(cr, uid, 'fail', model, action, res_id=res_id,
+        return self._log_base(cr, uid, model, action, 'fail', res_id=res_id,
                              external_id=external_id, exception=exception,
                              data_record=data_record, defaults=defaults,
                              context=context)
@@ -321,7 +321,7 @@ class external_report_lines(osv.osv):
     def log_success(self, cr, uid, model, action,
                     res_id=None, external_id=None, exception=None,
                     data_record=None, defaults=None, context=None):
-        return self._log_base(cr, uid, 'success', model, action, res_id=res_id,
+        return self._log_base(cr, uid,  model, action, 'success', res_id=res_id,
                              external_id=external_id, exception=exception,
                              data_record=data_record, defaults=defaults,
                              context=context)
