@@ -4,6 +4,7 @@
 #    OpenERP, Open Source Management Solution
 #    Copyright (C) 2004-2009 Tiny SPRL (<http://tiny.be>). All Rights Reserved
 #    Sharoon Thomas, Raphaël Valyi
+#    Copyright (C) 2011 Camptocamp Guewen Baconnier                         
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -276,46 +277,77 @@ def ext_import(self, cr, uid, data, external_referential_id, defaults=None, cont
                 #if mapping lines exist find the data conversion for each row in inward data
                 for_key_field = self.pool.get('external.mapping').read(cr, uid, mapping_id[0], ['external_key_name'])['external_key_name']
                 for each_row in data:
+                    created = written = bound = False
                     vals = self.oevals_from_extdata(cr, uid, external_referential_id, each_row, for_key_field, mapping_lines, defaults, context)
                     #perform a record check, for that we need foreign field
                     #TODO seb asked : did the option "vals.get(for_key_field, False)" and "each_row.get('external_id', False)" are still usefull??
                     external_id = vals.get('external_id', False) or vals.get(for_key_field, False) or each_row.get(for_key_field, False) or each_row.get('external_id', False)
                     #del vals[for_key_field] looks like it is affecting the import :(
                     #Check if record exists
-                    existing_ir_model_data_id = self.pool.get('ir.model.data').search(cr, uid, [('model', '=', self._name), ('name', '=', self.prefixed_id(external_id)), ('external_referential_id', '=', external_referential_id)])
-                    record_test_id = False
+                    existing_ir_model_data_id = self.pool.get('ir.model.data').search(cr, uid, [('model', '=', self._name),
+                                                                                                ('name', '=', self.prefixed_id(external_id)),
+                                                                                                ('external_referential_id', '=', external_referential_id)])
+                    existing_rec_id = False
                     if existing_ir_model_data_id:
                         existing_rec_id = self.pool.get('ir.model.data').read(cr, uid, existing_ir_model_data_id, ['res_id'])[0]['res_id']
 
                         #Note: OpenERP cleans up ir_model_data which res_id records have been deleted only at server update because that would be a perf penalty,
                         #so we take care of it here:
-                        record_test_id = self.search(cr, uid, [('id', '=', existing_rec_id)])
-                        if not record_test_id:
+                        test_existing_rec_id = self.search(cr, uid, [('id', '=', existing_rec_id)])
+                        if not test_existing_rec_id:
                             self.pool.get('ir.model.data').unlink(cr, uid, existing_ir_model_data_id)
+                            existing_ir_model_data_id = existing_rec_id = False
+                    else:
+                        # alternative way to find an OpenERP resource to bind with the external resource
+                        existing_rec_id = \
+                        self._search_existing_id_by_vals(cr, uid, vals, external_id,
+                                                         external_referential_id, defaults,
+                                                         context=context)
 
-                    if record_test_id:
+                    if existing_rec_id:
                         if vals.get(for_key_field, False):
                             del vals[for_key_field]
-                        if self.oe_update(cr, uid, existing_rec_id, vals, each_row, external_referential_id, defaults, context):
+                        if self.oe_update(cr, uid, existing_rec_id, vals, each_row, external_referential_id, defaults=defaults, context=context):
+                            written = True
                             write_ids.append(existing_rec_id)
-                            self.pool.get('ir.model.data').write(cr, uid, existing_ir_model_data_id, {'res_id':existing_rec_id})
-                            logger.notifyChannel('ext synchro', netsvc.LOG_INFO, "Updated in OpenERP %s from External Ref with external_id %s and OpenERP id %s successfully" %(self._name, external_id, existing_rec_id))
-
+                        if not existing_ir_model_data_id:
+                            # means the external resource is bound to an existing resource
+                            # using the _search_existing_id_by_vals method
+                            bound = True
                     else:
-                        crid = self.oe_create(cr, uid, vals, each_row, external_referential_id, defaults, context)
-                        create_ids.append(crid)
-                        ir_model_data_vals = {
-                            'name': self.prefixed_id(external_id),
-                            'model': self._name,
-                            'res_id': crid,
-                            'external_referential_id': external_referential_id,
-                            'module': 'extref/' + self.pool.get('external.referential').read(cr, uid, external_referential_id, ['name'])['name']
-                        }
-                        self.pool.get('ir.model.data').create(cr, uid, ir_model_data_vals)
-                        logger.notifyChannel('ext synchro', netsvc.LOG_INFO, "Created in OpenERP %s from External Ref with external_id %s and OpenERP id %s successfully" %(self._name, external_id, crid))
+                        existing_rec_id = self.oe_create(cr, uid, vals, each_row, external_referential_id, defaults, context=context)
+                        created = True
+
+                    if existing_ir_model_data_id:
+                        self.pool.get('ir.model.data').write(cr, uid, existing_ir_model_data_id, {'res_id': existing_rec_id}, context=context)
+                    else:
+                        ir_model_data_vals = \
+                        self._prepare_external_id_vals(cr, uid, existing_rec_id,
+                                                       external_id, external_referential_id,
+                                                       defaults=defaults, context=context)
+                        self.pool.get('ir.model.data').create(cr, uid, ir_model_data_vals, context=context)
+                        if bound:
+                            logger.notifyChannel('ext synchro', netsvc.LOG_INFO, "Bound in OpenERP %s from External Ref with external_id %s and OpenERP id %s successfully" %(self._name, external_id, existing_rec_id))
+
+                    if created:
+                        create_ids.append(existing_rec_id)
+                        logger.notifyChannel('ext synchro', netsvc.LOG_INFO, "Created in OpenERP %s from External Ref with external_id %s and OpenERP id %s successfully" %(self._name, external_id, existing_rec_id))
+                    elif written:
+                        write_ids.append(existing_rec_id)
+                        logger.notifyChannel('ext synchro', netsvc.LOG_INFO, "Updated in OpenERP %s from External Ref with external_id %s and OpenERP id %s successfully" %(self._name, external_id, existing_rec_id))
 
     return {'create_ids': create_ids, 'write_ids': write_ids}
 
+def _search_existing_id_by_vals(self, cr, uid, vals, external_id, external_referential_id, defaults=None, context=None):
+    """ Hook. Used to bind resources already existing in OpenERP when they are 
+        imported from the external referential if no external id is found in ir.model.data.
+        As instance, search a partner by the mail, once found, the mapping will 
+        be written in ir.model.data and the existing customer updated.  
+        Must return the id of the resource on which the external id must be binded.
+        
+        Return: ID of the resource
+    """
+    return False
 
 def retry_import(self, cr, uid, id, ext_id, external_referential_id, defaults=None, context=None):
     """ When we import again a previously failed import
@@ -459,13 +491,7 @@ def ext_export(self, cr, uid, ids, external_referential_ids=[], defaults={}, con
                                 try:
                                     crid = self.ext_create(cr, uid, exp_data, conn, mapping_rec['external_create_method'], record_data['id'], context)
                                     create_ids.append(record_data['id'])
-                                    ir_model_data_vals = {
-                                                            'name': self.prefixed_id(crid),
-                                                            'model': self._name,
-                                                            'res_id': record_data['id'],
-                                                            'external_referential_id': ext_ref_id,
-                                                            'module': 'extref/' + self.pool.get('external.referential').read(cr, uid, ext_ref_id, ['name'])['name']
-                                                          }
+                                    ir_model_data_vals = self._prepare_external_id_vals(cr, uid, record_data['id'], crid, ext_ref_id, defaults=defaults, context=context)
                                     self.pool.get('ir.model.data').create(cr, uid, ir_model_data_vals)
                                     report_line_obj.log_success(cr, uid, self._name, 'export',
                                                                 res_id=record_data['id'],
@@ -480,6 +506,18 @@ def ext_export(self, cr, uid, ids, external_referential_ids=[], defaults={}, con
                         cr.commit()
 
     return {'create_ids': create_ids, 'write_ids': write_ids}
+
+def _prepare_external_id_vals(self, cr, uid, res_id, ext_id, external_referential_id, defaults=None, context=None):
+    """ Create an external reference for a resource id in the ir.model.data table"""
+    ir_model_data_vals = {
+                            'name': self.prefixed_id(ext_id),
+                            'model': self._name,
+                            'res_id': res_id,
+                            'external_referential_id': external_referential_id,
+                            'module': 'extref/' + self.pool.get('external.referential').\
+                            read(cr, uid, external_referential_id, ['name'])['name']
+                          }
+    return ir_model_data_vals
 
 def retry_export(self, cr, uid, id, ext_id, external_referential_id, defaults=None, context=None):
     """ When we export again a previously failed export
@@ -564,3 +602,6 @@ osv.osv.ext_create = ext_create
 osv.osv.try_ext_update = try_ext_update
 osv.osv.ext_update = ext_update
 osv.osv.report_action_mapping = report_action_mapping
+osv.osv._prepare_external_id_vals = _prepare_external_id_vals
+osv.osv._search_existing_id_by_vals = _search_existing_id_by_vals
+
