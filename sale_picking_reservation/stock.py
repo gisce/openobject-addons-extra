@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 #################################################################################
 #                                                                               #
-#    sale_extended_workflow for OpenERP                                          #
+#    sale_picking_reservation for OpenERP                                       #
 #    Copyright (C) 2011 Akretion Sébastien BEAU <sebastien.beau@akretion.com>   #
 #                                                                               #
 #    This program is free software: you can redistribute it and/or modify       #
@@ -19,9 +19,39 @@
 #                                                                               #
 #################################################################################
 
-
-import stock
-import sale
-
+from osv import osv, fields
+import netsvc
 
 
+class stock_picking(osv.osv):
+    
+    _inherit = "stock.picking"
+
+    _columns = {
+        'reserved': fields.boolean('Reserved Picking', readonly=True),
+    }
+
+    _defaults = {
+        'reserved': lambda *a: False,
+    }
+
+    
+    def action_reserve(self, cr, uid, ids, context=None):
+        """ Reserved picking.
+        @return: True
+        """
+        self.write(cr, uid, ids, {'reserved' : True})
+        todo = []
+        for picking in self.browse(cr, uid, ids, context=context):
+            for r in picking.move_lines:
+                if r.state == 'draft':
+                    todo.append(r.id)
+
+        #self.log_picking(cr, uid, ids, context=context)
+
+        todo = self.action_explode(cr, uid, todo, context)
+        if len(todo):
+            self.pool.get('stock.move').action_confirm(cr, uid, todo, context=context)
+        return True
+
+stock_picking()

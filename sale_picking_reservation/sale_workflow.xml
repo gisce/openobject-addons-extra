@@ -1,4 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+  sale_picking_reservation for OpenERP
+  Copyright (C) 2011 Akretion Sébastien BEAU <sebastien.beau@akretion.com>
+  The licence is in the file __terp__.py
+-->
 <openerp>
     <data>
         

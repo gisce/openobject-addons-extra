@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 #################################################################################
 #                                                                               #
-#    sale_extended_workflow for OpenERP                                          #
+#    sale_picking_reservation for OpenERP                                       #
 #    Copyright (C) 2011 Akretion Sébastien BEAU <sebastien.beau@akretion.com>   #
 #                                                                               #
 #    This program is free software: you can redistribute it and/or modify       #
@@ -19,19 +19,9 @@
 #                                                                               #
 #################################################################################
 
-from osv import osv, fields
-import netsvc
+
+import stock
+import sale
 
 
-class stock_picking(osv.osv):
-    
-    _inherit = "stock.picking"
-    
-    def create(self, cr, uid, vals, context=None):
-        picking_id = super(stock_picking, self).create(cr, uid, vals, context)
-        if vals.get('sale_id', False) and self.pool.get('sale.order').search(cr, uid, [['reserved', '=', True], ['id', '=', vals['sale_id']]], context=context):
-            wf_service = netsvc.LocalService("workflow")
-            wf_service.trg_validate(uid, 'stock.picking', picking_id, 'button_reserve', cr)
-        return picking_id
 
-stock_picking()
