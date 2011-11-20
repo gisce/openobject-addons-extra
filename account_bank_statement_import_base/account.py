@@ -50,7 +50,6 @@ class account_bank_statement(osv.osv):
 
     #This code should be excuted in an other module
     def button_cancel(self, cr, uid, ids, context={}):
-        print 'super cancel'
         done = []
         for st in self.browse(cr, uid, ids, context=context):
             if st.state=='draft':
@@ -77,7 +76,6 @@ class account_bank_statement(osv.osv):
                 ctx['credit_account_id'] = stat.bank_statement_import_id.credit_account_id.id
                 ctx['fee_account_id'] = stat.bank_statement_import_id.fee_account_id.id
                 ctx['auto_completion'] = stat.bank_statement_import_id.auto_completion
-                print stat.bank_statement_import_id.id
             for line in stat.line_ids:
                 vals = stat_line_obj.auto_complete_line(cr, uid, line, context=ctx)
                 if not line.ref and not vals.get('ref', False):
@@ -137,6 +135,8 @@ class account_bank_statement_line(osv.osv):
                 partner_id = partner_obj.get_partner_from_email(cr, uid, line.email_address, context=context)
             if not partner_id and line.partner_name:
                 partner_id = partner_obj.get_partner_from_name(cr, uid, line.partner_name, context=context)
+            if not partner_id and line.label:
+                partner_id = partner_obj.get_partner_from_label_based_on_bank_statement_label(cr, uid, line.label, context=context)
             if partner_id:
                 res = {'partner_id': partner_id}
             if context['auto_completion']:
@@ -146,6 +146,7 @@ class account_bank_statement_line(osv.osv):
                             'cr':cr,
                             'uid':uid,
                             'line': line,
+                            'res': res,
                             'context':context,
                         }
                 exec context['auto_completion'] in space

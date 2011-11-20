@@ -32,9 +32,14 @@
                         </page>
 					</xpath>
 
-					<xpath expr="/form/field[@name='balance_end_real']" position="after">
-                        <button name="button_auto_completion" string="Auto Completion" type="object" colspan="4"/>
+					<xpath expr="/form/group[2]" position="attributes">
+                        <attribute name="col">10</attribute>
 					</xpath>
+
+					<xpath expr="/form/group/field[@name='balance_end']" position="after">
+                        <button name="button_auto_completion" string="Auto Completion" type="object" colspan="1"/>
+					</xpath>
+
 				</data>
 			</field>
 		</record>

@@ -28,7 +28,7 @@
     'description': """empty""",
     'author': 'Akretion',
     'website': 'http://www.akretion.com/',
-    'depends': ['account', 'sale'], 
+    'depends': ['account', 'sale', 'base_scheduler_creator'], 
     'init_xml': [],
     'update_xml': [ 
            'bank_statement_import_view.xml',
