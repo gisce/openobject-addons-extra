@@ -34,39 +34,47 @@ class sale_order(osv.osv):
         'reserved': lambda *a: False,
     }
 
-    def _prepare_order_picking(self, cr, uid, order, reserved=False, **kwargs):
-        res = super(sale_order, self)._prepare_order_picking(cr, uid, order, **kwargs)
-        if reserved:
+
+    def copy(self, cr, uid, id, default=None, context=None):
+        if not default:
+            default = {}
+        default.update({
+            'reserved': False,
+        })
+        return super(sale_order, self).copy(cr, uid, id, default, context=context)
+
+
+    def _prepare_order_picking(self, cr, uid, order, context=None, *args):
+        res = super(sale_order, self)._prepare_order_picking(cr, uid, order, *args)
+        if context and context.get('reserved', False):
             res['reserved'] = True
         return res
 
-    def action_reserve(self, cr, uid, ids, **kwargs):
+    def action_reserve(self, cr, uid, ids, *args):
         self.write(cr, uid, ids, {'reserved': True})
-        kwargs['reserved'] = True
-        self.action_ship_create(cr, uid, ids, **kwargs)
+        self.action_ship_create(cr, uid, ids, {'reserved': True})
         return True
 
-    def action_unreserve(self, cr, uid, ids, **kwargs):
+    def action_unreserve(self, cr, uid, ids, *args):
         self.write(cr, uid, ids, {'reserved': False})
         for sale in self.browse(cr, uid, ids):
             for picking in sale.picking_ids:
                 picking.unlink()
         return True
 
-    def action_ship_create(self, cr, uid, ids, **kwargs):
+    def action_ship_create(self, cr, uid, ids, *args):
         sale_order_reserved_ids = self.search(cr, uid, [['reserved', '=', True], ['id', 'in', ids], ['picking_ids','!=',False]])
         sale_order_to_confirm_ids = [x for x in ids if x not in sale_order_reserved_ids]
         wf_service = netsvc.LocalService("workflow")
         picking_obj = self.pool.get('stock.picking')
+        move_obj = self.pool.get('stock.move')
         self.write(cr, uid, sale_order_reserved_ids, {'reserved' : False})
         for sale in self.read(cr, uid, sale_order_reserved_ids, ['picking_ids']):
             picking_obj.write(cr, uid, sale['picking_ids'], {'reserved' : False})
+            move_ids = move_obj.search(cr, uid, [('picking_id', 'in', sale['picking_ids'])])
+            move_obj.write(cr, uid, move_ids, {'state':'draft'})
             for picking_id in sale['picking_ids']:
                 wf_service.trg_validate(uid, 'stock.picking', picking_id, 'button_confirm_reserved', cr)
-        return super(sale_order, self).action_ship_create(cr, uid, sale_order_to_confirm_ids, **kwargs)
-
-
-
-
+        return super(sale_order, self).action_ship_create(cr, uid, sale_order_to_confirm_ids, *args)
 
 sale_order()

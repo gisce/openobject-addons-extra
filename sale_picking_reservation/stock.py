@@ -51,7 +51,8 @@ class stock_picking(osv.osv):
 
         todo = self.action_explode(cr, uid, todo, context)
         if len(todo):
-            self.pool.get('stock.move').action_confirm(cr, uid, todo, context=context)
+            #make a fake confirmation in order to impact the virtual stock level
+            self.pool.get('stock.move').write(cr, uid, todo, {'state': 'confirmed'}, context=context)
         return True
 
 stock_picking()
