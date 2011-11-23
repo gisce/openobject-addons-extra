@@ -38,7 +38,7 @@ msgstr ""
 "Името на обекта трябва да започва с x_ и не може да никакви специални знаци !"
 
 #. module: city
-#: field:city.city,zip:0
+#: field:city.city,zipcode:0
 msgid "ZIP"
 msgstr ""
 
@@ -72,7 +72,7 @@ msgid "City Name"
 msgstr "Име на град"
 
 #. module: city
-#: field:res.partner.address,location:0
+#: field:res.partner.address,city_id:0
 msgid "Location"
 msgstr "Местоположение"
 

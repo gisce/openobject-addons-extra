@@ -9,7 +9,7 @@
         <field name="inherit_id" ref="base.view_partner_form"/>
         <field name="arch" type="xml">
             <field name="country_id" position="replace">
-                <field name="location" colspan="4" />
+                <field name="city_id" colspan="4" />
             </field>
         </field>
     </record>
@@ -49,7 +49,7 @@
         <field name="inherit_id" ref="base.view_partner_address_form1"/>
         <field name="arch" type="xml">
             <field name="state_id" position="replace">
-                <field name="location" colspan="4" />
+                <field name="city_id" colspan="4" />
             </field>
         </field>
     </record>
@@ -92,7 +92,7 @@
         <field name="inherit_id" ref="base.view_partner_address_form2"/>
         <field name="arch" type="xml">
             <field name="state_id" position="replace">
-                <field name="location" colspan="4" />
+                <field name="city_id" colspan="4" />
             </field>
         </field>
     </record>

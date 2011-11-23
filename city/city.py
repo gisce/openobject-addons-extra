@@ -32,14 +32,14 @@ class city(osv.osv):
             return []
         res = []
         for line in self.browse(cr, uid, ids, context=context):
-            location = line.name
+            name = line.name
             if line.zip:
-                location = "%s %s" % (line.zip, location)
+                name = "%s %s" % (line.zip, name)
             if line.state_id:
-                location = "%s, %s" % (location, line.state_id.name)
+                name = "%s, %s" % (name, line.state_id.name)
             if line.country_id:
-                location = "%s, %s" % (location, line.country_id.name)
-            res.append((line['id'], location))
+                name = "%s, %s" % (name, line.country_id.name)
+            res.append((line['id'], name))
         return res
 
     def name_search(self, cr, uid, name, args=None, operator='ilike', context=None, limit=100):
@@ -79,15 +79,15 @@ CountryState()
 class res_partner_address(osv.osv):
     _inherit = "res.partner.address"
     _columns = {
-        'location': fields.many2one('city.city', 'Location', select=1),
-        'zip': fields.related('location', 'zip', type="char", string="Zip",
+        'city_id': fields.many2one('city.city', 'Location', select=1),
+        'zip': fields.related('city_id', 'zip', type="char", string="Zip",
                                store=False),
-        'city': fields.related('location', 'name', type="char", string="City",
+        'city': fields.related('city_id', 'name', type="char", string="City",
                                store=False),
-        'state_id': fields.related('location', 'state_id', type="many2one",
+        'state_id': fields.related('city_id', 'state_id', type="many2one",
                                    relation="res.country.state", string="State",
                                    store=False),
-        'country_id': fields.related('location', 'country_id', type="many2one",
+        'country_id': fields.related('city_id', 'country_id', type="many2one",
                                      relation="res.country", string="Country",
                                      store=False),
     }

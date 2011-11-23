@@ -38,7 +38,7 @@ msgstr ""
 "especial!"
 
 #. module: city
-#: field:city.city,zip:0
+#: field:city.city,zipcode:0
 msgid "ZIP"
 msgstr "Código postal"
 
@@ -78,7 +78,7 @@ msgid "City Name"
 msgstr "Nombre de la ciudad"
 
 #. module: city
-#: field:res.partner.address,location:0
+#: field:res.partner.address,city_id:0
 msgid "Location"
 msgstr "Ubicación"
 
