@@ -39,7 +39,7 @@ msgstr ""
 "especial !"
 
 #. module: city
-#: field:city.city,zipcode:0
+#: field:city.city,zip:0
 msgid "ZIP"
 msgstr "Codi postal"
 

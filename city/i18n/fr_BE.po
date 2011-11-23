@@ -34,7 +34,7 @@ msgid "The Object name must start with x_ and not contain any special character 
 msgstr "Le nom de l'objet doit commencer avec x_ et ne pas contenir de charactères spéciaux !"
 
 #. module: city
-#: field:city.city,zipcode:0
+#: field:city.city,zip:0
 msgid "ZIP"
 msgstr "Code postal"
 

@@ -22,7 +22,7 @@
 ##############################################################################
 {
     "name" : "City-Helps to keep Homogeneous address data in the Database",
-    "version" : "1.1",
+    "version" : "2.0",
     "author" : "Pablo Rocandio",
     "category" : "Generic Modules/Base",
     "description": """Creates a model for storing cities

@@ -154,7 +154,7 @@
         <field name="type">tree</field>
         <field name="arch" type="xml">
             <tree string="City">
-                <field name="zipcode"/>
+                <field name="zip"/>
                 <field name="name"/>
                 <field name="state_id"/>
                 <field name="country_id"/>
@@ -168,7 +168,7 @@
         <field name="type">form</field>
         <field name="arch" type="xml">
             <form string="City">
-                <field name="zipcode" select="1"/>
+                <field name="zip" select="1"/>
                 <field name="name" select="1"/>
                 <field name="country_id" />
                 <field name="state_id" select="1"/>

@@ -33,8 +33,8 @@ class city(osv.osv):
         res = []
         for line in self.browse(cr, uid, ids, context=context):
             location = line.name
-            if line.zipcode:
-                location = "%s %s" % (line.zipcode, location)
+            if line.zip:
+                location = "%s %s" % (line.zip, location)
             if line.state_id:
                 location = "%s, %s" % (location, line.state_id.name)
             if line.country_id:
@@ -49,7 +49,7 @@ class city(osv.osv):
             context = {}
         ids = []
         if name:
-            ids = self.search(cr, uid, [('zipcode', 'ilike', name)]+ args, limit=limit)
+            ids = self.search(cr, uid, [('zip', 'ilike', name)]+ args, limit=limit)
         if not ids:
             ids = self.search(cr, uid, [('name', operator, name)]+ args, limit=limit)
         return self.name_get(cr, uid, ids, context=context)
@@ -60,7 +60,7 @@ class city(osv.osv):
         'state_id': fields.many2one('res.country.state', 'State',
             domain="[('country_id','=',country_id)]", select=1),
         'name': fields.char('City', size=64, required=True, select=1),
-        'zipcode': fields.char('ZIP', size=64, required=True, select=1),
+        'zip': fields.char('ZIP', size=64, required=True, select=1),
         'country_id': fields.many2one('res.country', 'Country', select=1),
         'code': fields.char('City Code', size=64,
             help="The official code for the city"),
@@ -80,7 +80,7 @@ class res_partner_address(osv.osv):
     _inherit = "res.partner.address"
     _columns = {
         'location': fields.many2one('city.city', 'Location', select=1),
-        'zip': fields.related('location', 'zipcode', type="char", string="Zip",
+        'zip': fields.related('location', 'zip', type="char", string="Zip",
                                store=False),
         'city': fields.related('location', 'name', type="char", string="City",
                                store=False),
