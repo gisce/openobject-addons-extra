@@ -24,7 +24,7 @@
     "name" : "City-Helps to keep Homogeneous address data in the Database",
     "version" : "2.0",
     "author" : "Pablo Rocandio",
-    "category" : "Generic Modules/Base",
+    "category" : "Hidden",
     "description": """Creates a model for storing cities
 Zip code, city, state and country fields are replaced with a location field in partner and partner contact forms.
 This module helps to keep homogeneous address data in the database.""",
