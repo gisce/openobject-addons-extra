@@ -29,11 +29,12 @@ import netsvc
 import pooler
 
 class MappingError(Exception):
-     def __init__(self, value, name):
-         self.value = value
-         self.mapping_name = name
-     def __str__(self):
-         return repr(self.value)
+    def __init__(self, value, mapping_name, mapping_object):
+        self.value = value
+        self.mapping_name = mapping_name
+        self.mapping_object = mapping_object
+    def __str__(self):
+        return repr('the mapping line : %s for the object %s have an error : %s'%(self.mapping_name, self.mapping_object, self.value))
         
 class ExtConnError(Exception):
      def __init__(self, value):
@@ -178,10 +179,12 @@ def oevals_from_extdata(self, cr, uid, external_referential_id, data_record, key
                     type_casted_field = ifield
                 if type_casted_field in ['None', 'False']:
                     type_casted_field = False
+                if not type_casted_field and each_mapping_line['external_type'] == 'list':
+                    type_casted_field = []
             except Exception, e:
                 type_casted_field = False
                 if not context.get('dont_raise_error', False):
-                    raise MappingError(e, each_mapping_line['external_field'])
+                    raise MappingError(e, each_mapping_line['external_field'], self._name)
             #Build the space for expr
             space = {
                         'self':self,
@@ -207,7 +210,7 @@ def oevals_from_extdata(self, cr, uid, external_referential_id, data_record, key
                 logger.notifyChannel('extdata_from_oevals', netsvc.LOG_DEBUG, "Mapping Context: %r" % (space,))
                 logger.notifyChannel('extdata_from_oevals', netsvc.LOG_DEBUG, "Exception: %r" % (e,))
                 if not context.get('dont_raise_error', False):
-                    raise MappingError(e, each_mapping_line['external_field'])
+                    raise MappingError(e, each_mapping_line['external_field'], self._name)
             
             result = space.get('result', False)
             #If result exists and is of type list
@@ -218,7 +221,7 @@ def oevals_from_extdata(self, cr, uid, external_referential_id, data_record, key
                             vals[each_tuple[0]] = each_tuple[1]
                 else:
                     if not context.get('dont_raise_error', False):
-                        raise MappingError(_('Invalid format for the variable result.'), each_mapping_line['external_field'])
+                        raise MappingError(_('Invalid format for the variable result.'), each_mapping_line['external_field'], self._name)
     return vals
 
 
@@ -408,7 +411,7 @@ def extdata_from_oevals(self, cr, uid, external_referential_id, data_record, map
                             vals[each_tuple[0]] = each_tuple[1]
                 else:
                     if not context.get('dont_raise_error', False):
-                        raise MappingError(_('Invalid format for the variable result.'), each_mapping_line['external_field'])
+                        raise MappingError(_('Invalid format for the variable result.'), each_mapping_line['external_field'], self._name)
     return vals
 
 
