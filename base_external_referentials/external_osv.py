@@ -401,7 +401,7 @@ def extdata_from_oevals(self, cr, uid, external_referential_id, data_record, map
                 logger.notifyChannel('extdata_from_oevals', netsvc.LOG_DEBUG, "Mapping Context: %r" % (space,))
                 logger.notifyChannel('extdata_from_oevals', netsvc.LOG_DEBUG, "Exception: %r" % (e,))
                 if not context.get('dont_raise_error', False):
-                    raise MappingError(e, each_mapping_line['external_field'])
+                    raise MappingError(e, each_mapping_line['external_field'], self._name)
             result = space.get('result', False)
             #If result exists and is of type list
             if result:
@@ -510,7 +510,6 @@ def ext_export(self, cr, uid, ids, external_referential_ids=[], defaults={}, con
                                                                exception=err, defaults=defaults,
                                                                context=context)
                         cr.commit()
-
     return {'create_ids': create_ids, 'write_ids': write_ids}
 
 def _prepare_external_id_vals(self, cr, uid, res_id, ext_id, external_referential_id, context=None):
