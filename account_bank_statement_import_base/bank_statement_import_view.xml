@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  account_bank_statement_import_base for OpenERP
+  Copyright (C) 2011 Akretion Sébastien BEAU <sebastien.beau@akretion.com>
+  The licence is in the file __openerp__.py
+-->
+
+<openerp>
+    <data>
+    
+
+        <!-- VIEW FOR THE OBJECT : bank_statement_import -->
+		<record id="bank_statement_import_view_form" model="ir.ui.view">
+			<field name="name">account_bank_statement_import_base.bank_statement_import.view_form</field>
+			<field name="model">account.bank.statement.import</field>
+            <field eval="16" name="priority"/>
+			<field name="type">form</field>
+			<field name="arch" type="xml">
+                <form string="bank_statement_import">
+                    <separator colspan="4" string="Task Information" />
+				    <field name="name" select="1"/>
+                    <field name="bank_statement_prefix" />
+				    <field name="transferts_account_id" />
+			        <field name="journal_id" />
+                    <field name="partner_id" />
+			        <field name="shop_id" />
+			        <field name="credit_account_id" />
+			        <field name="fee_account_id" />
+			        <field name="scheduler"/>
+                    <field name="merge_fee"/>
+                    <field name="last_import_date"/>
+		        	<button icon="gtk-ok" name="launch_import_bank_statement" colspan = "2" string="Import Bank Statement" type="object"/>
+                    
+                    <notebook colspan="4">
+                        <page string="Log">
+                            <field name="rec_log" colspan = "4" nolabel="1"/>
+                        </page>
+                        <page string="Auto Completion">
+                            <field name="auto_completion" colspan = "4" nolabel="1"/>
+                        </page>
+                    </notebook>
+			    </form>
+            </field>
+		</record>
+<!--
+                        <button icon="gtk-ok" name="open_bank_statement" colspan = "2" string="Open Bank Statement" type="object"/>
+                        <page string="Statement">
+                            <field name="bank_statement_ids" colspan = "4" nolabel="1"/>
+                        </page>
+-->
+
+		<record id="bank_statement_import_view_tree" model="ir.ui.view">
+			<field name="name">account_bank_statement_import_base.bank_statement_import.view_tree</field>
+			<field name="model">account.bank.statement.import</field>
+            <field eval="16" name="priority"/>
+			<field name="type">tree</field>
+			<field name="arch" type="xml">
+                <tree string="bank_statement_import">
+				    <field name="name" select="1"/>
+				    <field name="transferts_account_id" />
+			        <field name="journal_id" />
+			        <field name="shop_id" />
+			        <field name="credit_account_id" />
+			        <field name="fee_account_id" />
+			    </tree>
+            </field>
+		</record>
+
+
+		<record id="action_bank_statement_import" model="ir.actions.act_window">
+			<field name="name">account bank statement import</field>
+			<field name="type">ir.actions.act_window</field>
+			<field name="res_model">account.bank.statement.import</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="context">{'wizard_object' : 'account.bank.statement.import', 'function' : 'action_import_bank_statement', 'object_link' : 'account.bank.statement.import' }</field>
+		</record>
+
+<!-- menu item -->
+
+		<menuitem action="action_bank_statement_import" id="menu_account_bank_import" parent="account.menu_finance"/>
+
+
+<!-- button on the right-->
+
+		<record id="ir_action_create_scheduler_in_easy_reconcile" model="ir.values">
+			<field name="key2">client_action_multi</field>
+			<field name="model">account.bank.statement.import</field>
+			<field name="name">Create a Scheduler</field>
+			<field eval="'ir.actions.act_window,%d'%ref('base_scheduler_creator.action_scheduler_creator_wizard')" name="value"/>
+			<field eval="True" name="object"/>
+		</record>
+
+
+    </data>
+</openerp>

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  sale_picking_reservation for OpenERP
+  Copyright (C) 2011 Akretion Sébastien BEAU <sebastien.beau@akretion.com>
+  The licence is in the file __terp__.py
+-->
+<openerp>
+    <data>
+        
+        <!-- Activity -->
+        <record id="act_reserved" model="workflow.activity">
+            <field name="wkf_id" ref="sale.wkf_sale"/>
+            <field name="name">reserved</field>
+            <field name="kind">function</field>
+            <field name="action">action_reserve()</field>
+        </record>
+       
+        <record id="act_unreserved" model="workflow.activity">
+            <field name="wkf_id" ref="sale.wkf_sale"/>
+            <field name="name">unreserved</field>
+            <field name="kind">function</field>
+            <field name="action">action_unreserve()</field>
+        </record>
+        <!-- Transistion -->
+        
+        <record id="trans_draft_to_reserved" model="workflow.transition">
+            <field name="act_from" ref="sale.act_draft"/>
+            <field name="act_to" ref="act_reserved"/>
+            <field name="signal">order_reserve</field>
+        </record>
+
+        <record id="trans_reserved_to_confirm" model="workflow.transition">
+            <field name="act_from" ref="act_reserved"/>
+            <field name="act_to" ref="sale.act_router"/>
+            <field name="signal">order_confirm</field>
+        </record>
+        
+        <record id="trans_reserved_to_unreserved" model="workflow.transition">
+            <field name="act_from" ref="act_reserved"/>
+            <field name="act_to" ref="act_unreserved"/>
+            <field name="signal">order_unreserve</field>
+        </record>
+
+        <record id="trans_reserved_to_draft" model="workflow.transition">
+            <field name="act_from" ref="act_unreserved"/>
+            <field name="act_to" ref="sale.act_draft"/>
+            <field name="signal"></field>
+        </record>
+    </data>
+</openerp>

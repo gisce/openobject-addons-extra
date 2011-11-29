@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  sale_picking_reservation for OpenERP
+  Copyright (C) 2011 Akretion Sébastien BEAU <sebastien.beau@akretion.com>
+  The licence is in the file __terp__.py
+-->
+<openerp>
+    <data>
+        <record id="act_picking_reserved" model="workflow.activity">
+            <field name="wkf_id" ref="stock.wkf_picking"/>
+            <field name="name">reserved</field>
+            <field name="kind">function</field>
+            <field name="action">action_reserve()</field>
+        </record>
+
+        <record id="trans_draft_reserved_picking" model="workflow.transition">
+            <field name="act_from" ref="stock.act_draft"/>
+            <field name="act_to" ref="act_picking_reserved"/>
+            <field name="signal">button_confirm</field>
+            <field name="condition">reserved==True</field>
+        </record>
+
+        <record id="stock.trans_draft_confirmed" model="workflow.transition">
+            <field name="act_from" ref="stock.act_draft"/>
+            <field name="act_to" ref="stock.act_confirmed"/>
+            <field name="signal">button_confirm</field>
+            <field name="condition">reserved==False</field>
+        </record>
+
+        <record id="trans_reserved_picking_confirm" model="workflow.transition">
+            <field name="act_from" ref="act_picking_reserved"/>
+            <field name="act_to" ref="stock.act_confirmed"/>
+            <field name="signal">button_confirm_reserved</field>
+        </record>
+
+    </data>
+</openerp>
