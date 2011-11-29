@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 #################################################################################
 #                                                                               #
-#    account_bank_statement_import_base for OpenERP                                          #
+#    account_bank_statement_import_base for OpenERP                             #
 #    Copyright (C) 2011 Akretion Sébastien BEAU <sebastien.beau@akretion.com>   #
 #                                                                               #
 #    This program is free software: you can redistribute it and/or modify       #
@@ -25,7 +25,7 @@
     'version': '0.1',
     'category': 'Generic Modules/Others',
     'license': 'AGPL-3',
-    'description': """empty""",
+    'description': """This module add some abstraction regarding the bank statement import, The aim is to use the same interface for importing bank statement from various system (paypal, amazon, your personal bank). Also it add some feature of autocompletion.""",
     'author': 'Akretion',
     'website': 'http://www.akretion.com/',
     'depends': ['account', 'sale', 'base_scheduler_creator'], 

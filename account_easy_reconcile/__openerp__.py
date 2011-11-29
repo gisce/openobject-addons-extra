@@ -27,7 +27,9 @@
                 ],
     "author" : "Akretion",
     "description": """A new way to reconcile easily your account
-""",
+Indeed easily you will be able to create rule for each of your account, and run this reconcilation rule automatically by configuring a scheduler.
+You can also add inherit the module in order to add your own method 
+""", 
     'license': 'AGPL-3',
     "website" : "http://www.akretion.com/",
     "category" : 'Generic Modules/Accounting',
