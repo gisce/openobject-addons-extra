@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  stock_picking_organizer module for OpenERP
+  Copyright (C) 2011 Sébastien BEAU <sebastien.beau@akretion.com>
+  The licence is in the file __openerp__.py
+-->
+
+<openerp>
+<data>
+
+<!-- Stock Picking Organizer Wizard -->
+		<record id="stock_picking_organizer_wizard" model="ir.ui.view">
+			<field name="name">stock.picking.organizer.wizard.form</field>
+			<field name="priority">20</field>
+			<field name="model">stock.picking.organizer.wizard</field>
+			<field name="type">form</field>
+			<field name="arch" type="xml">
+				<form string="Re-Organizer Picking">
+					<group colspan="4">
+                        <field name="picking_option"/>
+                        <field name="number_of_output_picking"/>
+ 					</group>
+                    <group colspan="4">
+				        <button icon="gtk-cancel" special="cancel" string="Cancel"/>
+				        <button icon="gtk-ok" name="reorganized_picking" string="Start" type="object"/>
+ 					</group>
+ 				</form>
+			</field>
+		</record>
+		
+		<record id="action_stock_picking_organizer_wizard" model="ir.actions.act_window">
+			<field name="name">Re-Organize Picking</field>
+			<field name="type">ir.actions.act_window</field>
+			<field name="res_model">stock.picking.organizer.wizard</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">form</field>
+			<field name="target">new</field>
+			<field name="context">{}</field>
+		</record>
+
+		<record id="ir_action_stock_picking_organizer_wizard" model="ir.values">
+			<field name="key2">client_action_multi</field>
+			<field name="model">stock.picking</field>
+			<field name="name">Re-Organize Picking</field>
+			<field eval="'ir.actions.act_window,%d'%action_stock_picking_organizer_wizard" name="value"/>
+			<field eval="True" name="object"/>
+		</record>
+</data>
+</openerp>

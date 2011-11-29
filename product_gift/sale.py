@@ -1,9 +1,8 @@
 # -*- encoding: utf-8 -*-
 #################################################################################
 #                                                                               #
-#    sale_bundle_product for OpenERP                                          #
-# Copyright (c) 2011 CamptoCamp. All rights reserved. @author Joel Grand-Guillaume #
-# Copyright (c) 2011 Akretion. All rights reserved. @author Sébastien BEAU      #
+#    product_is_a_gift for OpenERP                                              #
+#    Copyright (C) 2011 Akretion Sébastien BEAU <sebastien.beau@akretion.com>   #
 #                                                                               #
 #    This program is free software: you can redistribute it and/or modify       #
 #    it under the terms of the GNU Affero General Public License as             #
@@ -20,36 +19,31 @@
 #                                                                               #
 #################################################################################
 
+from osv import osv, fields
+import netsvc
 
-{
-    'name': 'Bundle product (dynamic choice on sale order)',
-    'version': '0.1',
-    'category': 'Generic Modules/Sales & Purchases',
-    'license': 'AGPL-3',
-    'description': """This allow you to make a sale order on bundle product, which is a product with dynamical options
-    choosen for each SO by the customer.
 
-    Example: 
+class sale_order(osv.osv):
+    
+    _inherit = "sale.order"
+    
+    _columns = {
+        'gift_message': fields.text('Gift Message'),
 
-    Basic PC
-      - Cpu 1
-      - Ram 4Gb
-      - HD 200 Gb""",
-    'author': 'Akretion Camptocamp',
-    'website': 'http://www.camptocamp.com/ http://www.akretion.com',
-    'depends': ['sale', 'purchase'], 
-    'init_xml': [],
-    'update_xml': [ 
-           'wizard/product_configurator_view.xml',
-           'sale_bundle_product_view.xml',
-           'product_view.xml',
-           'sale_view.xml',
-           'procurement_view.xml',
-           'purchase_view.xml',
-      
-    ],
-    'demo_xml': [],
-    'installable': True,
-    'active': False,
-}
+    }
 
+sale_order()
+
+class sale_order_line(osv.osv):
+    
+    _inherit = "sale.order.line"
+    
+    _columns = {
+        'gift_message': fields.text('Gift Message'),
+        'need_gift_wrap': fields.boolean('Add Gift Wrap'),
+
+    }
+
+sale_order_line()
+
+ 

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  sale_picking_reservation for OpenERP
+  Copyright (C) 2011 Akretion Sébastien BEAU <sebastien.beau@akretion.com>
+  The licence is in the file __terp__.py
+-->
+
+<openerp>
+    <data>
+    
+        <!-- INHERITED VIEW FOR THE OBJECT : sale_order -->
+
+		<record id="sale_extended_workflow_sale_order_view_form" model="ir.ui.view">
+			<field name="name">sale_extended_workflow.sale_order.view_form</field>
+			<field name="model">sale.order</field>
+			<field name="inherit_id" ref="sale.view_order_form" />
+            <field eval="16" name="priority"/>
+			<field name="type">form</field>
+			<field name="arch" type="xml">
+				<data>
+					<xpath expr="/form/notebook/page[@string='Sales Order']/group/field[@name='state']" position="replace">
+                        <group colspan="2" col="6">
+                            <field name="state" colspan='1'/>
+                            <field name="reserved" invisible="1"/>
+                            <group attrs="{'invisible':[('reserved','=',True)]}" colspan="1">
+                                <button name="order_reserve" states="draft" string="Reserve Order" icon="gtk-execute"/>
+                            </group>
+                            <group attrs="{'invisible':[('reserved','=',False)]}" colspan="1">
+                                <label string='Order Reserved' colspan='1'/>
+                                <button name="order_unreserve" states="draft" string="Cancel Reservation" icon="gtk-execute"/>
+                            </group>
+                        </group>
+					</xpath>
+				</data>
+			</field>
+		</record>
+
+    </data>
+</openerp>
