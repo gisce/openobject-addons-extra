@@ -13,5 +13,17 @@
             </field>
         </record>
         
+        <record model="ir.ui.view" id="product_product_tree_view">
+            <field name="name">product_immediately_usable.product_product_tree_view</field>
+            <field name="model">product.product</field>
+            <field name="type">form</field>
+            <field name="priority">26</field>
+            <field name="inherit_id" ref="stock.view_normal_stock_property_form"/>
+            <field name="arch" type="xml">
+                <field name="virtual_available" position="replace">
+                    <field name="immediately_usable_qty" />
+                </field>   
+            </field>
+        </record>
     </data>
 </openerp>
