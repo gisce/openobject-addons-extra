@@ -171,30 +171,33 @@ class project_task(osv.osv):
         return res
 
     def write(self, cr, uid, ids, vals, context={}):
+        desc=''
         if not isinstance(ids, list):
             ids = [ids]
-        task = self.browse(cr, uid, ids)[0]
+        task = self.browse(cr, uid, ids) and self.browse(cr, uid, ids)[0]
         res = super(project_task, self).write(cr, uid, ids, vals, context={})
         cr.commit()
-        task_data = self.browse(cr, uid, ids[0], context)
-        desc = '''Hello ,\n\n  The task is updated for the project: %s\n\nModified Datas are:\n''' %(str(task.project_id.name),)
+        task_data = self.browse(cr, uid,ids and ids[0], context)
+        if task and task.project_id:
+            desc = '''Hello ,\n\n  The task is updated for the project: %s\n\nModified Datas are:\n''' %(str(task.project_id.name),)
         for val in vals:
             if val.endswith('id') or val.endswith('ids'):
                 continue
             desc += val + ':' + str(vals[val]) + "\n"
-        desc += '\nThanks,\n' + 'Project Manager\n' + (task_data.project_id.user_id and task_data.project_id.user_id.name) or ''
-        task_vals = {
+        if task and task.project_id:
+            desc += '\nThanks,\n' + 'Project Manager\n' + (task_data.project_id.user_id and task_data.project_id.user_id.name) or ''
+            task_vals = {
             'res_id' : ids[0],
             'name' : task.name or '',
             'description' : desc,
             'user_id': uid,
             'action' : 'write',
            
-        }
-        self.pool.get('project.project')._log_event(cr, uid, task.project_id.id, task_vals)
-        type_id = self.pool.get('project.event.type').search(cr, uid, [('code', '=', 'task')])
-        if type_id:
-            task_vals.update({'type': 'task'})
+            }
+            self.pool.get('project.project')._log_event(cr, uid, task.project_id.id, task_vals)
+            type_id = self.pool.get('project.event.type').search(cr, uid, [('code', '=', 'task')])
+            if type_id:
+                task_vals.update({'type': 'task'})
         return res
 
 project_task()
