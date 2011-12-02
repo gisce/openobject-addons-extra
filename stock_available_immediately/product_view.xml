@@ -1,4 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
+
+<!--
+  stock available_immediately for OpenERP
+  Author Guewen Baconnier. Copyright Camptocamp SA
+  Copyright (C) 2011 Akretion Sébastien BEAU <sebastien.beau@akretion.com>
+  The licence is in the file __openerp__.py
+-->
+
 <openerp>
     <data>
         <record model="ir.ui.view" id="view_normal_stock_active_qty_form">
@@ -8,6 +16,7 @@
             <field name="inherit_id" ref="stock.view_normal_stock_property_form"/>
             <field name="arch" type="xml">
                 <field name="virtual_available" position="after">
+                    <newline/>
                     <field name="immediately_usable_qty" />
                 </field>   
             </field>
@@ -17,13 +26,18 @@
             <field name="name">product_immediately_usable.product_product_tree_view</field>
             <field name="model">product.product</field>
             <field name="type">form</field>
-            <field name="priority">26</field>
-            <field name="inherit_id" ref="stock.view_normal_stock_property_form"/>
+            <field name="inherit_id" ref="product.product_product_tree_view"/>
             <field name="arch" type="xml">
-                <field name="virtual_available" position="replace">
-                    <field name="immediately_usable_qty" />
-                </field>   
+                <data>
+                    <tree position="attributes">
+                        <attribute name="colors">red:immediately_usable_qty&lt;0;blue:immediately_usable_qty&gt;=0 and state in ('draft', 'end', 'obsolete');black:immediately_usable_qty&gt;=0 and state not in ('draft', 'end', 'obsolete')</attribute>
+                    </tree>
+                    <field name="virtual_available" position="replace">
+                        <field name="immediately_usable_qty" />
+                    </field>
+                </data>
             </field>
         </record>
+
     </data>
 </openerp>

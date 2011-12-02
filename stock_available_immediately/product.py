@@ -2,6 +2,7 @@
 ##############################################################################
 #
 #    Author Guewen Baconnier. Copyright Camptocamp SA
+#  Copyright (C) 2011 Akretion Sébastien BEAU <sebastien.beau@akretion.com>
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -43,7 +44,7 @@ class ProductImmediatelyUsable(osv.osv):
         if 'immediately_usable_qty' in field_names:        
             # for each product we compute the stock 
             for product_id, stock_qty in res.iteritems():
-                res[product_id]['immediately_usable_qty'] = stock_qty['qty_available'] - stock_qty['outgoing_qty']
+                res[product_id]['immediately_usable_qty'] = stock_qty['qty_available'] + stock_qty['outgoing_qty']
         
         return res
     
