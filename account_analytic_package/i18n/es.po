@@ -14,8 +14,8 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2011-11-10 05:05+0000\n"
-"X-Generator: Launchpad (build 14263)\n"
+"X-Launchpad-Export-Date: 2011-12-03 05:19+0000\n"
+"X-Generator: Launchpad (build 14418)\n"
 
 #. module: account_analytic_package
 #: constraint:ir.model:0
@@ -148,6 +148,10 @@ msgid ""
 "The Module allows to configure analytic account for product packages.\n"
 "    Views for total and monthly product packages weight, Amount analysis."
 msgstr ""
+"El módulo permite configurar la contabilidad analítica para paquetes de "
+"productos.\n"
+"    Vistas totales y mensuales de pesos de paquetes de productos, análisis "
+"de cantidades."
 
 #. module: account_analytic_package
 #: field:account.analytic.line.package,account_id:0
@@ -174,7 +178,7 @@ msgstr "Unidadees de actividad"
 #. module: account_analytic_package
 #: view:crm.case.section:0
 msgid "The parent account of all package account"
-msgstr ""
+msgstr "La cuenta padre de todas las cuentas de paquetes"
 
 #. module: account_analytic_package
 #: field:crm.case.section,package_product_id:0
