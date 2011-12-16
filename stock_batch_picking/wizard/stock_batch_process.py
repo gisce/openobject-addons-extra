@@ -46,7 +46,7 @@ class stock_batch_process(osv.osv_memory):
         active_pickings = picking_pool.browse(cr, uid, context.get('active_id', False), context=context)
         pick_type = picking_pool.read(cr, uid, [active_ids[0]], ['type'])[0]['type']
         for id in active_ids:
-            if self.read(cr, uid, ids, ['force_availability'])[0]['force_availability'] and picking_pool.read(cr, uid, [id], ['state'])[0]['state'] == 'confirmed':
+            if self.read(cr, uid, ids, ['force_availability'])[0]['force_availability'] and picking_pool.read(cr, uid, [id], ['state'])[0]['state'] in ['confirmed', 'assigned', 'available']:
                 picking_pool.force_assign(cr, uid, active_ids, context)
             picking_pool.action_move(cr, uid, active_ids, context)
         action = {}
