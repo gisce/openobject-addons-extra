@@ -48,7 +48,7 @@ class document_change_report(osv.osv):
     _columns = {
         'directory_id': fields.many2one('document.directory', 'Directory', readonly=True),
         'change_type_id': fields.many2one('document.change.type', 'Document Type', readonly=True),
-        'level': fields.integer('Level', readonly=True),
+        'level_id': fields.integer('Level', readonly=True),
         'amount_required': fields.function(_amount_all, method=True,
             string='Required', multi='sums', type='integer'),
         'date': fields.date('Date', readonly=True),
@@ -63,7 +63,7 @@ class document_change_report(osv.osv):
                 select
                     d.id || ' ' || t.id as id,
                     d.id as directory_id,
-                    d.level as level,
+                    d.level_id as level_id,
                     t.id as change_type_id
                 from
                     document_directory d,
