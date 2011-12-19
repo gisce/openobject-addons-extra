@@ -21,7 +21,7 @@
 import time
 from datetime import date,timedelta
 import wizard
-import ir
+#import ir
 import pooler
 
 delivery_form = """<?xml version="1.0"?>
