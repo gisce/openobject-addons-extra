@@ -1,0 +1,213 @@
+<?xml version="1.0"?>
+<openerp>
+	<data>
+		 <!--
+        	Document Types
+    	-->
+	    <record model="ir.ui.view" id="view_document_type_form">
+	        <field name="name">document.change.type.form</field>
+	        <field name="model">document.change.type</field>
+	        <field name="type">form</field>
+	        <field name="arch" type="xml">
+	            <form string="Document Types">
+	            	<group col="6" colspan="4">
+		                <field name="name" />
+		                <field name="code" />
+		                <field name="sequence" />
+		                <field name="directory_type_id"/>
+		                <field name ="template_document_id"/>
+	                </group>
+	            </form>
+	        </field>
+	    </record>
+
+	    <record model="ir.ui.view" id="view_document_type_tree">
+	        <field name="name">document.change.type.tree</field>
+	        <field name="model">document.change.type</field>
+	        <field name="type">tree</field>
+	        <field name="arch" type="xml">
+	            <tree string="Document Types">
+	            	<field name="sequence" />
+	                <field name="name"/>
+	                <field name="code" />
+	                <field name ="template_document_id"/>
+	            </tree>
+	        </field>
+	    </record>
+	    
+	    <record model="ir.actions.act_window" id="action_document_type_form">
+	        <field name="type">ir.actions.act_window</field>
+	        <field name="res_model">document.change.type</field>
+	        <field name="name">Document Types</field>
+	        <field name="view_type">form</field>
+	        <field name="view_mode">tree,form</field>
+    	</record>
+	    <menuitem
+	        name="Documents" 
+	        id="menu_document_type_config" 
+	        parent="menu_configuration"/>
+	
+	    <menuitem
+	        action="action_document_type_form" 
+	        id="menu_document_type_form" 
+	        parent="menu_document_type_config"/>
+
+	    <!--
+        	Directory
+    	-->
+    	
+    	<record model="ir.ui.view" id="view_document_directory_form">
+	        <field name="name">document.directory.form</field>
+	        <field name="model">document.directory</field>
+	        <field name="type">form</field>
+	        <field name="priority">5</field>
+	        <field name="arch" type="xml">
+	            <form string="Directory">
+	            	<group col="6" colspan="4">
+		                <field name="name" />
+		                <field name="type_id" />
+		                <field name="user_id" />
+		                <field name="parent_id" />
+		                <field name="version" readonly="1" />
+	                </group>
+	            </form>
+	        </field>
+	    </record>
+	    
+    	<record model="ir.actions.act_window" id="action_document_directory_form">
+	        <field name="type">ir.actions.act_window</field>
+	        <field name="res_model">document.directory</field>
+	        <field name="name">Directory</field>
+	        <field name="view_type">form</field>
+	        <field name="view_mode">tree,form</field>
+	        <!-- <field name="domain">[('type_id','!=',False)]</field> -->
+	    </record>
+    	
+    	<menuitem
+	        name="Directory" 
+	        id="menu_directory_config" 
+	        parent="menu_configuration"/>
+	    <menuitem
+	        name="Directory" 
+	        id="menu_directory_form"
+	        action="action_document_directory_form" 
+	        parent="menu_directory_config"/>
+	    
+	    <!-- 
+	    	Directories Structure
+	    -->
+	    
+	    <record model="ir.ui.view" id="view_document_directory_tree">
+	        <field name="name">document.directory</field>
+	        <field name="model">document.directory</field>
+	        <field name="type">tree</field>
+	        <field name="field_parent">child_ids</field>
+	        <field name="arch" type="xml">
+	            <tree string="Directories" toolbar="1">
+	                <field name="name"/>
+	                <field name="type_id"/>
+	                <field name="user_id"/>
+	            </tree>
+	        </field>
+    	</record>
+
+	    <record model="ir.actions.act_window" id="action_document_directory_tree">
+	        <field name="type">ir.actions.act_window</field>
+	        <field name="res_model">document.directory</field>
+	        <field name="name">Directory Structure</field>
+	        <field name="view_type">tree</field>
+	        <field name="domain">[('parent_id','=',False)]</field>
+	    </record>
+	
+	    <menuitem id="menu_structure_form" 
+	    	action="action_document_directory_tree" 
+	    	parent="menu_directory_config"/>
+	    <!--
+        	Directory Types
+    	-->
+	    <record model="ir.ui.view" id="view_directory_type_form">
+	        <field name="name">document.directory.type.form</field>
+	        <field name="model">document.directory.type</field>
+	        <field name="type">form</field>
+	        <field name="arch" type="xml">
+	            <form string="Directory Types">
+	            	<group col="6" colspan="4">
+		                <field name="name" />
+	                </group>
+	            </form>
+	        </field>
+	    </record>
+
+	    <record model="ir.ui.view" id="view_directory_type_tree">
+	        <field name="name">document.directory.type.tree</field>
+	        <field name="model">document.directory.type</field>
+	        <field name="type">tree</field>
+	        <field name="arch" type="xml">
+	            <tree string="Directory Types">
+	                <field name="name"/>
+	            </tree>
+	        </field>
+	    </record>
+	    
+	    <record model="ir.actions.act_window" id="action_directory_type">
+	        <field name="type">ir.actions.act_window</field>
+	        <field name="res_model">document.directory.type</field>
+	        <field name="name">Directory Types</field>
+	        <field name="view_type">form</field>
+	        <field name="view_mode">tree,form</field>
+    	</record>
+	    
+	
+	    <menuitem
+	        action="action_directory_type" 
+	        id="menu_directory_type_form" 
+	        parent="menu_directory_config"/>
+	        
+	    <!--
+        	Process change Types
+    	-->
+    	<record model="ir.ui.view" id="view_process_change_type_form">
+	        <field name="name">document.change.process.type.form</field>
+	        <field name="model">document.change.process.type</field>
+	        <field name="type">form</field>
+	        <field name="arch" type="xml">
+	            <form string="Process Change Types">
+	            	<group col="2" colspan="4">
+		                <field name="name" />
+	                </group>
+	                <separator colspan="4" name="Document Types Needed" />
+	                <field name="document_type_ids" nolabel="1" colspan="4"/>
+	            </form>
+	        </field>
+	    </record>
+
+	    <record model="ir.ui.view" id="view_process_change_type_tree">
+	        <field name="name">document.change.process.type.tree</field>
+	        <field name="model">document.change.process.type</field>
+	        <field name="type">tree</field>
+	        <field name="arch" type="xml">
+	            <tree string="Process Change Types">
+	                <field name="name"/>
+	            </tree>
+	        </field>
+	    </record>
+	    
+	    <record model="ir.actions.act_window" id="action_change_process_type_form">
+	        <field name="type">ir.actions.act_window</field>
+	        <field name="res_model">document.change.process.type</field>
+	        <field name="name">Process Type</field>
+	        <field name="view_type">form</field>
+	        <field name="view_mode">tree,form</field>
+	    </record>
+    
+	    <menuitem name="Process Changes" 
+	        id="menu_process_changes_config" 
+	        parent="menu_configuration"
+	        sequence="1"/>
+	
+	    <menuitem action="action_change_process_type_form" 
+	    	id="menu_change_process_type_form" 
+	    	parent="menu_process_changes_config"/>
+
+	</data>
+</openerp>

@@ -1,0 +1,38 @@
+<?xml version="1.0" ?>
+<openerp>
+	<data>
+		<record id="document_directory_type_history0" model="document.directory.type">
+			<field name="name">History</field>
+		</record>
+	</data>
+	<data>
+		<record id="document_directory_type_building0" model="document.directory.type">
+			<field name="name">Building</field>
+		</record>
+	</data>
+	<data>
+		<record id="document_directory_type_factory0" model="document.directory.type">
+			<field name="name">Factory</field>
+		</record>
+	</data>
+	<data>
+		<record id="document_directory_type_sectionmq0" model="document.directory.type">
+			<field name="name">Section MQ</field>
+		</record>
+	</data>
+	<data>
+		<record id="document_directory_type_section0" model="document.directory.type">
+			<field name="name">Section</field>
+		</record>
+	</data>
+	<data>
+		<record id="document_directory_type_workstation0" model="document.directory.type">
+			<field name="name">Work Station</field>
+		</record>
+	</data>
+	<data>
+		<record id="document_directory_type_familly0" model="document.directory.type">
+			<field name="name">Familly</field>
+		</record>
+	</data>
+</openerp>
