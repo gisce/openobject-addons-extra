@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data noupdate="1">
+
+        <record model="account.fiscal.position.rule" id="rule_qc">
+            <field name="name">Test</field>
+            <field name="description">Description</field>
+            <field name="company_id">1</field>
+            <field name="fiscal_position_id" model="account.fiscal.position" search="[('name','=','Régime Provincial')]"/>
+            <field name="from_country" model="res.country" search="[('code','=','CA')]"/>
+            <field name="from_state" model="res.country.state" search="[('code','=','QC')]"/>
+            <field name="to_country" model="res.country" search="[('code','=','CA')]"/>
+            <field name="to_state" model="res.country.state" search="[('code','=','QC')]"/>
+            <field name="use_invoice">TRUE</field>
+            <field name="use_picking">TRUE</field>
+            <field name="use_purchase">TRUE</field>
+            <field name="use_sale">TRUE</field>
+        </record>
+
+    </data>
+</openerp>
