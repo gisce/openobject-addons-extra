@@ -42,8 +42,6 @@
                     "hotel_housekeeping_report.xml",
                     "hotel_housekeeping_wizard.xml",
                     "security/ir.model.access.csv",
-
-
     ],
     "active": False,
     "installable": True
