@@ -1,0 +1,247 @@
+# Translation of OpenERP Server.
+# This file contains the translation of the following modules:
+#	* account_transfer
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: OpenERP Server 6.0.3\n"
+"Report-Msgid-Bugs-To: support@openerp.com\n"
+"POT-Creation-Date: 2011-12-08 22:59+0000\n"
+"PO-Revision-Date: 2011-12-08 18:04-0500\n"
+"Last-Translator: Cubic ERP (Yury Tello) <ytello@cubicerp.com>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: \n"
+
+#. module: account_transfer
+#: field:account.voucher.line,currency_amount:0
+msgid "Currency Amount"
+msgstr "Importe en Moneda Origen"
+
+#. module: account_transfer
+#: view:account.voucher:0
+msgid "Confirmed"
+msgstr "Confirmado"
+
+#. module: account_transfer
+#: view:account.voucher:0
+msgid "Amount to Transfer"
+msgstr "Importe a Transferir"
+
+#. module: account_transfer
+#: view:account.voucher:0
+msgid "Confirm"
+msgstr "Confirmar"
+
+#. module: account_transfer
+#: field:account.voucher,transfer:0
+msgid "Is Transfer"
+msgstr "Transferencia"
+
+#. module: account_transfer
+#: sql_constraint:account.journal:0
+msgid "The name of the journal must be unique per company !"
+msgstr "¡El nombre del diaro debe ser único por compañía!"
+
+#. module: account_transfer
+#: view:account.voucher:0
+msgid "Group By..."
+msgstr "Agrupar por..."
+
+#. module: account_transfer
+#: view:account.voucher:0
+msgid "State"
+msgstr "Estado"
+
+#. module: account_transfer
+#: view:account.voucher:0
+msgid "Draft"
+msgstr "Borrador"
+
+#. module: account_transfer
+#: view:account.voucher:0
+msgid "Set to Draft"
+msgstr "Cambiar a borrador"
+
+#. module: account_transfer
+#: help:account.journal,jointly_transfer:0
+msgid "This journal require differents users to approve the cash transfers"
+msgstr "Este diario requiere de diferentes usuarios para realizar la aprovación de las transferencias de efectivo y bancos"
+
+#. module: account_transfer
+#: field:account.voucher.line,account_journal_id:0
+msgid "Destination Journal"
+msgstr "Destino"
+
+#. module: account_transfer
+#: view:account.voucher:0
+msgid "Transfer Entries"
+msgstr "Transferencias"
+
+#. module: account_transfer
+#: view:account.voucher:0
+msgid "Final Approbation"
+msgstr "Aprobación Final"
+
+#. module: account_transfer
+#: field:account.voucher.line,exchange_rate:0
+msgid "Exchange Rate"
+msgstr "Tipo de cambio"
+
+#. module: account_transfer
+#: view:account.voucher:0
+msgid "Voucher Entry"
+msgstr "Comprobante"
+
+#. module: account_transfer
+#: view:account.voucher:0
+#: model:ir.model,name:account_transfer.model_account_journal
+msgid "Journal"
+msgstr "Diario"
+
+#. module: account_transfer
+#: view:account.voucher:0
+msgid "Source Journal"
+msgstr "Origen"
+
+#. module: account_transfer
+#: view:account.voucher:0
+msgid "Internal Notes"
+msgstr "Notas internas"
+
+#. module: account_transfer
+#: view:account.voucher:0
+msgid "Are you sure to unreconcile this record ?"
+msgstr "¿Seguro que desea romper la conciliación de este registro?"
+
+#. module: account_transfer
+#: view:account.voucher:0
+msgid "Journal Items"
+msgstr "Apuntes contables"
+
+#. module: account_transfer
+#: view:account.voucher:0
+msgid "Other Information"
+msgstr "Otra información"
+
+#. module: account_transfer
+#: view:account.voucher:0
+msgid "Extended Filters..."
+msgstr "Filtros extendidos..."
+
+#. module: account_transfer
+#: view:account.voucher:0
+msgid "Total Currency Amount"
+msgstr "Total en Moneda Origen"
+
+#. module: account_transfer
+#: view:account.voucher:0
+msgid "Approbation 1"
+msgstr "Aprobación 1"
+
+#. module: account_transfer
+#: view:account.voucher:0
+msgid "Posted"
+msgstr "Contabilizado"
+
+#. module: account_transfer
+#: view:account.voucher:0
+msgid "Target"
+msgstr "Destino"
+
+#. module: account_transfer
+#: field:account.voucher,balance_start:0
+#: field:account.voucher.line,balance_start:0
+msgid "Current Balance"
+msgstr "Saldo Actual"
+
+#. module: account_transfer
+#: model:ir.actions.act_window,name:account_transfer.action_transfer_list
+#: model:ir.ui.menu,name:account_transfer.account_transfer_menu
+msgid "Cash and Bank Transfers"
+msgstr "Transferencias de Efectivo y Bancos"
+
+#. module: account_transfer
+#: view:account.voucher:0
+msgid "Source"
+msgstr "Oirgen"
+
+#. module: account_transfer
+#: view:account.voucher:0
+msgid "To Review"
+msgstr "A revisar"
+
+#. module: account_transfer
+#: view:account.voucher:0
+#: model:ir.model,name:account_transfer.model_account_voucher
+msgid "Accounting Voucher"
+msgstr "Comprobantes contables"
+
+#. module: account_transfer
+#: view:account.voucher:0
+msgid "Period"
+msgstr "Período"
+
+#. module: account_transfer
+#: model:ir.model,name:account_transfer.model_account_voucher_line
+msgid "Voucher Lines"
+msgstr "Líneas de comprobante"
+
+#. module: account_transfer
+#: field:account.journal,jointly_transfer:0
+msgid "Jointly Approved Transfers"
+msgstr "Aprobación Mancomunada de Transferencias"
+
+#. module: account_transfer
+#: field:account.voucher,currency_transfer_id:0
+#: field:account.voucher.line,currency_id:0
+msgid "Currency"
+msgstr "Moneda"
+
+#. module: account_transfer
+#: sql_constraint:account.journal:0
+msgid "The code of the journal must be unique per company !"
+msgstr "¡El código del diario debe ser único por compañía!"
+
+#. module: account_transfer
+#: view:account.voucher:0
+msgid "Search Transfers"
+msgstr "Buscar Transferencias"
+
+#. module: account_transfer
+#: field:account.voucher,target_journals:0
+msgid "Target Journals"
+msgstr "Destino"
+
+#. module: account_transfer
+#: view:account.voucher:0
+msgid "Voucher Items"
+msgstr "Destino de las Transferencias"
+
+#. module: account_transfer
+#: view:account.voucher:0
+msgid "Cancel"
+msgstr "Anular"
+
+#. module: account_transfer
+#: view:account.voucher:0
+msgid "Partner"
+msgstr "Empresa"
+
+#. module: account_transfer
+#: field:account.voucher,approve2_user_id:0
+msgid "Approve User 2"
+msgstr "Aprobación Usuario 2"
+
+#. module: account_transfer
+#: view:account.voucher:0
+msgid "Total Amount"
+msgstr "Importe total"
+
+#. module: account_transfer
+#: field:account.voucher,approve_user_id:0
+msgid "Approve User 1"
+msgstr "Aprobación Usuario 1"
+

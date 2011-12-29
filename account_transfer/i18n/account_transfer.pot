@@ -1,0 +1,247 @@
+# Translation of OpenERP Server.
+# This file contains the translation of the following modules:
+#	* account_transfer
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: OpenERP Server 6.0.3\n"
+"Report-Msgid-Bugs-To: support@openerp.com\n"
+"POT-Creation-Date: 2011-12-08 22:58+0000\n"
+"PO-Revision-Date: 2011-12-08 22:58+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: account_transfer
+#: field:account.voucher.line,currency_amount:0
+msgid "Currency Amount"
+msgstr ""
+
+#. module: account_transfer
+#: view:account.voucher:0
+msgid "Confirmed"
+msgstr ""
+
+#. module: account_transfer
+#: view:account.voucher:0
+msgid "Amount to Transfer"
+msgstr ""
+
+#. module: account_transfer
+#: view:account.voucher:0
+msgid "Confirm"
+msgstr ""
+
+#. module: account_transfer
+#: field:account.voucher,transfer:0
+msgid "Is Transfer"
+msgstr ""
+
+#. module: account_transfer
+#: sql_constraint:account.journal:0
+msgid "The name of the journal must be unique per company !"
+msgstr ""
+
+#. module: account_transfer
+#: view:account.voucher:0
+msgid "Group By..."
+msgstr ""
+
+#. module: account_transfer
+#: view:account.voucher:0
+msgid "State"
+msgstr ""
+
+#. module: account_transfer
+#: view:account.voucher:0
+msgid "Draft"
+msgstr ""
+
+#. module: account_transfer
+#: view:account.voucher:0
+msgid "Set to Draft"
+msgstr ""
+
+#. module: account_transfer
+#: help:account.journal,jointly_transfer:0
+msgid "This journal require differents users to approve the cash transfers"
+msgstr ""
+
+#. module: account_transfer
+#: field:account.voucher.line,account_journal_id:0
+msgid "Destination Journal"
+msgstr ""
+
+#. module: account_transfer
+#: view:account.voucher:0
+msgid "Transfer Entries"
+msgstr ""
+
+#. module: account_transfer
+#: view:account.voucher:0
+msgid "Final Approbation"
+msgstr ""
+
+#. module: account_transfer
+#: field:account.voucher.line,exchange_rate:0
+msgid "Exchange Rate"
+msgstr ""
+
+#. module: account_transfer
+#: view:account.voucher:0
+msgid "Voucher Entry"
+msgstr ""
+
+#. module: account_transfer
+#: view:account.voucher:0
+#: model:ir.model,name:account_transfer.model_account_journal
+msgid "Journal"
+msgstr ""
+
+#. module: account_transfer
+#: view:account.voucher:0
+msgid "Source Journal"
+msgstr ""
+
+#. module: account_transfer
+#: view:account.voucher:0
+msgid "Internal Notes"
+msgstr ""
+
+#. module: account_transfer
+#: view:account.voucher:0
+msgid "Are you sure to unreconcile this record ?"
+msgstr ""
+
+#. module: account_transfer
+#: view:account.voucher:0
+msgid "Journal Items"
+msgstr ""
+
+#. module: account_transfer
+#: view:account.voucher:0
+msgid "Other Information"
+msgstr ""
+
+#. module: account_transfer
+#: view:account.voucher:0
+msgid "Extended Filters..."
+msgstr ""
+
+#. module: account_transfer
+#: view:account.voucher:0
+msgid "Total Currency Amount"
+msgstr ""
+
+#. module: account_transfer
+#: view:account.voucher:0
+msgid "Approbation 1"
+msgstr ""
+
+#. module: account_transfer
+#: view:account.voucher:0
+msgid "Posted"
+msgstr ""
+
+#. module: account_transfer
+#: view:account.voucher:0
+msgid "Target"
+msgstr ""
+
+#. module: account_transfer
+#: field:account.voucher,balance_start:0
+#: field:account.voucher.line,balance_start:0
+msgid "Current Balance"
+msgstr ""
+
+#. module: account_transfer
+#: model:ir.actions.act_window,name:account_transfer.action_transfer_list
+#: model:ir.ui.menu,name:account_transfer.account_transfer_menu
+msgid "Cash and Bank Transfers"
+msgstr ""
+
+#. module: account_transfer
+#: view:account.voucher:0
+msgid "Source"
+msgstr ""
+
+#. module: account_transfer
+#: view:account.voucher:0
+msgid "To Review"
+msgstr ""
+
+#. module: account_transfer
+#: view:account.voucher:0
+#: model:ir.model,name:account_transfer.model_account_voucher
+msgid "Accounting Voucher"
+msgstr ""
+
+#. module: account_transfer
+#: view:account.voucher:0
+msgid "Period"
+msgstr ""
+
+#. module: account_transfer
+#: model:ir.model,name:account_transfer.model_account_voucher_line
+msgid "Voucher Lines"
+msgstr ""
+
+#. module: account_transfer
+#: field:account.journal,jointly_transfer:0
+msgid "Jointly Approved Transfers"
+msgstr ""
+
+#. module: account_transfer
+#: field:account.voucher,currency_transfer_id:0
+#: field:account.voucher.line,currency_id:0
+msgid "Currency"
+msgstr ""
+
+#. module: account_transfer
+#: sql_constraint:account.journal:0
+msgid "The code of the journal must be unique per company !"
+msgstr ""
+
+#. module: account_transfer
+#: view:account.voucher:0
+msgid "Search Transfers"
+msgstr ""
+
+#. module: account_transfer
+#: field:account.voucher,target_journals:0
+msgid "Target Journals"
+msgstr ""
+
+#. module: account_transfer
+#: view:account.voucher:0
+msgid "Voucher Items"
+msgstr ""
+
+#. module: account_transfer
+#: view:account.voucher:0
+msgid "Cancel"
+msgstr ""
+
+#. module: account_transfer
+#: view:account.voucher:0
+msgid "Partner"
+msgstr ""
+
+#. module: account_transfer
+#: field:account.voucher,approve2_user_id:0
+msgid "Approve User 2"
+msgstr ""
+
+#. module: account_transfer
+#: view:account.voucher:0
+msgid "Total Amount"
+msgstr ""
+
+#. module: account_transfer
+#: field:account.voucher,approve_user_id:0
+msgid "Approve User 1"
+msgstr ""
+
