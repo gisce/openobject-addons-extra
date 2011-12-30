@@ -25,10 +25,8 @@
     "website" : "http://www.savoirfairelinux.com",
     "license" : "AGPL-3",
     "category" : "Localization/Accounting",
-    "description": """This module adds the fiscal position rules to set the 
-    fiscal position of a partner based on the canadian province or territory.
-    """,
-    "depends" : ['account_fiscal_position_rule','l10n_ca_toponyms','l10n_ca'],
+    "description": """This module adds the fiscal position rules to set the fiscal position of a document (picking, invoice, sale order, purchase order) based on the canadian province or territory.""",
+    "depends" : ['account_fiscal_position_rule_sale','account_fiscal_position_rule_purchase','account_fiscal_position_rule_stock','l10n_ca_toponyms','l10n_ca'],
     "init_xml" : [],
     "update_xml" : ['rules.xml'],
     "demo_xml" : [],
