@@ -21,6 +21,7 @@
 
 from osv import osv, fields
 
+# XXX This would probably be best in res_config_users
 class res_users(osv.osv):
     """Add the bar code decoding configuration to the user profile"""
     _inherit = 'res.users'
