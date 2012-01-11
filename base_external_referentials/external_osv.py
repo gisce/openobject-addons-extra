@@ -4,7 +4,7 @@
 #    OpenERP, Open Source Management Solution
 #    Copyright (C) 2004-2009 Tiny SPRL (<http://tiny.be>). All Rights Reserved
 #    Sharoon Thomas, Raphaël Valyi
-#    Copyright (C) 2011 Camptocamp Guewen Baconnier                         
+#    Copyright (C) 2011-2012 Camptocamp Guewen Baconnier
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
