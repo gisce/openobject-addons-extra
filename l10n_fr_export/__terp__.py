@@ -30,7 +30,7 @@
     "version" : "1.0",
     "author" : "SISTHEO",
     "website": "http://www.openerp.com",
-    "category" : "Localisation/Account Charts",
+    "category": 'Accounting',
     "description": """This is the module to export entries lines for one fiscal year.
 
 Credits: Sistheo Zeekom CrysaLEAD

@@ -30,7 +30,7 @@
     "version" : "1.0",
     "author" : "OpenERP SA",
     "website": "http://www.openerp.com",
-    "category" : "Localisation/Account Charts",
+    "category": 'Accounting',
     "description": """
     Account Report Module Uses.
 """,

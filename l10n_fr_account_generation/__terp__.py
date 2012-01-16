@@ -30,7 +30,7 @@
     "version" : "1.0",
     "author" : "SISTHEO",
     "website": "http://www.openerp.com",
-    "category" : "Localisation/Account Charts",
+    "category": 'Accounting',
     "description": """Add a button in partners form for creating the payable and receive accounts in general account.
 
 Credits: Sistheo Zeekom
