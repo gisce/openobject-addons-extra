@@ -61,13 +61,13 @@
                 <notebook>
                     <page string="Order Line">
                         <field colspan="2"
-                            context="quantity=product_uom_qty,uom=product_uom"
+                            context="{'quantity': product_uom_qty, 'uom': product_uom}"
                             name="product_id"
                             on_change="product_id_change('pricelist' in context and context['pricelist'], product_id,product_uom_qty,product_uom,product_uos_qty,product_uos,name,'partner_id' in context and context['partner_id'], 'lang' in context and context['lang'], True, 'date_order' in context and context['date_order'], product_packaging, 'fiscal_position' in context and context['fiscal_position'], False)"
                             />
                         <button name="action_configure_product" string="Configure The Product" type="object" icon="gtk-execute" colspan="2"/>
                         <field
-                            context="quantity=product_uom_qty,uom=product_uom"
+                            context="{'quantity': product_uom_qty, 'uom': product_uom}"
                             name="product_uom_qty"
                             on_change="product_id_change('pricelist' in context and context['pricelist'], product_id,product_uom_qty,product_uom,product_uos_qty,product_uos,name,'partner_id' in context and context['partner_id'], 'lang' in context and context['lang'], False, 'date_order' in context and context['date_order'], product_packaging, 'fiscal_position' in context and context['fiscal_position'], True)"
                             />
@@ -76,7 +76,7 @@
                         <field name="product_uom"
                             on_change="product_uom_change(context.get('pricelist', False),product_id,product_uom_qty,product_uom,product_uos_qty,product_uos,name,context.get('partner_id', False), 'lang' in context and context['lang'], False, context.get('date_order', False))"/>
                         <field
-                            context="quantity=product_uom_qty,uom=product_uom"
+                            context="{'quantity': product_uom_qty, 'uom': product_uom}"
                             name="product_packaging"
                             on_change="product_id_change('pricelist' in context and context['pricelist'], product_id,product_uom_qty,product_uom,product_uos_qty,product_uos,name,'partner_id' in context and context['partner_id'], 'lang' in context and context['lang'], False, 'date_order' in context and context['date_order'], product_packaging, 'fiscal_position' in context and context['fiscal_position'], False)"
                             domain="[('product_id','=',product_id)]"
