@@ -20,6 +20,7 @@
 ##############################################################################
 from osv import osv, fields
 
+
 class res_partner_team(osv.osv):
     _name = 'res.partner.team'
 
@@ -28,13 +29,17 @@ class res_partner_team(osv.osv):
         'description' : fields.text('Description'),
     }
 
-res_partner_team()
 
-class res_partner_job(osv.osv):
-    _inherit = 'res.partner.job'
+class res_partner_address(osv.osv):
+    _inherit = 'res.partner.address'
 
     _columns = {
+        # provide a backwards compatible alias for getting the address info from the "job" object, which in
+        # 6.1 was changed from res.partner.job to res.partner.address
+        'address_id' : fields.related('location_id', type='many2one',
+                                      relation='res.partner.location',
+                                      string='Location', store=True),
+
+        # extra fields
         'team_id' : fields.many2one('res.partner.team', 'Team'),
     }
-
-res_partner_job()

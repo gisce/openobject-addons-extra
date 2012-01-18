@@ -4,7 +4,7 @@
         <record model="ir.ui.view" id="view_partner_job_inherited">
             <field name="name">view.partner.job.inherited</field>
             <field name="model">res.partner.job</field>
-            <field name="inherit_id" ref="base_contact.view_partner_job_form" />
+            <field name="inherit_id" ref="base.view_partner_address_form1" />
             <field name="type">form</field>
             <field name="arch" type="xml">
                 <field name="state" position="after">
