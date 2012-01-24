@@ -22,6 +22,7 @@ import pooler
 from osv import osv, fields
 from tools.translate import _
 from tools.safe_eval import safe_eval
+from tools import DEFAULT_SERVER_DATETIME_FORMAT
 import netsvc
 
 class external_report(osv.osv):
@@ -123,7 +124,7 @@ class external_report(osv.osv):
         try:
             if report_id:
                 self.write(log_cr, uid, report_id,
-                           {'start_date': time.strftime("%Y-%m-%d %H:%M:%S"),
+                           {'start_date': time.strftime(DEFAULT_SERVER_DATETIME_FORMAT),
                             'end_date': False},
                            context=context)
                 # clean successful lines of the last report
@@ -134,7 +135,7 @@ class external_report(osv.osv):
                                         {'name': name or ref,
                                          'ref': ref,
                                          'external_referential_id': external_referential_id,
-                                         'start_date': time.strftime("%Y-%m-%d %H:%M:%S"),
+                                         'start_date': time.strftime(DEFAULT_SERVER_DATETIME_FORMAT),
                                          },
                                         context=context)
             log_cr.commit()
@@ -177,7 +178,7 @@ class external_report(osv.osv):
                     }, context=context)
 
             self.write(log_cr, uid, id,
-                       {'end_date': time.strftime("%Y-%m-%d %H:%M:%S")},
+                       {'end_date': time.strftime(DEFAULT_SERVER_DATETIME_FORMAT)},
                        context=context)
 
             log_cr.commit()
@@ -213,7 +214,7 @@ class external_report_history(osv.osv):
     }
 
     _defaults = {
-        "date": lambda *a: time.strftime("%Y-%m-%d %H:%M:%S")
+        "date": lambda *a: time.strftime(DEFAULT_SERVER_DATETIME_FORMAT)
     }
 
 external_report_history()
@@ -247,7 +248,7 @@ class external_report_lines(osv.osv):
     }
 
     _defaults = {
-        "date": lambda *a: time.strftime("%Y-%m-%d %H:%M:%S")
+        "date": lambda *a: time.strftime(DEFAULT_SERVER_DATETIME_FORMAT)
     }
 
     def _log_base(self, cr, uid, model, action, state=None, res_id=None,
@@ -282,7 +283,7 @@ class external_report_lines(osv.osv):
                 self.write(log_cr, uid,
                                existing_line_id,
                                {'state': state,
-                                'date': time.strftime("%Y-%m-%d %H:%M:%S"),
+                                'date': time.strftime(DEFAULT_SERVER_DATETIME_FORMAT),
                                 'error_message': exception and str(exception) or False,
                                 'origin_defaults': origin_defaults,
                                 'origin_context': origin_context,
@@ -293,7 +294,7 @@ class external_report_lines(osv.osv):
                                 'state': state,
                                 'res_model': model,
                                 'action': action,
-                                'date': time.strftime("%Y-%m-%d %H:%M:%S"),
+                                'date': time.strftime(DEFAULT_SERVER_DATETIME_FORMAT),
                                 'res_id': res_id,
                                 'external_id': external_id,
                                 'error_message': exception and str(exception) or False,
