@@ -78,7 +78,7 @@ msgid "City Name"
 msgstr "Nombre de la ciudad"
 
 #. module: city
-#: field:res.partner.address,location:0
+#: field:res.partner.address,city_id:0
 msgid "Location"
 msgstr "Ubicación"
 

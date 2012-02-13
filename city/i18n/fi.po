@@ -72,7 +72,7 @@ msgid "City Name"
 msgstr "Kaupungin nimi"
 
 #. module: city
-#: field:res.partner.address,location:0
+#: field:res.partner.address,city_id:0
 msgid "Location"
 msgstr "Sijainti"
 
