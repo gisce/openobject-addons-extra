@@ -21,7 +21,7 @@
 
 from osv import fields
 from osv import osv
-import ir
+#import ir
 
 import netsvc
 import time
@@ -53,7 +53,7 @@ class mrp_flow(osv.osv):
 mrp_flow()
 
 class mrp_procurement(osv.osv):
-    _inherit = 'mrp.procurement'
+    _inherit = 'procurement.order'
 
     def _procure_confirm(self, cr, uid, ids=None, use_new_cursor=False, context=None):
         res = super(mrp_procurement, self)._procure_confirm(cr, uid, ids, use_new_cursor, context)
