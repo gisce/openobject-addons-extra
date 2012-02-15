@@ -58,15 +58,10 @@ class sale_order(osv.osv):
 class stock_picking(osv.osv):
     _inherit = "stock.picking"
 
-    def action_invoice_create(self, cr, uid, ids, journal_id=False,
-        group=False, type='out_invoice', context=None):
-        create_ids = super(stock_picking, self).action_invoice_create(cr, uid, ids,
-            journal_id=journal_id, group=group, type=type, context=context)
-        for picking_id in create_ids:
-            picking = self.pool.get('stock.picking').browse(cr, uid, picking_id, context=context)
-            if picking.sale_id:
-                self.pool.get('account.invoice').write(cr, uid, create_ids[picking_id], {
-                    'partner_bank_id': picking.sale_id.partner_bank_id.id,
-                }, context=context)
-        return create_ids
+    def _prepare_invoice(self, cr, uid, picking, partner, inv_type, journal_id, context=None):
+        """Copy bank partner from sale order to invoice"""
+        invoice_vals = super(stock_picking, self)._prepare_invoice(cr, uid, picking, partner, inv_type, journal_id, context=context)
+        if picking.sale_id:
+            invoice_vals.update({'partner_bank_id': picking.sale_id.partner_bank_id.id})
+        return invoice_vals
 
