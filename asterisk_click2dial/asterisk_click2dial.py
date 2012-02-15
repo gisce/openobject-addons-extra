@@ -291,12 +291,14 @@ class res_partner_address(osv.osv):
         in the partner address view'''
         erp_number = self.read(cr, uid, ids, ['phone'], context=context)[0]['phone']
         self.pool.get('asterisk.server').dial(cr, uid, ids, erp_number, context=context)
+        return True
 
     def action_dial_mobile(self, cr, uid, ids, context=None):
         '''Function called by the button 'Dial' next to the 'mobile' field
         in the partner address view'''
         erp_number = self.read(cr, uid, ids, ['mobile'], context=context)[0]['mobile']
         self.pool.get('asterisk.server').dial(cr, uid, ids, erp_number, context=context)
+        return True
 
     def get_name_from_phone_number(self, cr, uid, number, context=None):
         '''Function to get name from phone number. Usefull for use from Asterisk
