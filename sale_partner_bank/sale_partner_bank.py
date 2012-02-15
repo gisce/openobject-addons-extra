@@ -45,14 +45,12 @@ class sale_order(osv.osv):
                 result['value'].update({'partner_bank_id': partner['partner_bank_id']})
         return result
 
-    def action_invoice_create(self, cr, uid, ids, grouped=False, states=['confirmed', 'done', 'exception'], date_inv = False, context=None):
-# We must return a unique ID !!!
-        invoice_id = super(sale_order, self).action_invoice_create(cr, uid, ids, grouped=grouped, states=states, date_inv=date_inv, context=context)
-        cur_sale_order = self.pool.get('sale.order').browse(cr, uid, ids[0], context=context)
-        self.pool.get('account.invoice').write(cr, uid, invoice_id, {
-                'partner_bank_id': cur_sale_order.partner_bank_id.id
-            }, context=context)
-        return invoice_id
+    def _prepare_invoice(self, cr, uid, order, lines, context=None):
+        """Copy bank partner from sale order to invoice"""
+        invoice_vals = super(sale_order, self)._prepare_invoice(cr, uid, order,
+            lines, context=context)
+        invoice_vals.update({'partner_bank_id': order.partner_bank_id.id})
+        return invoice_vals
 
 
 class stock_picking(osv.osv):
@@ -60,7 +58,8 @@ class stock_picking(osv.osv):
 
     def _prepare_invoice(self, cr, uid, picking, partner, inv_type, journal_id, context=None):
         """Copy bank partner from sale order to invoice"""
-        invoice_vals = super(stock_picking, self)._prepare_invoice(cr, uid, picking, partner, inv_type, journal_id, context=context)
+        invoice_vals = super(stock_picking, self)._prepare_invoice(cr, uid, picking,
+            partner, inv_type, journal_id, context=context)
         if picking.sale_id:
             invoice_vals.update({'partner_bank_id': picking.sale_id.partner_bank_id.id})
         return invoice_vals
