@@ -71,7 +71,7 @@
         name="Document Rules"
         action="action_document_rule_form"
         id="menu_document_rules"
-        parent="document.menu_document_configuration"/>
+        parent="document.menu_document_doc"/>
 
 </data>
 </openerp>
