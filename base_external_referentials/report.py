@@ -102,6 +102,14 @@ class external_report(osv.osv):
         retry_cr.close()
         return True
 
+    def _prepare_start_report(self, cr, uid, name, ref,
+                                     external_referential_id, context=None):
+        # TODO get a correct name for the user
+        return {'name': name or ref,
+                'ref': ref,
+                'external_referential_id': external_referential_id,
+                'start_date': time.strftime(DEFAULT_SERVER_DATETIME_FORMAT),}
+
     def start_report(self, cr, uid, id=None, ref=None, name=None,
                      external_referential_id=None, context=None):
         """ Start a report, use the report with the id in the parameter
@@ -131,12 +139,10 @@ class external_report(osv.osv):
                 self._clean_successful_lines(log_cr, uid, report_id, context)
             else:
                 report_id = self.create(log_cr, uid,
-                                        # TODO get a correct name for the user
-                                        {'name': name or ref,
-                                         'ref': ref,
-                                         'external_referential_id': external_referential_id,
-                                         'start_date': time.strftime(DEFAULT_SERVER_DATETIME_FORMAT),
-                                         },
+                                        self._prepare_start_report(
+                                            cr, uid, name, ref,
+                                            external_referential_id,
+                                            context=context),
                                         context=context)
             log_cr.commit()
 
@@ -280,6 +286,7 @@ class external_report_lines(osv.osv):
             if origin_context.get('conn_obj', False):
                 del origin_context['conn_obj']
             if existing_line_id:
+                # TODO create a _prepare method
                 self.write(log_cr, uid,
                                existing_line_id,
                                {'state': state,
@@ -289,6 +296,7 @@ class external_report_lines(osv.osv):
                                 'origin_context': origin_context,
                                 })
             else:
+                # TODO create a _prepare method
                 existing_line_id = self.create(log_cr, uid, {
                                 'external_report_id': external_report_id,
                                 'state': state,
