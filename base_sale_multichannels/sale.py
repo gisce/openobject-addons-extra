@@ -571,12 +571,21 @@ class sale_order(osv.osv):
 
         return True
 
+    def _prepare_invoice(self, cr, uid, order, lines, context=None):
+        """Prepare the dict of values to create the new invoice for a
+           sale order. This method may be overridden to implement custom
+           invoice generation (making sure to call super() to establish
+           a clean extension chain).
 
-    def _make_invoice(self, cr, uid, order, lines, context={}):
-        inv_id = super(sale_order, self)._make_invoice(cr, uid, order, lines, context)
+           :param browse_record order: sale.order record to invoice
+           :param list(int) lines: list of invoice line IDs that must be
+                                  attached to the invoice
+           :return: dict of value to create() the invoice
+        """
+        vals = super(sale_order, self)._prepare_invoice(cr, uid, order, lines, context=context)
         if order.shop_id.sale_journal:
-            self.pool.get('account.invoice').write(cr, uid, [inv_id], {'journal_id' : order.shop_id.sale_journal.id}, context=context)
-        return inv_id
+            vals['journal_id'] = order.shop_id.sale_journal.id
+        return vals
 
     def action_invoice_create(self, cr, uid, ids, grouped=False, states=['confirmed', 'done', 'exception'], date_inv = False, context=None):
         inv_obj = self.pool.get('account.invoice')
