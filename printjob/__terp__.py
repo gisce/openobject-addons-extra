@@ -20,7 +20,7 @@
 ##############################################################################
 {
     "name" : "PrintJob",
-    "author" : "Pegueroles SCP & NaN",
+    "author" : "Pegueroles SCP & NaN·tic",
     "version" : "1.0",
     "website" : "http://www.pegueroles.com",
     "depends" : ["base"],
