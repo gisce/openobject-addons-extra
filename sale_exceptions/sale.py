@@ -91,14 +91,22 @@ class sale_order(osv.osv):
         exception_ids = self.detect_exceptions(cr, uid, ids, context=context)
         if exception_ids:
             model_data_obj = self.pool.get('ir.model.data')
+            list_obj = self.pool.get('sale.exception.confirm')
+            ctx = context.copy()
+            ctx.update({'active_id': ids[0],
+                        'active_ids': ids})
+            list_id = list_obj.create(cr, uid, {}, context=ctx)
+            view_id = model_data_obj.get_object_reference(
+                cr, uid, 'sale_exceptions', 'view_sale_exception_confirm')[1]
             action = {
                 'type': 'ir.actions.act_window',
                 'view_type': 'form',
                 'view_mode': 'form',
                 'res_model': 'sale.exception.confirm',
-                'view_id': model_data_obj.get_object_reference(cr, uid, 'sale_exceptions', 'view_sale_exception_confirm')[1],
+                'view_id': [view_id],
                 'target': 'new',
-                'context': context,
+                'nodestroy': True,
+                'res_id': list_id,
             }
             return action
         else:
