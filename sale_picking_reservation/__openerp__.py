@@ -25,7 +25,7 @@
     'version': '0.1',
     'category': 'Generic Modules',
     'license': 'AGPL-3',
-    'description': """This module add the posibility to reserve the product of the sale order line without validating it.""",
+    'description': """This module add the possibility to reserve the product of the quotation line before validating the sale order.""",
     'author': 'Akretion',
     'website': 'http://www.akretion.com/',
     'depends': ['sale'], 
