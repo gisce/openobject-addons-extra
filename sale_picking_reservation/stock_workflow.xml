@@ -2,7 +2,7 @@
 <!--
   sale_picking_reservation for OpenERP
   Copyright (C) 2011 Akretion Sébastien BEAU <sebastien.beau@akretion.com>
-  The licence is in the file __terp__.py
+  The licence is in the file __openerp__.py
 -->
 <openerp>
     <data>
@@ -31,6 +31,13 @@
             <field name="act_from" ref="act_picking_reserved"/>
             <field name="act_to" ref="stock.act_confirmed"/>
             <field name="signal">button_confirm_reserved</field>
+        </record>
+        
+        <record id="trans_reserved_picking_cancel" model="workflow.transition">
+            <field name="act_from" ref="act_picking_reserved"/>
+            <field name="act_to" ref="stock.act_cancel"/>
+            <field name="condition">allow_cancel()</field>
+            <field name="signal">button_cancel</field>
         </record>
 
     </data>

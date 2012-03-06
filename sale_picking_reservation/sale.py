@@ -54,17 +54,30 @@ class sale_order(osv.osv):
 
     def action_reserve(self, cr, uid, ids, *args):
         """Reserve the goods"""
-        self.write(cr, uid, ids, {'reserved': True})
         self.action_ship_create(cr, uid, ids, {'reserved': True})
+        self.write(cr, uid, ids, {'reserved': True})
         return True
 
     def action_unreserve(self, cr, uid, ids, *args):
         """Cancel the reservation"""
+        wf_service = netsvc.LocalService("workflow")
         self.write(cr, uid, ids, {'reserved': False})
         for sale in self.browse(cr, uid, ids):
-            # FIXME procurements should be canceled first!
+            # Cancel the picking (deleting it would not cancel the procurements!)
             for picking in sale.picking_ids:
-                picking.unlink()
+                wf_service.trg_validate(uid, 'stock.picking', picking.id,
+                                        'button_cancel', cr)
+            # Cancel the procurements
+            for move in sale.order_line:
+                if move.procurement_id:
+                    # Check that canceling the picking raised procurement exceptions
+                    wf_service.trg_validate(uid, 'procurement.order', 
+                                            move.procurement_id.id,
+                                            'button_check', cr)
+                    # Cancel the procurement
+                    wf_service.trg_validate(uid, 'procurement.order', 
+                                            move.procurement_id.id,
+                                            'button_cancel', cr)
         return True
 
     def action_ship_create(self, cr, uid, ids, *args):

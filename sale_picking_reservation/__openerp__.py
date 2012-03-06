@@ -22,7 +22,7 @@
 
 {
     'name': 'sale_picking_reservation',
-    'version': '0.1',
+    'version': '0.2',
     'category': 'Generic Modules',
     'license': 'AGPL-3',
     'description': """This module add the possibility to reserve the product of the quotation line before validating the sale order.""",
