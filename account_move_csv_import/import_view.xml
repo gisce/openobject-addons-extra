@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+    Copyright (C) 2012 Akretion (http://www.akretion.com/)
+    The licence is in the file __openerp__.py
+-->
+
+<openerp>
+<data>
+
+<record id="account_move_import_form" model="ir.ui.view">
+    <field name="name">account_move_import_form</field>
+    <field name="model">account.move.import</field>
+    <field name="type">form</field>
+    <field name="arch" type="xml">
+        <form string="Import account move">
+            <separator string="Import account move via CSV file" colspan="4" />
+            <field name="file_to_import" colspan="4" />
+            <newline />
+            <field name="post_move" colspan="4" />
+            <newline />
+            <button name="run_import_meilleuregestion" type="object" icon="gtk-ok" string="Import MeilleureGestion" colspan="2" />
+            <button name="run_import_libreoffice" type="object" icon="gtk-ok" string="Import LibreOffice" colspan="2" />
+            <button icon="gtk-close" special="cancel" string="Close" colspan="1" />
+        </form>
+    </field>
+</record>
+
+<record id="account_move_import_action" model="ir.actions.act_window">
+    <field name="name">Import account move via CSV file</field>
+    <field name="res_model">account.move.import</field>
+    <field name="view_type">form</field>
+    <field name="view_mode">form</field>
+    <field name="target">new</field>
+</record>
+
+<menuitem id="account_move_import_menu" parent="account.menu_finance_periodical_processing"
+        action="account_move_import_action" />
+
+</data>
+</openerp>
