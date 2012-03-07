@@ -46,5 +46,11 @@
             <field name="act_to" ref="sale.act_draft"/>
             <field name="signal"></field>
         </record>
+        
+        <record id="trans_reserved_to_confirm" model="workflow.transition">
+            <field name="act_from" ref="act_reserved"/>
+            <field name="act_to" ref="sale.act_cancel"/>
+            <field name="signal">cancel</field>
+        </record>
     </data>
 </openerp>
