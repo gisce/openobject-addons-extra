@@ -14,14 +14,14 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2012-02-06 04:58+0000\n"
-"X-Generator: Launchpad (build 14747)\n"
+"X-Launchpad-Export-Date: 2012-03-07 05:29+0000\n"
+"X-Generator: Launchpad (build 14907)\n"
 
 #. module: account_analytic_progress
 #: model:ir.actions.act_window,name:account_analytic_progress.action_account_analytic_progress_graph
 #: model:ir.ui.menu,name:account_analytic_progress.menu_account_analytic_progress_graph
 msgid "Remainging turnover by account"
-msgstr ""
+msgstr "الباقي المسترجع للحساب"
 
 #. module: account_analytic_progress
 #: constraint:ir.ui.view:0
@@ -40,6 +40,9 @@ msgid ""
 "This is the module used for displaying the shared funded\n"
 "development projects on the Tiny ERP website."
 msgstr ""
+"شريط عملية تحليل الحسابات\n"
+"هذه هي الوحدة المستخدمة لعرض تمويل مشترك\n"
+"المشاريع المطورة في موقع تني  لتخطيط موارد المؤسسات"
 
 #. module: account_analytic_progress
 #: constraint:ir.actions.act_window:0
