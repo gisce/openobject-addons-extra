@@ -74,7 +74,7 @@ class account_move_import(osv.osv_memory):
     _name = "account.move.import"
     _description = "Import account move from CSV file"
 
-    def run_import_libreoffice(self, cr, uid, ids, context=None):
+    def run_import_generic_csv(self, cr, uid, ids, context=None):
         setup = {}
         setup.update({
             'encoding': 'utf-8',
@@ -83,7 +83,7 @@ class account_move_import(osv.osv_memory):
             'quoting' : csv.QUOTE_MINIMAL,
             'fieldnames': ['date', 'journal', 'account',
                     'analytic', 'label', 'debit', 'credit'],
-            'date_format': '%d/%m/%y',
+            'date_format': '%d/%m/%Y',
             'top_lines_to_skip': 0, # Empty lines should not be counted ; they are automatically skipped
         })
         res = self.run_import_generic(cr, uid, ids, setup, context=context)
@@ -132,7 +132,7 @@ class account_move_import(osv.osv_memory):
             print "lines=", lines
             if lines <= top_lines_to_skip:
                 print "row=", row
-                _logger.info('[line %d] Skipped' % lines)
+                _logger.info('[line %d] Top line skipped' % lines)
                 continue
             _logger.info('[line %d] Content : %s' % (lines, row))
             # Date and journal are read from the first line
@@ -167,6 +167,10 @@ class account_move_import(osv.osv_memory):
                     credit = 0
             except:
                 raise osv.except_osv('Error :', "Check that the decimal separator for the 'Debit' and 'Credit' columns is a dot")
+            # If debit and credit = 0, we skip the move line
+            if not debit and not credit:
+                _logger.info('[line %d] Skipped because debit=credit=0' % lines)
+                continue
 
             line_seq.append((0, 0, {
                 'account_id': account_id,

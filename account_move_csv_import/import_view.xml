@@ -19,8 +19,20 @@
             <newline />
             <field name="post_move" colspan="4" />
             <newline />
+            <separator string="Info about generic CSV format" colspan="4" />
+            <!-- 50 chars max ; otherwise, nothing is displayed in the dialog box !-->
+            <label colspan="4" string="Cols : Date (DD/MM/YYYY), Journal code,"/>
+            <label colspan="4" string="Legal account, Analytic account, Label, Debit,"/>
+            <label colspan="4" string="Credit" />
+            <label colspan="4" string="Encoding : UTF-8" />
+            <label colspan="4" string="Field separator : , (coma)" />
+            <label colspan="4" string="Text separator : &quot; (quote)" />
+            <label colspan="4" string="Decimal separator : . (dot)"/>
+            <label colspan="4" string="If exporting from LibreOffice, set Language to" />
+            <label colspan="4" string="English on numeric cells." />
+            <newline />
             <button name="run_import_meilleuregestion" type="object" icon="gtk-ok" string="Import MeilleureGestion" colspan="2" />
-            <button name="run_import_libreoffice" type="object" icon="gtk-ok" string="Import LibreOffice" colspan="2" />
+            <button name="run_import_generic_csv" type="object" icon="gtk-ok" string="Import generic CSV" colspan="2" />
             <button icon="gtk-close" special="cancel" string="Close" colspan="1" />
         </form>
     </field>
