@@ -7,14 +7,14 @@ msgstr ""
 "Project-Id-Version: OpenERP Server 5.0.4\n"
 "Report-Msgid-Bugs-To: support@openerp.com\n"
 "POT-Creation-Date: 2010-10-18 17:46+0000\n"
-"PO-Revision-Date: 2012-02-09 14:31+0000\n"
+"PO-Revision-Date: 2012-03-19 10:44+0000\n"
 "Last-Translator: Erwin <Unknown>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2012-03-07 05:33+0000\n"
-"X-Generator: Launchpad (build 14907)\n"
+"X-Launchpad-Export-Date: 2012-03-20 05:11+0000\n"
+"X-Generator: Launchpad (build 14969)\n"
 
 #. module: account_reporting
 #: model:ir.model,name:account_reporting.model_color_rml
@@ -210,6 +210,8 @@ msgid ""
 "Gives the sequence order when displaying a list of account reporting for "
 "balance sheet."
 msgstr ""
+"Geeft de volgorde weer bij het weergeven van een lijst van rekening "
+"rapporten voor de balans"
 
 #. module: account_reporting
 #: view:account.report.bs:0
