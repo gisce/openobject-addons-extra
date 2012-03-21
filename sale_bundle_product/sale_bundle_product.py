@@ -31,7 +31,7 @@ class product_item_set(osv.osv):
     _columns = {
         'item_set_line_ids':fields.one2many('product.item.set.line', 'item_set_id', 'Item Set Lines'),
         'multi_select': fields.boolean('Allow multi-select ?'),
-        'required': fields.boolean('Requiered ?'),
+        'required': fields.boolean('Required ?'),
         'name' : fields.char('Name', size=128, required=True),
         'sequence': fields.integer('Sequence'),
     }
