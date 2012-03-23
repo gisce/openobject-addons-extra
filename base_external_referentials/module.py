@@ -23,6 +23,10 @@ import addons
 import os
 from tools import osutil
 
+
+#The way I implement autoload feature is not stable https://code.launchpad.net/~sebastien.beau/openobject-server/autoload/+merge/84512
+#Moreover hidding dependency look to be a bad idea
+#I will remove this code soon after refactoring the module that use it
 addons.load_module_graph_ori = addons.load_module_graph
 
 def load_module_graph(cr, graph, status=None, perform_checks=True, skip_modules=None, **kwargs):
@@ -43,3 +47,13 @@ def load_module_graph(cr, graph, status=None, perform_checks=True, skip_modules=
     return addons.load_module_graph_ori(cr, graph, status, perform_checks, skip_modules, **kwargs)
 
 addons.load_module_graph = load_module_graph
+
+
+#The funciton is_installed will be not merge https://code.launchpad.net/~sebastien.beau/openobject-server/add_function_is_installed/+merge/84474
+#Hidding dependency seem not to be a good idea, I extend the class here in order to use this solution before finding a good one
+class module(osv.osv):
+    _inherit = "ir.module.module"
+
+    def is_installed(self, cr, uid, module_name, context=None):
+        return bool(self.search(cr, 1, [['name', '=', module_name], ['state', 'in', ['installed', 'to upgrade']]], context=context))
+

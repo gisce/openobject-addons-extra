@@ -183,7 +183,11 @@ class sale_shop(osv.osv):
         'address_id':fields.many2one('res.partner.address', 'Address'),
         'website': fields.char('Website', size=64),
         'image':fields.binary('Image', filters='*.png,*.jpg,*.gif'),
+        'use_external_tax': fields.boolean('Use External Taxe', help="This will force OpenERP to use the external tax instead of recomputing them"),
+        'play_sale_order_onchange': fields.boolean('Play Sale Order Onchange', help=("This will play the Sale Order and Sale Order Line Onchange,"
+                                                                               "this option is required is you when to recompute the tax in OpenERP")),
         'import_orders_from_date': fields.datetime('Only created after'),
+        'check_total_amount': fields.boolean('Check Total Amount', help="The total amount computed by OpenERP should match with the external amount, if not the sale_order is in exception"),
         'product_stock_field_id': fields.many2one(
             'ir.model.fields',
             string='Stock Field',
@@ -293,13 +297,15 @@ class sale_shop(osv.osv):
         if context is None:
             context = {}
         for shop in self.browse(cr, uid, ids):
+            if not shop.company_id.id:
+                raise osv.except_osv(_('Warning!'), _('You have to set a company for this OpenERP sale shop!'))
+
             defaults = {
                             'pricelist_id':self._get_pricelist(cr, uid, shop),
                             'shop_id': shop.id,
                             'fiscal_position': shop.default_fiscal_position.id,
-                            'property_account_receivable': shop.default_customer_account.id,
-                            'order_prefix': shop.order_prefix,
                             'ext_payment_method': shop.default_payment_method,
+                            'company_id': shop.company_id.id,
                         }
             
             context.update({
@@ -307,17 +313,13 @@ class sale_shop(osv.osv):
                             'shop_name': shop.name,
                             'shop_id': shop.id,
                             'external_referential_type': shop.referential_id.type_id.name,
+                            'order_prefix': shop.order_prefix,
+                            'use_external_tax': shop.use_external_tax,
+                            'play_sale_order_onchange': shop.play_sale_order_onchange,
                         })
-            
-            if self.pool.get('ir.model.fields').search(cr, uid, [('name', '=', 'company_id'), ('model', '=', 'sale.shop')]): #OpenERP v6 needs a company_id field on the sale order but v5 doesn't have it, same for shop...
-                if not shop.company_id.id:
-                    raise osv.except_osv(_('Warning!'), _('You have to set a company for this OpenERP sale shop!'))
-                defaults.update({'company_id': shop.company_id.id})
 
             if shop.is_tax_included:
-                defaults.update({'price_type': 'tax_included'})
-
-            defaults.update(self.pool.get('sale.order').onchange_shop_id(cr, uid, ids, shop.id)['value'])
+                context.update({'price_is_tax_included': True})
 
             self.import_shop_orders(cr, uid, shop, defaults, context)
         return False
@@ -385,7 +387,6 @@ class sale_shop(osv.osv):
                 """, (shop.id,))
             results = cr.dictfetchall()
             if not results:
-                print results
                 logger.notifyChannel('ext synchro', netsvc.LOG_INFO, "There is no shipping to export for the shop '%s' to the external referential" % (shop.name,))
                 return True
             context['conn_obj'] = shop.referential_id.external_connection()        
@@ -485,19 +486,42 @@ class sale_order(osv.osv):
     _defaults = {
         'need_to_update': lambda *a: False,
     }
+
+    def _get_kwargs_onchange_partner_id(self, cr, uid, vals, context=None):
+        return {
+            'ids': None,
+            'part': vals.get('partner_id'),
+        }
+
+
+    #I will probably extract this code in order to put it in a "glue" module
+    def _get_kwargs_onchange_partner_invoice_id(self, cr, uid, vals, context=None):
+        return {
+            'ids': None,
+            'partner_invoice_id': vals.get('partner_invoice_id'),
+            'partner_id': vals.get('partner_id'),
+            'shop_id': vals.get('shop_id'),
+        }
+
+    def play_order_onchange(self, cr, uid, vals, defaults=None, context=None):
+        ir_module_obj= self.pool.get('ir.module.module')
+        vals = self.call_onchange(cr, uid, 'onchange_partner_id', vals, defaults, context=context)
+        if ir_module_obj.is_installed(cr, uid, 'account_fiscal_position_rule_sale', context=context):
+            vals = self.call_onchange(cr, uid, 'onchange_partner_invoice_id', vals, defaults, context=context)
+        return vals
     
-    def oevals_from_extdata(self, cr, uid, external_referential_id, data_record, key_field, mapping_lines, defaults, context):
-        res = super(sale_order, self).oevals_from_extdata(cr, uid, external_referential_id, data_record, key_field, mapping_lines, defaults, context)
+    def merge_with_default_value(self, cr, uid, sub_mapping_list, external_data, external_referential_id, vals, defaults=None, context=None):
         pay_type_obj = self.pool.get('base.sale.payment.type')
-        payment_method = res.get('ext_payment_method', False) or \
-                         defaults.get('ext_payment_method', False)
+        payment_method = vals.get('ext_payment_method', False)
         payment_settings = pay_type_obj.find_by_payment_code(
             cr, uid, payment_method, context=context)
         if payment_settings:
-            res['order_policy'] = payment_settings.order_policy
-            res['picking_policy'] = payment_settings.picking_policy
-            res['invoice_quantity'] = payment_settings.invoice_quantity
-        return res    
+            vals['order_policy'] = payment_settings.order_policy
+            vals['picking_policy'] = payment_settings.picking_policy
+            vals['invoice_quantity'] = payment_settings.invoice_quantity
+        if context.get('play_sale_order_onchange'):
+            vals = self.play_order_onchange(cr, uid, vals, defaults=defaults, context=context)
+        return super(sale_order, self).merge_with_default_value(cr, uid, sub_mapping_list, external_data, external_referential_id, vals, defaults=defaults, context=context)
     
     def create_payments(self, cr, uid, order_id, data_record, context):
         """not implemented in this abstract module"""
@@ -525,15 +549,16 @@ class sale_order(osv.osv):
     def oe_status_and_paid(self, cr, uid, order_id, data, external_referential_id, defaults, context):
         is_paid, amount = self._parse_external_payment(
             cr, uid, data, context=context)
+        #TODO fix me data is not the vals converted
         # create_payments has to be called after oe_status
         # because oe_status may create an invoice
         self.oe_status(cr, uid, order_id, is_paid, context)
         self.create_payments(cr, uid, order_id, data, context)
         return order_id
     
-    def oe_create(self, cr, uid, vals, data, external_referential_id, defaults, context):
-        order_id = super(sale_order, self).oe_create(cr, uid, vals, data, external_referential_id, defaults, context)
-        self.oe_status_and_paid(cr, uid, order_id, data, external_referential_id, defaults, context)
+    def oe_create(self, cr, uid, vals, external_referential_id, defaults, context):
+        order_id = super(sale_order, self).oe_create(cr, uid, vals, external_referential_id, defaults, context)
+        self.oe_status_and_paid(cr, uid, order_id, vals, external_referential_id, defaults, context)
         return order_id
     
     def generate_payment_from_order(self, cr, uid, ids, payment_ref, entry_name=None, paid=True, date=None, context=None):
@@ -785,6 +810,42 @@ class sale_order_line(osv.osv):
     _columns = {
         'ext_product_ref': fields.char('Product Ext Ref', help="This is the original external product reference", size=256),
     }
+
+    def _get_kwargs_product_id_change(self, cr, uid, line, parent_data, previous_lines, context=None):
+        return {
+            'ids': None,
+            'pricelist': parent_data.get('pricelist_id'),
+            'product': line.get('product_id'),
+            'qty': float(line.get('product_uom_qty')),
+            'uom': line.get('product_uom'),
+            'qty_uos': float(line.get('product_uos_qty', 1)),
+            'uos': line.get('product_uos'),
+            'name': line.get('name'),
+            'partner_id': parent_data.get('partner_id'),
+            'lang': False,
+            'update_tax': True,
+            'date_order': parent_data.get('date_order'),
+            'packaging': line.get('product_packaging'),
+            'fiscal_position': parent_data.get('fiscal_position'),
+            'flag': False,
+            'context': context,
+        }
+    
+    def play_sale_order_line_onchange(self, cr, uid, line, parent_data, previous_lines, defaults, context=None):
+        line = self.call_onchange(cr, uid, 'product_id_change', line, defaults=defaults, parent_data=parent_data, previous_lines=previous_lines, context=context)
+        #TODO all m2m should be mapped correctly
+        if line.get('tax_id'):
+            line['tax_id'] = [(6, 0, line['tax_id'])]
+        return line
+
+    def oevals_from_extdata(self, cr, uid, external_referential_id, data_record, mapping_lines, key_for_external_id=None, parent_data=None, previous_lines=None, defaults=None, context=None):
+        line = super(sale_order_line, self).oevals_from_extdata(cr, uid, external_referential_id, data_record, mapping_lines, key_for_external_id=key_for_external_id,  parent_data=parent_data, previous_lines=previous_lines, defaults=defaults, context=context)
+        if context.get('play_sale_order_onchange'):
+            line = self.play_sale_order_line_onchange(cr, uid, line, parent_data, previous_lines, defaults, context=context)
+        if context.get('use_external_tax') and line.get('tax_rate'):
+            line_tax_id = self.pool.get('account.tax').get_tax_from_rate(cr, uid, line['tax_rate'], context.get('is_tax_included'), context=context)
+            line['tax_id'] = [(6, 0, line_tax_id)]
+        return line
 
 sale_order_line()
 

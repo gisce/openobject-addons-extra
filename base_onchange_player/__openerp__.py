@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 #################################################################################
 #                                                                               #
-#    amazonerpconnect for OpenERP                                               #
+#    base_onchange_player for OpenERP                                           #
 #    Copyright (C) 2011 Akretion Sébastien BEAU <sebastien.beau@akretion.com>   #
 #                                                                               #
 #    This program is free software: you can redistribute it and/or modify       #
@@ -19,24 +19,23 @@
 #                                                                               #
 #################################################################################
 
-from osv import osv, fields
 
+{
+    'name': 'base_onchange_player',
+    'version': '0.1',
+    'category': 'ORM Extention',
+    'license': 'AGPL-3',
+    'description': """This module give the possibility to call onchange method easily in your code, it's just an Abstract Module that add some abstraction when you need to call onchange method.
+        A sample of call is done in the module base_sale_multichannels
+        """,
+    'author': 'Akretion',
+    'website': 'http://www.akretion.com/',
+    'depends': ['base'], 
+    'init_xml': [],
+    'update_xml': [
+    ],
+    'demo_xml': [],
+    'installable': True,
+    'active': False,
+}
 
-class account_tax_code(osv.osv):
-    _inherit='account.tax'
-    
-    def get_tax_from_rate(self, cr, uid, rate, is_tax_included=False, context=None):
-        #TODO improve, if tax are not correctly mapped the order should be in exception (integration with sale_execption)
-        tax_ids = self.pool.get('account.tax').search(cr, uid, [('price_include', '=', is_tax_included),
-                ('type_tax_use', '=', 'sale'), ('amount', '>=', rate - 0.001), ('amount', '<=', rate + 0.001)])
-        if tax_ids and len(tax_ids) > 0:
-            return tax_ids[0]
-        else:
-        #try to find a tax with less precision 
-            tax_ids = self.pool.get('account.tax').search(cr, uid, [('price_include', '=', is_tax_included), 
-                    ('type_tax_use', '=', 'sale'), ('amount', '>=', rate - 0.01), ('amount', '<=', rate + 0.01)])
-            if tax_ids and len(tax_ids) > 0:
-                return tax_ids[0]
-        return False
-
-account_tax_code()
