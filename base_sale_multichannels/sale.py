@@ -556,8 +556,8 @@ class sale_order(osv.osv):
         self.create_payments(cr, uid, order_id, data, context)
         return order_id
     
-    def oe_create(self, cr, uid, vals, external_referential_id, defaults, context):
-        order_id = super(sale_order, self).oe_create(cr, uid, vals, external_referential_id, defaults, context)
+    def oe_create(self, cr, uid, vals, external_referential_id, defaults=None, context=None):
+        order_id = super(sale_order, self).oe_create(cr, uid, vals, external_referential_id, defaults=defaults, context=context)
         self.oe_status_and_paid(cr, uid, order_id, vals, external_referential_id, defaults, context)
         return order_id
     

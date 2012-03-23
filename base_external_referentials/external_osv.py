@@ -472,7 +472,7 @@ def ext_import(self, cr, uid, external_data, external_referential_id, defaults=N
                     written = True
                     write_ids.append(existing_rec_id)
             else:
-                existing_rec_id = self.oe_create(cr, uid, vals, external_referential_id, defaults, context=context)
+                existing_rec_id = self.oe_create(cr, uid, vals, external_referential_id, defaults=defaults, context=context)
                 created = True                
 
             if existing_ir_model_data_id:
@@ -506,8 +506,8 @@ def oe_update(self, cr, uid, existing_rec_id, vals, external_referential_id, def
     return self.write(cr, uid, existing_rec_id, vals, context)
 
 
-def oe_create(self, cr, uid, vals, external_referential_id, defaults, context):
-    return self.create(cr, uid, vals, context)
+def oe_create(self, cr, uid, vals, external_referential_id, defaults=None, context=None):
+    return self.create(cr, uid, vals, context=context)
 
 
 def extdata_from_oevals(self, cr, uid, external_referential_id, data_record, mapping_lines, defaults, context=None):
