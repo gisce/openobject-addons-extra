@@ -183,11 +183,13 @@ class sale_shop(osv.osv):
         'address_id':fields.many2one('res.partner.address', 'Address'),
         'website': fields.char('Website', size=64),
         'image':fields.binary('Image', filters='*.png,*.jpg,*.gif'),
-        'use_external_tax': fields.boolean('Use External Taxe', help="This will force OpenERP to use the external tax instead of recomputing them"),
-        'play_sale_order_onchange': fields.boolean('Play Sale Order Onchange', help=("This will play the Sale Order and Sale Order Line Onchange,"
-                                                                               "this option is required is you when to recompute the tax in OpenERP")),
+        'use_external_tax': fields.boolean(
+            'Use External Taxes',
+            help="If activated, the external taxes will be applied.\n"
+                 "If not activated, OpenERP will compute them "
+                 "according to default values and fiscal positions."),
         'import_orders_from_date': fields.datetime('Only created after'),
-        'check_total_amount': fields.boolean('Check Total Amount', help="The total amount computed by OpenERP should match with the external amount, if not the sale_order is in exception"),
+        'check_total_amount': fields.boolean('Check Total Amount', help="The total amount computed by OpenERP should match with the external amount, if not the sale order can not be confirmed."),
         'product_stock_field_id': fields.many2one(
             'ir.model.fields',
             string='Stock Field',
@@ -315,7 +317,6 @@ class sale_shop(osv.osv):
                             'external_referential_type': shop.referential_id.type_id.name,
                             'order_prefix': shop.order_prefix,
                             'use_external_tax': shop.use_external_tax,
-                            'play_sale_order_onchange': shop.play_sale_order_onchange,
                         })
 
             if shop.is_tax_included:
@@ -523,8 +524,8 @@ class sale_order(osv.osv):
             vals['order_policy'] = payment_settings.order_policy
             vals['picking_policy'] = payment_settings.picking_policy
             vals['invoice_quantity'] = payment_settings.invoice_quantity
-        if context.get('play_sale_order_onchange'):
-            vals = self.play_order_onchange(cr, uid, vals, defaults=defaults, context=context)
+        # update vals with order onchange in order to compute taxes
+        vals = self.play_order_onchange(cr, uid, vals, defaults=defaults, context=context)
         return super(sale_order, self).merge_with_default_value(cr, uid, sub_mapping_list, external_data, external_referential_id, vals, defaults=defaults, context=context)
     
     def create_payments(self, cr, uid, order_id, data_record, context):
@@ -844,11 +845,14 @@ class sale_order_line(osv.osv):
 
     def oevals_from_extdata(self, cr, uid, external_referential_id, data_record, mapping_lines, key_for_external_id=None, parent_data=None, previous_lines=None, defaults=None, context=None):
         line = super(sale_order_line, self).oevals_from_extdata(cr, uid, external_referential_id, data_record, mapping_lines, key_for_external_id=key_for_external_id,  parent_data=parent_data, previous_lines=previous_lines, defaults=defaults, context=context)
-        if context.get('play_sale_order_onchange'):
+        if context.get('use_external_tax'):
+            # Get the taxes of the external system
+            if line.get('tax_rate'):
+                line_tax_id = self.pool.get('account.tax').get_tax_from_rate(cr, uid, line['tax_rate'], context.get('is_tax_included'), context=context)
+                line['tax_id'] = [(6, 0, line_tax_id)]
+        else:
+            # compute the taxes from OpenERP
             line = self.play_sale_order_line_onchange(cr, uid, line, parent_data, previous_lines, defaults, context=context)
-        if context.get('use_external_tax') and line.get('tax_rate'):
-            line_tax_id = self.pool.get('account.tax').get_tax_from_rate(cr, uid, line['tax_rate'], context.get('is_tax_included'), context=context)
-            line['tax_id'] = [(6, 0, line_tax_id)]
         return line
 
 sale_order_line()
