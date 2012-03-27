@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+<data>
+
+<!-- Remove the OO/RML report provided by the sale_layout module -->
+<delete model="ir.actions.report.xml" search="[('report_name', '=', 'sale.order.layout')]" />
+
+<!-- TODO : Add my aeroo report for sale_layout -->
+
+</data>
+</openerp>

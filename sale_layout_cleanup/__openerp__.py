@@ -35,7 +35,7 @@ Please contact Alexis de Lattre from Akretion <alexis.delattre@akretion.com> for
     'website': 'http://www.akretion.com',
     'depends': ['sale_layout'],
     'init_xml': [],
-    'update_xml': [],
+    'update_xml': ['sale_layout_report.xml'],
     'demo_xml': [],
     'installable': True,
     'active': False,
