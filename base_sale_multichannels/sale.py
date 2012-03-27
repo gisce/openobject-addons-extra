@@ -524,8 +524,18 @@ class sale_order(osv.osv):
             vals['order_policy'] = payment_settings.order_policy
             vals['picking_policy'] = payment_settings.picking_policy
             vals['invoice_quantity'] = payment_settings.invoice_quantity
+
+        # some vals are in default but are to be prior on the on change
+        # vals (on change vals are prior to default vals)
+        prior_keys = ['partner_order_id',
+                      'partner_invoice_id',
+                      'partner_shipping_id']
+        vals.update(dict([(key, value) for key, value
+                                       in defaults.iteritems()
+                                       if key in prior_keys]))
         # update vals with order onchange in order to compute taxes
-        vals = self.play_order_onchange(cr, uid, vals, defaults=defaults, context=context)
+        vals = self.play_order_onchange(
+            cr, uid, vals, defaults=defaults, context=context)
         return super(sale_order, self).merge_with_default_value(cr, uid, sub_mapping_list, external_data, external_referential_id, vals, defaults=defaults, context=context)
     
     def create_payments(self, cr, uid, order_id, data_record, context):
