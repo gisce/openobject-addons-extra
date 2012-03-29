@@ -394,7 +394,10 @@ class sale_shop(osv.osv):
         GROUP BY stock_picking.id,
                  sale_order.id,
                  delivery_carrier.export_needs_tracking,
-                 stock_picking.carrier_tracking_ref"""
+                 stock_picking.carrier_tracking_ref,
+                 stock_picking.backorder_id
+        ORDER BY sale_order.id ASC,
+                 COALESCE(stock_picking.backorder_id, NULL, 0) ASC"""
         params = {'shop_id': shop.id}
         return query, params
 
