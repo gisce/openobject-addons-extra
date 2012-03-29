@@ -20,12 +20,6 @@
 
 from osv import fields
 from osv import osv
-import time
-import netsvc
-
-import ir
-from mx import DateTime
-import pooler
 
 class purchase_order_line(osv.osv):
     _name = "purchase.order.line"
