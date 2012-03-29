@@ -366,32 +366,49 @@ class sale_shop(osv.osv):
             ids = self.pool.get('res.partner').search(cr, uid, [('store_id', '=', self.pool.get('sale.shop').oeid_to_extid(cr, uid, shop.id, shop.referential_id.id, context))])
             self.pool.get('res.partner').ext_export(cr, uid, ids, [shop.referential_id.id], {}, context)
         return True
-        
+
     def update_shop_orders(self, cr, uid, order, ext_id, context):
         raise osv.except_osv(_("Not Implemented"), _("Not Implemented in abstract base module!"))
 
+    def _export_shipping_query(self, cr, uid, shop, context=None):
+        query = """
+        SELECT stock_picking.id AS picking_id,
+               sale_order.id AS order_id,
+               count(pickings.id) AS picking_number,
+               delivery_carrier.export_needs_tracking AS need_tracking,
+               stock_picking.carrier_tracking_ref AS carrier_tracking
+        FROM stock_picking
+        LEFT JOIN sale_order
+                  ON sale_order.id = stock_picking.sale_id
+        LEFT JOIN stock_picking as pickings
+                  ON sale_order.id = pickings.sale_id
+        LEFT JOIN ir_model_data
+                  ON stock_picking.id = ir_model_data.res_id
+                  AND ir_model_data.model = 'stock.picking'
+        LEFT JOIN delivery_carrier
+                  ON delivery_carrier.id = stock_picking.carrier_id
+        WHERE shop_id = %(shop_id)s
+              AND ir_model_data.res_id ISNULL
+              AND stock_picking.state = 'done'
+              AND stock_picking.exported_to_magento IS FALSE
+        GROUP BY stock_picking.id,
+                 sale_order.id,
+                 delivery_carrier.export_needs_tracking,
+                 stock_picking.carrier_tracking_ref"""
+        params = {'shop_id': shop.id}
+        return query, params
+
     def export_shipping(self, cr, uid, ids, context):
-	picking_obj = self.pool.get('stock.picking')
+        picking_obj = self.pool.get('stock.picking')
         logger = netsvc.Logger()
         for shop in self.browse(cr, uid, ids):
-            cr.execute("""
-                select stock_picking.id as picking_id, sale_order.id as order_id, count(pickings.id) as picking_number,
-                       delivery_carrier.export_needs_tracking as need_tracking, stock_picking.carrier_tracking_ref as carrier_tracking
-                from stock_picking
-                left join sale_order on sale_order.id = stock_picking.sale_id
-                left join stock_picking as pickings on sale_order.id = pickings.sale_id
-                left join ir_model_data on stock_picking.id = ir_model_data.res_id and ir_model_data.model='stock.picking'
-                left join delivery_carrier on delivery_carrier.id = stock_picking.carrier_id
-                where shop_id = %s and ir_model_data.res_id ISNULL and stock_picking.state = 'done' and stock_picking.exported_to_magento IS NOT TRUE
-                Group By stock_picking.id, sale_order.id,
-                         delivery_carrier.export_needs_tracking, stock_picking.carrier_tracking_ref
-                """, (shop.id,))
+            cr.execute(*self._export_shipping_query(
+                            cr, uid, shop, context=context))
             results = cr.dictfetchall()
             if not results:
                 logger.notifyChannel('ext synchro', netsvc.LOG_INFO, "There is no shipping to export for the shop '%s' to the external referential" % (shop.name,))
                 return True
-            context['conn_obj'] = shop.referential_id.external_connection()        
-        
+            context['conn_obj'] = shop.referential_id.external_connection()
 
             picking_cr = pooler.get_db(cr.dbname).cursor()
             try:
@@ -487,7 +504,7 @@ class sale_order(osv.osv):
                     type='many2one', relation='external.referential',
                     string='External Referential')
     }
-    
+
     _defaults = {
         'need_to_update': lambda *a: False,
     }
@@ -514,7 +531,7 @@ class sale_order(osv.osv):
         if ir_module_obj.is_installed(cr, uid, 'account_fiscal_position_rule_sale', context=context):
             vals = self.call_onchange(cr, uid, 'onchange_partner_invoice_id', vals, defaults, context=context)
         return vals
-    
+
     def merge_with_default_value(self, cr, uid, sub_mapping_list, external_data, external_referential_id, vals, defaults=None, context=None):
         pay_type_obj = self.pool.get('base.sale.payment.type')
         payment_method = vals.get('ext_payment_method', False)
