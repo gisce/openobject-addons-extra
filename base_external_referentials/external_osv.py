@@ -329,7 +329,7 @@ def oevals_from_extdata(self, cr, uid, external_referential_id, data_record, map
     if key_for_external_id and data_record.get(key_for_external_id):
         ext_id = data_record[key_for_external_id]
         vals.update({'external_id': ext_id.isdigit() and int(ext_id) or ext_id})
-    
+
     vals = self.merge_with_default_value(cr, uid, sub_mapping_list, data_record, external_referential_id, vals, defaults=defaults, context=context)
     vals = self.call_sub_mapping(cr, uid, sub_mapping_list, data_record, external_referential_id, vals, defaults=defaults, context=context)
 
@@ -412,7 +412,7 @@ def convert_extdata_into_oedata(self, cr, uid, external_data, external_referenti
     @param external_data: list of external_data to convert into OpenERP data
     @param external_referential_id: external referential id from where we import the resource
     @param parent_data: data of the parent, only use when a mapping line have the type 'sub mapping'
-    @param defauls: defaults value for data converted
+    @param defaults: defaults value for data converted
     @return: list of the line converted into OpenERP value
     """
     if defaults is None:
@@ -435,6 +435,36 @@ def convert_extdata_into_oedata(self, cr, uid, external_data, external_referenti
                     created = written = bound = False
                     result.append(self.oevals_from_extdata(cr, uid, external_referential_id, each_row, mapping_lines, key_for_external_id, parent_data, result, defaults, context))
     return result
+
+def ext_import_unbound(self, cr, uid, external_data, external_referential_id, defaults=None, context=None):
+    """
+    Import external data into OpenERP but does not link the external
+    resource with the imported resource in ir.model.data.
+    This implies that no further synchronization will be possible
+
+    @param list/dict external_data: list of dict or standalone dict
+        of external_data to convert into OpenERP data
+    @param int external_referential_id: external referential id from
+    where we import the resource
+    @param dict defaults: defaults value for empty fields
+    @return: list of created ids or one id if one data record was given
+    """
+    standalone = False
+    if not isinstance(external_data, list):
+        standalone = True
+        external_data = [external_data]
+
+    results = self.convert_extdata_into_oedata(
+        cr, uid, external_data, external_referential_id,
+        defaults=defaults, context=context)
+
+    created_ids = []
+    for vals in results:
+        created_id = self.oe_create(
+            cr, uid, vals, external_referential_id,
+            defaults=defaults, context=context)
+        created_ids.append(created_id)
+    return standalone and created_ids[0] or created_ids
 
 def ext_import(self, cr, uid, external_data, external_referential_id, defaults=None, context=None):
     """
@@ -744,6 +774,7 @@ osv.osv.convert_extdata_into_oedata = convert_extdata_into_oedata
 osv.osv.get_external_data = get_external_data
 osv.osv.import_with_try = import_with_try
 osv.osv._existing_oeid_for_extid_import = _existing_oeid_for_extid_import
+osv.osv.ext_import_unbound = ext_import_unbound
 osv.osv.ext_import = ext_import
 osv.osv.retry_import = retry_import
 osv.osv.oe_update = oe_update
