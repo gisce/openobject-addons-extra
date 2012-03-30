@@ -55,7 +55,6 @@ class UnicodeDictReader:
 
     def next(self):
         row = self.reader.next()
-#        print "next row=", row
         res = {}
         for key, value in row.items():
             if value and key:
@@ -84,7 +83,8 @@ class account_move_import(osv.osv_memory):
             'fieldnames': ['date', 'journal', 'account',
                     'analytic', 'label', 'debit', 'credit'],
             'date_format': '%d/%m/%Y',
-            'top_lines_to_skip': 0, # Empty lines should not be counted ; they are automatically skipped
+            'top_lines_to_skip': 0,
+            'bottom_lines_to_skip': 0,
         })
         res = self.run_import_generic(cr, uid, ids, setup, context=context)
         return res
@@ -99,7 +99,8 @@ class account_move_import(osv.osv_memory):
                     'trash6', 'analytic', 'trash7', 'trash8', 'trash9', 'journal', 'label',
                     'label2', 'sign', 'amount', 'debit', 'credit'],
             'date_format': '%d/%m/%Y',
-            'top_lines_to_skip': 2, # Empty lines should not be counted ; they are automatically skipped
+            'top_lines_to_skip': 4,
+            'bottom_lines_to_skip': 3,
         })
         res = self.run_import_generic(cr, uid, ids, setup, context=context)
         return res
@@ -108,9 +109,23 @@ class account_move_import(osv.osv_memory):
         import_data = self.browse(cr, uid, ids[0])
         _logger.info('Starting to import CSV file')
         # Code inspired by module/wizard/base_import_language.py
+        #print "Imported file=", base64.decodestring(import_data.file_to_import)
+        fullstr = base64.decodestring(import_data.file_to_import)
+        top_lines_to_skip = setup.get('top_lines_to_skip', 0)
+        bottom_lines_to_skip = setup.get('bottom_lines_to_skip', 0)
+        if bottom_lines_to_skip:
+            end_seq = -(bottom_lines_to_skip + 1)
+        else:
+            end_seq = None
+        if top_lines_to_skip or bottom_lines_to_skip:
+            cutstr = '\n'.join(fullstr.split('\n')[top_lines_to_skip:end_seq])
+            _logger.info('%d top lines skipped' % top_lines_to_skip)
+            _logger.info('%d bottom lines skipped' % bottom_lines_to_skip)
+        else:
+            cutstr = fullstr
         fileobj = TemporaryFile('w+')
-        fileobj.write(base64.decodestring(import_data.file_to_import))
-        fileobj.seek(0) # Import... il faut revenir au début !
+        fileobj.write(cutstr)
+        fileobj.seek(0) # il faut revenir au début !
         reader = UnicodeDictReader(
             fileobj,
             fieldnames = setup.get('fieldnames'),
@@ -124,17 +139,11 @@ class account_move_import(osv.osv_memory):
         move_ref = False
         date_datetime = False
         move_lines = 0
-        lines = 0
+        line_csv = top_lines_to_skip
         line_seq = []
-        top_lines_to_skip = setup.get('top_lines_to_skip', 0)
         for row in reader:
-            lines +=1
-            print "lines=", lines
-            if lines <= top_lines_to_skip:
-                print "row=", row
-                _logger.info('[line %d] Top line skipped' % lines)
-                continue
-            _logger.info('[line %d] Content : %s' % (lines, row))
+            line_csv +=1
+            _logger.info('[line %d] Content : %s' % (line_csv, row))
             # Date and journal are read from the first line
             if not date_datetime:
                 date_datetime = datetime.strptime(row['date'], setup.get('date_format'))
@@ -147,14 +156,14 @@ class account_move_import(osv.osv_memory):
                 analytic_search = self.pool.get('account.analytic.account').search(cr, uid,
                     [('code', '=', row['analytic'])], context=context)
                 if len(analytic_search) <> 1:
-                    raise osv.except_osv('Error :', "No match for analytic account code '%s' (line %d of the CSV file)" % (row['analytic'], lines))
+                    raise osv.except_osv('Error :', "No match for analytic account code '%s' (line %d of the CSV file)" % (row['analytic'], line_csv))
                 analytic_account_id = analytic_search[0]
             else:
                 analytic_account_id = False
             account_search = self.pool.get('account.account').search(cr, uid,
                 [('code', '=', row['account'])], context=context)
             if len(account_search) <> 1:
-                raise osv.except_osv('Error :', "No match for legal account code '%s' (line %d of the CSV file)" % (row['account'], lines))
+                raise osv.except_osv('Error :', "No match for legal account code '%s' (line %d of the CSV file)" % (row['account'], line_csv))
             account_id = account_search[0]
             try:
                 if row['debit']:
@@ -169,7 +178,7 @@ class account_move_import(osv.osv_memory):
                 raise osv.except_osv('Error :', "Check that the decimal separator for the 'Debit' and 'Credit' columns is a dot")
             # If debit and credit = 0, we skip the move line
             if not debit and not credit:
-                _logger.info('[line %d] Skipped because debit=credit=0' % lines)
+                _logger.info('[line %d] Skipped because debit=credit=0' % line_csv)
                 continue
 
             line_seq.append((0, 0, {
