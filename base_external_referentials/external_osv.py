@@ -345,7 +345,6 @@ def get_external_data(self, cr, uid, conn, external_referential_id, defaults=Non
 def import_with_try(self, cr, uid, callback, data_record, external_referential_id, defaults, context=None):
     if not context:
         context={}
-    res={}
     report_line_obj = self.pool.get('external.report.line')
     report_line_id = report_line_obj._log_base(cr, uid, self._name, callback.im_func.func_name, 
                                     state='fail', external_id=context.get('external_object_id', False),
@@ -432,7 +431,6 @@ def convert_extdata_into_oedata(self, cr, uid, external_data, external_referenti
                 key_for_external_id = self.pool.get('external.mapping').read(cr, uid, mapping_id[0], ['external_key_name'])['external_key_name']
                 #if mapping lines exist find the external_data conversion for each row in inward external_data
                 for each_row in external_data:
-                    created = written = bound = False
                     result.append(self.oevals_from_extdata(cr, uid, external_referential_id, each_row, mapping_lines, key_for_external_id, parent_data, result, defaults, context))
     return result
 
@@ -463,6 +461,9 @@ def ext_import_unbound(self, cr, uid, external_data, external_referential_id, de
         created_id = self.oe_create(
             cr, uid, vals, external_referential_id,
             defaults=defaults, context=context)
+        self.after_oe_create(
+            cr, uid, created_id, external_data,
+            external_referential_id, context=context)
         created_ids.append(created_id)
     return standalone and created_ids[0] or created_ids
 
@@ -474,7 +475,7 @@ def ext_import(self, cr, uid, external_data, external_referential_id, defaults=N
 
     @param external_data: list of external_data to convert into OpenERP data
     @param external_referential_id: external referential id from where we import the resource
-    @param defauls: defaults value for 
+    @param defaults: defaults value for
     @return: dictionary with the key "create_ids" and "write_ids" which containt a list of ids created/written
     """
     if defaults is None:
@@ -488,7 +489,7 @@ def ext_import(self, cr, uid, external_data, external_referential_id, defaults=N
 
     result = self.convert_extdata_into_oedata(cr, uid, external_data, external_referential_id, defaults=defaults, context=context)
 
-    for vals in result:
+    for index, vals in enumerate(result):
         written = created = False
         if not 'external_id' in vals:
             raise osv.except_osv(_('External Import Error'), _("The object imported need an external_id, maybe the mapping doesn't exist for the object : %s" %self._name))
@@ -499,10 +500,18 @@ def ext_import(self, cr, uid, external_data, external_referential_id, defaults=N
                 (cr, uid, vals, external_id, external_referential_id, context=context)
             if existing_rec_id:
                 if self.oe_update(cr, uid, existing_rec_id, vals, external_referential_id, defaults=defaults, context=context):
+                    self.after_oe_update(
+                        cr, uid, existing_rec_id, external_data,
+                        external_referential_id, context=context)
                     written = True
                     write_ids.append(existing_rec_id)
             else:
                 existing_rec_id = self.oe_create(cr, uid, vals, external_referential_id, defaults=defaults, context=context)
+                # external_data[index] is awkward, but will be replaced
+                # in the running refactoring by a proper solution
+                self.after_oe_create(
+                    cr, uid, existing_rec_id, external_data[index],
+                    external_referential_id, context=context)
                 created = True                
 
             if existing_ir_model_data_id:
@@ -511,7 +520,6 @@ def ext_import(self, cr, uid, external_data, external_referential_id, defaults=N
                     # in this case we have to update the ir.model.data in order to point to the ressource created
                     self.pool.get('ir.model.data').write(cr, uid, existing_ir_model_data_id, {'res_id': existing_rec_id}, context=context)
             else:
-                ir_model_data_vals = \
                 self.create_external_id_vals(cr, uid, existing_rec_id, external_id, external_referential_id, context=context)
                 if not created:
                     # means the external resource is bound to an already existing resource
@@ -535,10 +543,38 @@ def retry_import(self, cr, uid, id, ext_id, external_referential_id, defaults=No
 def oe_update(self, cr, uid, existing_rec_id, vals, external_referential_id, defaults, context):
     return self.write(cr, uid, existing_rec_id, vals, context)
 
+def after_oe_update(self, cr, uid, rec_id, external_data, external_referential_id, context=None):
+    """
+    Hook which allows to execute actions after the external resource
+    has been updated in OpenERP. The external values are available so
+    we can decides wether or not something must be done based on this
+    (proceed with the payment of an order if the payment is done as
+    instance)
+
+    :param rec_id: id of the resource updated in OpenERP
+    :param external_data: dict of vals received from the external referential
+    :param external_referential_id: id of the external referential
+    :return: True
+    """
+    return True
 
 def oe_create(self, cr, uid, vals, external_referential_id, defaults=None, context=None):
     return self.create(cr, uid, vals, context=context)
 
+def after_oe_create(self, cr, uid, rec_id, external_data, external_referential_id, context=None):
+    """
+    Hook which allows to execute actions after the external resource
+    has been created in OpenERP. The external values are available so
+    we can decides wether or not something must be done based on this
+    (proceed with the payment of an order if the payment is done as
+    instance)
+
+    :param rec_id: id of the resource created in OpenERP
+    :param external_data: dict of vals received from the external referential
+    :param external_referential_id: id of the external referential
+    :return: True
+    """
+    return True
 
 def extdata_from_oevals(self, cr, uid, external_referential_id, data_record, mapping_lines, defaults, context=None):
     if context is None:
@@ -778,7 +814,9 @@ osv.osv.ext_import_unbound = ext_import_unbound
 osv.osv.ext_import = ext_import
 osv.osv.retry_import = retry_import
 osv.osv.oe_update = oe_update
+osv.osv.after_oe_update = after_oe_update
 osv.osv.oe_create = oe_create
+osv.osv.after_oe_create = after_oe_create
 osv.osv.extdata_from_oevals = extdata_from_oevals
 osv.osv.ext_export = ext_export
 osv.osv.retry_export = retry_export
