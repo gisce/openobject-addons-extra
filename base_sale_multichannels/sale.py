@@ -573,20 +573,39 @@ class sale_order(osv.osv):
         """
         return False, 0.0
 
-    def oe_status_and_paid(self, cr, uid, order_id, data, external_referential_id, defaults, context):
+    def oe_status_and_paid(self, cr, uid, order_id, external_data, external_referential_id, context):
+        """
+        Call the methods to check the status and payment
+        of an order when we create it from an external
+
+        :param order_id: id of the order
+        :param external_data: data of the order on Magento
+        :param external_referential_id: id of the external referential
+        :return:
+        """
         is_paid, amount = self._parse_external_payment(
-            cr, uid, data, context=context)
-        #TODO fix me data is not the vals converted
+            cr, uid, external_data, context=context)
+
         # create_payments has to be called after oe_status
         # because oe_status may create an invoice
         self.oe_status(cr, uid, order_id, is_paid, context)
-        self.create_payments(cr, uid, order_id, data, context)
+        self.create_payments(cr, uid, order_id, external_data, context)
         return order_id
-    
-    def oe_create(self, cr, uid, vals, external_referential_id, defaults=None, context=None):
-        order_id = super(sale_order, self).oe_create(cr, uid, vals, external_referential_id, defaults=defaults, context=context)
-        self.oe_status_and_paid(cr, uid, order_id, vals, external_referential_id, defaults, context)
-        return order_id
+
+    def after_oe_create(self, cr, uid, rec_id, external_data, external_referential_id, context=None):
+        """
+        Call method to check the status and payment and trigger the next
+        validation defined on the payment type.
+
+        :param rec_id: id of the resource created in OpenERP
+        :param external_data: dict of vals received from the external referential
+        :param external_referential_id: id of the external referential
+        :return: True
+        """
+        self.oe_status_and_paid(cr, uid, rec_id, external_data,
+                                external_referential_id, context=context)
+        return super(sale_order, self).after_oe_create(
+            cr, uid, rec_id, external_data, external_referential_id, context=context)
     
     def generate_payment_from_order(self, cr, uid, ids, payment_ref, entry_name=None, paid=True, date=None, context=None):
         if type(ids) in [int, long]:
