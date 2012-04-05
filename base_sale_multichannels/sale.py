@@ -758,18 +758,19 @@ class sale_order(osv.osv):
                                     wf_service.trg_validate(uid, 'account.invoice', invoice.id, 'invoice_open', cr)
                                     if payment_settings.is_auto_reconcile:
                                         invoice.auto_reconcile(context=context)
-            
+
                         elif order.order_policy == 'manual':
                             if payment_settings.create_invoice:
-                               wf_service.trg_validate(uid, 'sale.order', order.id, 'manual_invoice', cr)
-                               invoice_id = self.browse(cr, uid, order.id).invoice_ids[0].id
-                               if payment_settings.validate_invoice:
-                                   wf_service.trg_validate(uid, 'account.invoice', invoice_id, 'invoice_open', cr)
-                                   if payment_settings.is_auto_reconcile:
-                                       self.pool.get('account.invoice').auto_reconcile(cr, uid, [invoice_id], context=context)
-            
+                                wf_service.trg_validate(uid, 'sale.order', order.id, 'manual_invoice', cr)
+                                order.refresh()
+                                invoice_id = order.invoice_ids[0].id
+                                if payment_settings.validate_invoice:
+                                    wf_service.trg_validate(uid, 'account.invoice', invoice_id, 'invoice_open', cr)
+                                    if payment_settings.is_auto_reconcile:
+                                        self.pool.get('account.invoice').auto_reconcile(cr, uid, [invoice_id], context=context)
+
                         # IF postpaid DO NOTHING
-            
+
                         elif order.order_policy == 'picking':
                             if payment_settings.create_invoice:
                                 try:
