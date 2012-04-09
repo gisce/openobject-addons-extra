@@ -18,8 +18,8 @@
 #
 ##############################################################################
 
-from osv import fields
-from osv import osv
+from osv import osv,fields
+import decimal_precision as dp
 
 class purchase_order_line(osv.osv):
     _name = "purchase.order.line"
@@ -37,9 +37,11 @@ class purchase_order_line(osv.osv):
         'discount': fields.float('Discount (%)', digits=(16,2)),
         'price_subtotal': fields.function(_amount_line, method=True, string='Subtotal'),
     }
+
     _defaults = {
         'discount': lambda *a: 0.0,
     }
+    
 purchase_order_line()
 
 class purchase_order(osv.osv):
@@ -65,7 +67,28 @@ class purchase_order(osv.osv):
             res[order.id]['amount_untaxed'] = cur_obj.round(cr, uid, cur, val1)
             res[order.id]['amount_total'] = res[order.id]['amount_untaxed'] + res[order.id]['amount_tax']
         return res
-    
+
+    def _get_order(self, cr, uid, ids, context=None):
+        result = {}
+        for line in self.pool.get('purchase.order.line').browse(cr, uid, ids, context=context):
+            result[line.order_id.id] = True
+        return result.keys()
+
+    _columns = {
+        'amount_untaxed': fields.function(_amount_all, digits_compute= dp.get_precision('Purchase Price'), string='Untaxed Amount',
+            store={
+                'purchase.order.line': (_get_order, None, 10),
+            }, multi="sums", help="The amount without tax"),
+        'amount_tax': fields.function(_amount_all, digits_compute= dp.get_precision('Purchase Price'), string='Taxes',
+            store={
+                'purchase.order.line': (_get_order, None, 10),
+            }, multi="sums", help="The tax amount"),
+        'amount_total': fields.function(_amount_all, digits_compute= dp.get_precision('Purchase Price'), string='Total',
+            store={
+                'purchase.order.line': (_get_order, None, 10),
+            }, multi="sums",help="The total amount"),
+    }
+
 purchase_order()
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
 
