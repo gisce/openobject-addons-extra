@@ -30,3 +30,118 @@ msgstr ""
 msgid "Discount (%)"
 msgstr ""
 
+#. module: purchase_discount
+#: sql_constraint:purchase.order:0
+msgid "Order Reference must be unique per Company!"
+msgstr ""
+
+#. module: purchase_discount
+#: model:ir.model,name:purchase_discount.model_purchase_order_line
+msgid "Purchase Order Line"
+msgstr ""
+
+#. module: purchase_discount
+#: model:ir.model,name:purchase_discount.model_purchase_order
+msgid "Purchase Order"
+msgstr ""
+
+#. module: purchase_discount
+#: model:ir.model,name:purchase_discount.model_stock_picking
+msgid "Picking List"
+msgstr ""
+
+#. module: purchase
+#: report:purchase.discount.order:0
+msgid "Date Promised"
+msgstr ""
+
+#. module: purchase
+#: report:purchase.discount.order:0
+msgid "UoM"
+msgstr ""
+
+#. module: purchase
+#: report:purchase.discount.order:0
+msgid "TVA :"
+msgstr ""
+
+#. module: purchase
+#: report:purchase.discount.order:0
+msgid "Net Price"
+msgstr ""
+
+#. module: purchase
+#: report:purchase.discount.order:0
+msgid "Validated by :"
+msgstr ""
+
+#. module: purchase
+#: report:purchase.discount.order:0
+msgid "Shipping address :"
+msgstr ""
+
+#. module: purchase
+#: report:purchase.discount.order:0
+msgid "Net Total :"
+msgstr ""
+
+#. module: purchase
+#: report:purchase.discount.order:0
+msgid "Our order reference :"
+msgstr ""
+
+#. module: purchase
+#: report:purchase.discount.order:0
+msgid "Your order reference :"
+msgstr ""
+
+#. module: purchase
+#: report:purchase.discount.order:0
+#: report:purchase.quotation:0
+msgid "Qty"
+msgstr ""
+
+#. module: purchase
+#: report:purchase.discount.order:0
+msgid "Discount (%)"
+msgstr ""
+
+#. module: purchase
+#: report:purchase.discount.order:0
+msgid "Applicable Taxes"
+msgstr ""
+
+#. module: purchase
+#: report:purchase.discount.order:0
+msgid "Product Description"
+msgstr ""
+
+#. module: purchase
+#: report:purchase.discount.order:0
+msgid "Unit Price"
+msgstr ""
+
+#. module: purchase
+#: report:purchase.discount.order:0
+msgid "Tel. :"
+msgstr ""
+
+#. module: purchase
+#: report:purchase.discount.order:0
+msgid "Taxes :"
+msgstr ""
+
+#. module: purchase
+#: report:purchase.discount.order:0
+msgid "Date ordered :"
+msgstr ""
+
+#. module: purchase
+#: report:purchase.discount.order:0
+msgid "Order Nº"
+msgstr ""
+
+#. module: purchase
+#: report:purchase.discount.order:0
+msgid "Quotation Nº"
+msgstr ""

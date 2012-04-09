@@ -1,7 +1,9 @@
+# -*- coding: utf-8 -*-
 ##############################################################################
 #    
 #    OpenERP, Open Source Management Solution
 #    Copyright (C) 2004-2009 Tiny SPRL (<http://tiny.be>).
+#    Copyright (C) 2012 Pexego Sistemas Informáticos (<http://tiny.be>).
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -89,6 +91,27 @@ class purchase_order(osv.osv):
             }, multi="sums",help="The total amount"),
     }
 
+    def _prepare_inv_line(self, cr, uid, account_id, order_line, context=None):
+        if context is None: context = {}
+        
+        res = super(purchase_order, self)._prepare_inv_line(cr, uid, account_id, order_line, context=context)
+        res.update({'discount': order_line.discount or 0.0})
+        
+        return res
+
 purchase_order()
+
+class stock_picking( osv.osv ):
+    _inherit =  'stock.picking'
+
+    def _invoice_line_hook(self, cr, uid, move_line, invoice_line_id):
+        if move_line.purchase_line_id:
+            self.pool.get('account.invoice.line').write( cr, uid, [invoice_line_id], {
+                'discount':move_line.purchase_line_id.discount,
+                } )
+        return super( stock_picking, self)._invoice_line_hook( cr, uid, move_line,invoice_line_id )
+
+stock_picking()
+
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
 

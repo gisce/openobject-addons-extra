@@ -31,3 +31,119 @@ msgstr "Líneas de órdenes de compra con Descuento"
 #: field:purchase.order.line,discount:0
 msgid "Discount (%)"
 msgstr "(%) Descuento"
+
+#. module: purchase_discount
+#: sql_constraint:purchase.order:0
+msgid "Order Reference must be unique per Company!"
+msgstr "¡La referencia de la compra debe ser única por compañía!"
+
+#. module: purchase_discount
+#: model:ir.model,name:purchase_discount.model_purchase_order_line
+msgid "Purchase Order Line"
+msgstr "Línea pedido de compra"
+
+#. module: purchase_discount
+#: model:ir.model,name:purchase_discount.model_purchase_order
+msgid "Purchase Order"
+msgstr "Pedido de compra"
+
+#. module: purchase_discount
+#: model:ir.model,name:purchase_discount.model_stock_picking
+msgid "Picking List"
+msgstr "Albarán"
+
+#. module: purchase
+#: report:purchase.discount.order:0
+msgid "Date Promised"
+msgstr "Fecha prometida"
+
+#. module: purchase
+#: report:purchase.discount.order:0
+msgid "UoM"
+msgstr "UdM"
+
+#. module: purchase
+#: report:purchase.discount.order:0
+msgid "TVA :"
+msgstr "Cif/Nif :"
+
+#. module: purchase
+#: report:purchase.discount.order:0
+msgid "Net Price"
+msgstr "Precio neto"
+
+#. module: purchase
+#: report:purchase.discount.order:0
+msgid "Validated by :"
+msgstr "Validado por :"
+
+#. module: purchase
+#: report:purchase.discount.order:0
+msgid "Shipping address :"
+msgstr "Dirección de envío :"
+
+#. module: purchase
+#: report:purchase.discount.order:0
+msgid "Net Total :"
+msgstr "Total neto :"
+
+#. module: purchase
+#: report:purchase.discount.order:0
+msgid "Our order reference :"
+msgstr "Nuestra referencia :"
+
+#. module: purchase
+#: report:purchase.discount.order:0
+msgid "Your order reference :"
+msgstr "Vuestra referencia:"
+
+#. module: purchase
+#: report:purchase.discount.order:0
+#: report:purchase.quotation:0
+msgid "Qty"
+msgstr "Cant."
+
+#. module: purchase
+#: report:purchase.discount.order:0
+msgid "Discount (%)"
+msgstr "Descuento (%)"
+
+#. module: purchase
+#: report:purchase.discount.order:0
+msgid "Applicable Taxes"
+msgstr "Impuestos"
+
+#. module: purchase
+#: report:purchase.discount.order:0
+msgid "Product Description"
+msgstr "Descripción"
+
+#. module: purchase
+#: report:purchase.discount.order:0
+msgid "Unit Price"
+msgstr "Precio unidad"
+
+#. module: purchase
+#: report:purchase.discount.order:0
+msgid "Tel. :"
+msgstr "Tél. :"
+
+#. module: purchase
+#: report:purchase.discount.order:0
+msgid "Taxes :"
+msgstr "Impuestos :"
+
+#. module: purchase
+#: report:purchase.discount.order:0
+msgid "Date ordered :"
+msgstr "Fecha de orden :"
+
+#. module: purchase
+#: report:purchase.discount.order:0
+msgid "Order Nº"
+msgstr "Nº Orden"
+
+#. module: purchase
+#: report:purchase.discount.order:0
+msgid "Quotation Nº"
+msgstr "Nº Presupuesto"

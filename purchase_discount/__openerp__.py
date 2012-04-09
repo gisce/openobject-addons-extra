@@ -1,7 +1,9 @@
+# -*- coding: utf-8 -*-
 ##############################################################################
 #    
 #    OpenERP, Open Source Management Solution
 #    Copyright (C) 2004-2009 Tiny SPRL (<http://tiny.be>).
+#    Copyright (C) 2012 Pexego Sistemas Informáticos (<http://tiny.be>).
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -19,7 +21,7 @@
 ##############################################################################
 {
     "name" : "Purchase Order Lines With Discounts",
-    "author" : "Tiny",
+    "author" : "Tiny,Pexego",
     "version" : "1.0",
     "category" : "Generic Modules/Sales & Purchases",
     "depends" : ["stock", "purchase"],
