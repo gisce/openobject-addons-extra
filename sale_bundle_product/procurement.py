@@ -30,7 +30,7 @@ class procurement_order(osv.osv):
     
     def create_procurement_purchase_order(self, cr, uid, procurement, po_vals, line, context=None):
         line['so_line_item_set_ids'] = [(6,0, [x.id for x in procurement.so_line_item_set_ids])]
-        return super(procurement_order, self).create_procurement_purchase_order(cr, uid, id, po_vals, line, context=context)
+        return super(procurement_order, self).create_procurement_purchase_order(cr, uid, procurement, po_vals, line, context=context)
     
     def _get_sale_order_line_id(self, cr, uid, ids, field_name, arg, context=None):
         res = {}
