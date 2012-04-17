@@ -40,3 +40,42 @@ class account_tax_code(osv.osv):
         return False
 
 account_tax_code()
+
+
+class account_invoice(osv.osv):
+    _inherit = "account.invoice"
+
+    def auto_reconcile_single(self, cr, uid, invoice_id, context=None):
+        obj_move_line = self.pool.get('account.move.line')
+        invoice = self.browse(cr, uid, invoice_id, context=context)
+        line_ids = obj_move_line.search(
+            cr, uid,
+            ['|', '|',
+                ('ref', '=', invoice.origin),
+                # keep ST_ for backward compatibility
+                # previously the voucher ref
+                ('ref', '=', "ST_%s" % invoice.origin),
+                ('ref', '=', invoice.move_id.ref),
+             ('reconcile_id', '=', False),
+             ('account_id', '=', invoice.account_id.id)],
+            context=context)
+
+        if len(line_ids) == 2:
+            lines = obj_move_line.read(
+                cr, uid, line_ids, ['debit', 'credit'], context=context)
+            balance = abs((lines[0]['debit'] + lines[0]['credit']) -
+                          (lines[1]['debit'] + lines[1]['credit']))
+            precision = self.pool.get('decimal.precision').precision_get(
+                cr, uid, 'Account')
+            if not round(balance, precision):
+                obj_move_line.reconcile(cr, uid, line_ids, context=context)
+                return True
+
+        return False
+
+    def auto_reconcile(self, cr, uid, ids, context=None):
+        for invoice_id in ids:
+            self.auto_reconcile_single(cr, uid, invoice_id, context=context)
+        return True
+
+account_invoice()
