@@ -627,6 +627,10 @@ class sale_order(osv.osv):
     def generate_payment_with_pay_code(self, cr, uid, payment_code, partner_id,
                                        amount, payment_ref, entry_name,
                                        date, paid, context):
+        # avoid to create a payment without amount:
+        # the invoice will never be reconciled with the payment
+        if not amount:
+            return False
         pay_type_obj = self.pool.get('base.sale.payment.type')
         payment_settings = pay_type_obj.find_by_payment_code(
             cr, uid, payment_code, context=context)
@@ -707,7 +711,6 @@ class sale_order(osv.osv):
 
         if matching_line:
             voucher_line_obj.create(cr, uid, matching_line, context=context)
-
         if should_validate:
             wf_service = netsvc.LocalService("workflow")
             wf_service.trg_validate(

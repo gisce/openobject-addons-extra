@@ -59,12 +59,19 @@ class account_invoice(osv.osv):
              ('reconcile_id', '=', False),
              ('account_id', '=', invoice.account_id.id)],
             context=context)
-
-        if len(line_ids) == 2:
-            lines = obj_move_line.read(
-                cr, uid, line_ids, ['debit', 'credit'], context=context)
-            balance = abs((lines[0]['debit'] + lines[0]['credit']) -
-                          (lines[1]['debit'] + lines[1]['credit']))
+        lines = obj_move_line.read(
+            cr, uid, line_ids, ['debit', 'credit'], context=context)
+        if lines:
+            # handle also the case of the invoice with a amount at 0.0
+            # when we have 1 move line (no payment)
+            # or eventually 2 payments for one invoice
+            sums = reduce(
+                lambda line, memo:
+                    dict((key, value + memo[key])
+                    for key, value
+                    in line.iteritems()
+                    if key in ('debit', 'credit')), lines)
+            balance = sums['debit'] - sums['credit']
             precision = self.pool.get('decimal.precision').precision_get(
                 cr, uid, 'Account')
             if not round(balance, precision):
