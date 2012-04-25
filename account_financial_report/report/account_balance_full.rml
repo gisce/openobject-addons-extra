@@ -146,8 +146,8 @@
         <blockTable colWidths="27cm" style="Table4" repeatRows="1">
             <tr>
                 <td>
-                    <para style="P9a">Fiscal year: [[ get_fiscalyear_text(data['form']) or removeParentNode('para') ]]</para>
-                    <para style="P9b">Periods/Date range: [[ get_periods_and_date_text(data['form']) or removeParentNode('para') ]]</para>
+                    <para style="P9a">Fiscal year: [[ get_fiscalyear_text(data.get('form',{})) or removeParentNode('para') ]]</para>
+                    <para style="P9b">Periods/Date range: [[ get_periods_and_date_text(data.get('form',{})) or removeParentNode('para') ]]</para>
                 </td>
             </tr>
         </blockTable>
@@ -201,7 +201,7 @@
             </tr>
             <tr>
                 <td>
-                    <para style="P14">[[ repeatIn(lines(data['form']), 'a') ]]
+                    <para style="P14">[[ repeatIn(lines(data.get('form',{})), 'a') ]]
                         <font>[[ a['type']&lt;&gt;'view' and setTag('para','para',{'fontName':"Helvetica"}) ]]</font>
                         <i>[[ a['code'] or removeParentNode('tr')  ]]</i>
                     </para>

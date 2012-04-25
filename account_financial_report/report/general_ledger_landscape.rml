@@ -92,15 +92,15 @@
     <blockTable colWidths="1000.0" repeatRows="1">
       <tr>
         <td>
-  		  <para style="P15">Fiscal year: [[ get_fiscalyear(data['form']) or removeParentNode('para') ]]</para>
-          <para style="Standard">Periods/Date range: [[ get_periods(data['form']) or removeParentNode('para') ]]</para>
+  		  <para style="P15">Fiscal year: [[ get_fiscalyear(data.get('form',{})) or removeParentNode('para') ]]</para>
+          <para style="Standard">Periods/Date range: [[ get_periods(data.get('form',{})) or removeParentNode('para') ]]</para>
         </td>
       </tr>
     </blockTable>
 
     <para>[[ repeatIn(objects, 'a') ]]</para>
   
-     <blockTable colWidths="60.0,60.0,50.0,150.0,150.0,266.0,50.0,68.0,68.0,69.0,58.0" style="tbl_header" repeatRows="1">[[ data['form']['amount_currency'] == True or removeParentNode('blockTable') ]]
+     <blockTable colWidths="60.0,60.0,50.0,150.0,150.0,266.0,50.0,68.0,68.0,69.0,58.0" style="tbl_header" repeatRows="1">[[ (data.get('form',{}) and data['form']['amount_currency'] == True) or removeParentNode('blockTable') ]]
        <tr>
           <td><para style="P12"><font color="white"> </font></para><para style="date">Date</para></td>
           <td><para style="P12"><font color="white"> </font></para><para style="P2">Mvt</para></td>
@@ -118,9 +118,9 @@
     
      <section> 
     
-      <para>[[ repeatIn(get_children_accounts(a,data['form']), 'o') ]]</para>
+      <para>[[ repeatIn(get_children_accounts(a,data.get('form',{})), 'o') ]]</para>
     
-      <blockTable colWidths="60.0,60.0,50.0,150.0,150.0,266.0,50.0,68.0,68.0,69.0,58.0" style="tbl_content">[[ data['form']['amount_currency'] == True or removeParentNode('blockTable') ]]
+      <blockTable colWidths="60.0,60.0,50.0,150.0,150.0,266.0,50.0,68.0,68.0,69.0,58.0" style="tbl_content">[[ (data.get('form',{}) and data['form']['amount_currency'] == True) or removeParentNode('blockTable') ]]
       	<tr>
         	<td>
           		<blockTable colWidths="779.0,68.0,68.0,69.0,59.00" style="tbl_content">
@@ -145,7 +145,7 @@
 	    	<td><para style="Standard"></para></td>
 	   	</tr>
 	   	<tr>
-			<td><para style="P2_content">[[ repeatIn(lines(o, data['form']), 'line') ]]<font> [[ formatLang(line['date'],date=True) ]]</font></para></td>
+			<td><para style="P2_content">[[ repeatIn(lines(o, data.get('form',{})), 'line') ]]<font> [[ formatLang(line['date'],date=True) ]]</font></para></td>
 			<td><para style="P2_content">[[ line['move'] ]]</para></td>
 			<td><para style="P2_content">[[ line['code'] ]]</para></td>
 			<td><para style="P2_content">[[ line['partner'] ]]</para></td>
@@ -163,10 +163,10 @@
 	        		<tr>
 		    			<td><para style="Standard">[[ o.code ]] [[ o.name ]]</para></td>
 		    			<td><para style="Standard">Total</para></td>
-		    			<td alignment="right"><para style="P9b">[[ formatLang(sum_debit_account(o, data['form'])) ]]</para></td>
-		    			<td alignment="right"><para style="P9b">[[ formatLang(sum_credit_account(o, data['form'])) ]]</para></td>
-		    			<td><para style="P9b">[[ formatLang(sum_balance_account(o, data['form'])) ]]</para></td>
-		    			<td><para style="P9b">[[ formatLang(sum_currency_amount_account(o, data['form'])) ]]</para></td>
+		    			<td alignment="right"><para style="P9b">[[ formatLang(sum_debit_account(o, data.get('form',{}))) ]]</para></td>
+		    			<td alignment="right"><para style="P9b">[[ formatLang(sum_credit_account(o, data.get('form',{}))) ]]</para></td>
+		    			<td><para style="P9b">[[ formatLang(sum_balance_account(o, data.get('form',{}))) ]]</para></td>
+		    			<td><para style="P9b">[[ formatLang(sum_currency_amount_account(o, data.get('form',{}))) ]]</para></td>
 		   			</tr>
 	    		</blockTable>
 	    	</td>
@@ -185,7 +185,7 @@
 	
 	</section>
      
-    <blockTable colWidths="60.0,60.0,50.0,166.0,150.0,309.0,50.0,68.0,68.0,69.0" style="tbl_header" repeatRows="1">[[ data['form']['amount_currency'] == False or removeParentNode('blockTable') ]]
+    <blockTable colWidths="60.0,60.0,50.0,166.0,150.0,309.0,50.0,68.0,68.0,69.0" style="tbl_header" repeatRows="1">[[ (data.get('form',{}) and data['form']['amount_currency'] == False) or removeParentNode('blockTable') ]]
        <tr>
           <td><para style="P12"><font color="white"> </font></para><para style="date">Date</para></td>
           <td><para style="P12"><font color="white"> </font></para><para style="P2">Mvt</para></td>
@@ -202,9 +202,9 @@
 	
 	<section>
 	
-		<para>[[ repeatIn(get_children_accounts(a,data['form']), 'o') ]]</para>
+		<para>[[ repeatIn(get_children_accounts(a,data.get('form',{})), 'o') ]]</para>
 		
-		<blockTable colWidths="60.0,60.0,50.0,166.0,150.0,309.0,50.0,68.0,68.0,69.0" style="tbl_content">[[ data['form']['amount_currency'] == False or removeParentNode('blockTable') ]]
+		<blockTable colWidths="60.0,60.0,50.0,166.0,150.0,309.0,50.0,68.0,68.0,69.0" style="tbl_content">[[ (data.get('form',{}) and data['form']['amount_currency'] == False) or removeParentNode('blockTable') ]]
         	<tr>
          		<td>
 	      			<blockTable colWidths="840.0,68.0,68.0,69.0" style="tbl_content">
@@ -227,7 +227,7 @@
 	    		<td><para style="Standard"></para></td>
 			</tr>
 			<tr>
-				<td><para style="P2_content">[[ repeatIn(lines(o, data['form']), 'line') ]]<font>[[ formatLang(line['date'],date=True) ]]</font></para></td>
+				<td><para style="P2_content">[[ repeatIn(lines(o, data.get('form',{})), 'line') ]]<font>[[ formatLang(line['date'],date=True) ]]</font></para></td>
 				<td><para style="P2_content">[[ line['move'] ]]</para></td>
 				<td><para style="P2_content">[[ line['code'] ]]</para></td>
 				<td><para style="P2_content">[[ line['partner'] ]]</para></td>
@@ -244,9 +244,9 @@
 						<tr>
 			 	 			<td><para style="Standard">[[ o.code ]] [[ o.name ]]</para></td>
 			  				<td><para style="Standard">Total</para></td>
-			  				<td alignment="right"><para style="P9b">[[ formatLang(sum_debit_account(o, data['form']))]]</para></td>
-			  				<td alignment="right"><para style="P9b">[[formatLang(sum_credit_account(o, data['form']))]]</para></td>
-			  				<td><para style="P9b">[[formatLang(sum_balance_account(o, data['form'])) ]]</para></td>
+			  				<td alignment="right"><para style="P9b">[[ formatLang(sum_debit_account(o, data.get('form',{})))]]</para></td>
+			  				<td alignment="right"><para style="P9b">[[formatLang(sum_credit_account(o, data.get('form',{})))]]</para></td>
+			  				<td><para style="P9b">[[formatLang(sum_balance_account(o, data.get('form',{}))) ]]</para></td>
 						</tr>
 					</blockTable>
 		 		</td>

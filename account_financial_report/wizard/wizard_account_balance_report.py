@@ -5,6 +5,9 @@
 #    Copyright (C) 2004-2009 Tiny SPRL (<http://tiny.be>). All Rights Reserved
 #    Copyright (c) 2009 Zikzakmedia S.L. (http://zikzakmedia.com) All Rights Reserved.
 #                       Jordi Esteve <jesteve@zikzakmedia.com>
+#    Copyright (C) 2012 Pexego Sistemas Informáticos. All Rights Reserved
+#                       $Marta Vázquez Rodríguez$
+#                       $Omar Castiñeira Saavedra$
 #    $Id$
 #
 #    This program is free software: you can redistribute it and/or modify
@@ -22,112 +25,91 @@
 #
 ##############################################################################
 
-import wizard
-import pooler
 import time
 from tools.translate import _
+from osv import osv, fields
 
-options_form = '''<?xml version="1.0"?>
-<form string="Full Account Balance">
-    <field name="company_id"/>
-    <newline/>
-    <group colspan="4">
-    <separator string="Accounts to include" colspan="4"/>
-        <field name="account_list" nolabel="1" colspan="4" domain="[('company_id','=',company_id)]"/>
-        <field name="display_account" required="True"/>
-        <field name="display_account_level" required="True" />
-    </group>
-    <group colspan="4">
-        <separator string="Period" colspan="4"/>
-        <field name="fiscalyear"/>
-        <newline/>
-        <field name="state" required="True"/>
-        <newline/>
-        <group attrs="{'invisible':[('state','=','none')]}" colspan="4">
-            <group attrs="{'invisible':[('state','=','byperiod')]}" colspan="4">
-                <separator string="Date Filter" colspan="4"/>
-                <field name="date_from"/>
-                <field name="date_to"/>
-            </group>
-            <group attrs="{'invisible':[('state','=','bydate')]}" colspan="4">
-                <separator string="Filter on Periods" colspan="4"/>
-                <field name="periods" colspan="4" nolabel="1" domain="[('fiscalyear_id','=',fiscalyear)]"/>
-            </group>
-        </group>
-    </group>
-</form>'''
-
-options_fields = {
-    'company_id': {'string': 'Company', 'type': 'many2one', 'relation': 'res.company', 'required': True},
-    'account_list': {'string': 'Root accounts', 'type':'many2many', 'relation':'account.account', 'required':True ,'domain':[]},
-    'state':{
-        'string':"Date/Period Filter",
-        'type':'selection',
-        'selection':[('bydate','By Date'),('byperiod','By Period'),('all','By Date and Period'),('none','No Filter')],
-        'default': lambda *a:'none'
-    },
-    'fiscalyear': {
-        'string':'Fiscal year',
-        'type':'many2one',
-        'relation':'account.fiscalyear',
-        'help':'Keep empty to use all open fiscal years to compute the balance'
-    },
-    'periods': {'string': 'Periods', 'type': 'many2many', 'relation': 'account.period', 'help': 'All periods in the fiscal year if empty'},
-    'display_account':{'string':"Display accounts ", 'type':'selection', 'selection':[('bal_all','All'),('bal_solde', 'With balance'),('bal_mouvement','With movements')]},
-    'display_account_level':{'string':"Up to level", 'type':'integer', 'default': lambda *a: 0, 'help': 'Display accounts up to this level (0 to show all)'},
-    'date_from': {'string':"Start date", 'type':'date', 'required':True, 'default': lambda *a: time.strftime('%Y-01-01')},
-    'date_to': {'string':"End date", 'type':'date', 'required':True, 'default': lambda *a: time.strftime('%Y-%m-%d')},
-}
-
-
-class wizard_report(wizard.interface):
-
-    def _get_defaults(self, cr, uid, data, context={}):
-        user = pooler.get_pool(cr.dbname).get('res.users').browse(cr, uid, uid, context=context)
-        if user.company_id:
-           company_id = user.company_id.id
-        else:
-           company_id = pooler.get_pool(cr.dbname).get('res.company').search(cr, uid, [('parent_id', '=', False)])[0]
-        data['form']['company_id'] = company_id
-        fiscalyear_obj = pooler.get_pool(cr.dbname).get('account.fiscalyear')
-        data['form']['fiscalyear'] = fiscalyear_obj.find(cr, uid)
-        if (data['model'] == 'account.account'):
-            data['form']['account_list'] = data['ids']
-        data['form']['context'] = context
-        return data['form']
-
-
-    def _check_state(self, cr, uid, data, context):
-        if data['form']['state'] == 'bydate':
-           self._check_date(cr, uid, data, context)
-        return data['form']
-    
-
-    def _check_date(self, cr, uid, data, context):
-        sql = """SELECT f.id, f.date_start, f.date_stop
-            FROM account_fiscalyear f
-            WHERE '%s' between f.date_start and f.date_stop """%(data['form']['date_from'])
-        cr.execute(sql)
-        res = cr.dictfetchall()
-        if res:
-            if (data['form']['date_to'] > res[0]['date_stop'] or data['form']['date_to'] < res[0]['date_start']):
-                raise  wizard.except_wizard(_('UserError'),_('Date to must be set between %s and %s') % (res[0]['date_start'], res[0]['date_stop']))
-            else:
-                return 'report'
-        else:
-            raise wizard.except_wizard(_('UserError'),_('Date not in a defined fiscal year'))
-
-
-    states = {
-
-        'init': {
-            'actions': [_get_defaults],
-            'result': {'type':'form', 'arch': options_form, 'fields': options_fields, 'state':[('end','Cancel','gtk-cancel'),('report','Print','gtk-print')]}
-        },
-        'report': {
-            'actions': [_check_state],
-            'result': {'type':'print', 'report':'account.balance.full', 'state':'end'}
-        }
+class account_balance_full_report(osv.osv_memory):
+    _name = "account.balance.full.report"
+    _description = "Print Full account balance"
+    _columns = {
+        'company_id': fields.many2one('res.company', 'Company', required=True),
+        'account_list': fields.many2many('account.account', 'account_balance_account_list_rel', 'acc_balance_id','account_id','Root accounts', required=True),
+        'state': fields.selection([
+                    ('bydate','By Date'),
+                    ('byperiod','By Period'),
+                    ('all', 'By Date and Period'),
+                    ('none','No Filter')],'Date/Period Filter'),
+        'fiscalyear': fields.many2one('account.fiscalyear', 'Fiscal year', help='Keep empty to use all open fiscal years to compute the balance'),
+        'periods': fields.many2many('account.period','account_balance_account_period_rel','acc_balance_id','account_period_id','Periods', help='All periods in the fiscal year if empty'),
+        'display_account': fields.selection([
+                    ('bal_all','All'),
+                    ('bal_solde', 'With balance'),
+                    ('bal_mouvement','With movements')], 'Display accounts'),
+        'display_account_level': fields.integer('Up to level', help= 'Display accounts up to this level (0 to show all)'),
+        'date_from': fields.date('Start date'),
+        'date_to': fields.date('End date')
     }
-wizard_report('account.balance.full.report')
+
+    def default_get(self, cr, uid, fields, context=None):
+        if context is None: context = {}
+        res = {}
+        result = []
+        if context and context.get('active_model') == 'account.account':
+            list_ids = context.get('active_ids',[])
+            if list_ids:
+                res['account_list'] = [(6,0,list_ids)]
+        res['state'] = 'none'
+        res['display_account_level'] = 0
+        res['date_from'] = time.strftime('%Y-01-01')
+        res['date_to'] = time.strftime('%Y-%m-%d')
+        res['company_id'] = self.pool.get('res.users').browse(cr, uid, uid, context).company_id.id
+        res['fiscalyear'] = self.pool.get('account.fiscalyear').find(cr, uid)
+        return res
+
+    def _check_state(self, cr, uid, ids, context=None):
+        if ids:
+            current_obj = self.browse(cr, uid, ids[0], context=context)
+            if current_obj.state and current_obj.state == 'bydate':
+                self._check_date(cr, uid, ids, context=context)
+        return True
+
+    def _check_date(self, cr, uid, ids, context=None):
+        if ids:
+            current_obj = self.browse(cr, uid, ids[0], context=context)
+            res = self.pool.get('account.fiscalyear').search(cr, uid, [('date_start', '<=', current_obj.date_from),('date_stop', '>=', current_obj.date_from)])
+            if res:
+                acc_fy = self.pool.get('account.fiscalyear').browse(cr, uid, res[0], context=context)
+                if current_obj.date_to > acc_fy.date_stop or current_obj.date_to < acc_fy.date_start:
+                    raise osv.except_osv(_('UserError'),_('Date to must be set between %s and %s') % (acc_fy.date_start,acc_fy.date_stop))
+                else:
+                    return True
+            else:
+                raise osv.except_osv(_('UserError'),_('Date not in a defined fiscal year'))
+
+    def print_report(self, cr, uid, ids, context=None):
+        """prints report"""
+        if context is None:
+            context = {}
+
+        data = self.read(cr, uid, ids)[0]
+        datas = {
+             'ids': context.get('active_ids',[]),
+             'model': 'account.balance.full.report',
+             'form': data
+        }
+        self._check_state(cr, uid, ids, context=context)
+        return {
+            'type': 'ir.actions.report.xml',
+            'report_name': 'account.balance.full.report.wzd',
+            'datas': datas
+            }
+
+account_balance_full_report()
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
+
+
+
+
+
+     

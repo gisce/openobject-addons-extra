@@ -4,6 +4,9 @@
 #    Copyright (c) 2004-2006 TINY SPRL. (http://tiny.be) All Rights Reserved.
 #    Copyright (c) 2009 Zikzakmedia S.L. (http://zikzakmedia.com) All Rights Reserved.
 #                       Jordi Esteve <jesteve@zikzakmedia.com>
+#    Copyright (C) 2012 Pexego Sistemas Informáticos. All Rights Reserved
+#                       $Marta Vázquez Rodríguez$
+#                       $Omar Castiñeira Saavedra$
 #
 # WARNING: This program as such is intended to be used by professional
 # programmers who take the whole responsability of assessing all potential
@@ -30,9 +33,7 @@
 
 import time
 from report import report_sxw
-import xml
 import rml_parse
-import copy
 from operator import itemgetter
 
 class account_chart(rml_parse.rml_parse):
@@ -50,10 +51,11 @@ class account_chart(rml_parse.rml_parse):
 
     def set_context(self, objects, data, ids, report_type = None):
         new_ids = []
+        
         if (data['model'] == 'account.account'):
             new_ids = ids
         else:
-            new_ids.append(data['form']['account'])
+            new_ids.append(data['form']['account'][0])
             objects = self.pool.get('account.account').browse(self.cr, self.uid, new_ids)
             
         super(account_chart, self).set_context(objects, data, new_ids, report_type)    
@@ -109,6 +111,7 @@ class account_chart(rml_parse.rml_parse):
 
 
     def get_result(self,ids={},done=None,level=1):
+        
         if not ids:
             ids = self.ids
         if not ids:
@@ -145,6 +148,6 @@ class account_chart(rml_parse.rml_parse):
             return 0
 
 
-report_sxw.report_sxw('report.account.account.chart.report', 'account.account','addons/account_financial_report/report/account_chart.rml', parser=account_chart, header=False)
+report_sxw.report_sxw('report.account.account.chart.report.wzd', 'account.account','addons/account_financial_report/report/account_chart.rml', parser=account_chart, header=False)
 
 

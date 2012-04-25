@@ -1,3 +1,4 @@
+# -*- encoding: utf-8 -*-
 ##############################################################################
 #
 # Copyright (c) 2005-2006 TINY SPRL. (http://tiny.be) All Rights Reserved.
@@ -6,6 +7,9 @@
 #    Copyright (c) 2008 CamptoCamp. All rights reserved.
 #    Copyright (c) 2009 Zikzakmedia S.L. (http://zikzakmedia.com) All Rights Reserved.
 #                       Jordi Esteve <jesteve@zikzakmedia.com>
+#    Copyright (C) 2012 Pexego Sistemas Informáticos. All Rights Reserved
+#                       $Marta Vázquez Rodríguez$
+#                       $Omar Castiñeira Saavedra$
 #
 # WARNING: This program as such is intended to be used by professional
 # programmers who take the whole responsability of assessing all potential
@@ -33,9 +37,7 @@
 import time
 from mx.DateTime import *
 from report import report_sxw
-import xml
 import rml_parse
-import pooler
 
 class print_invoice_list(rml_parse.rml_parse):
     """ Report that print invoices grouped by currency and type """
@@ -88,7 +90,7 @@ class print_invoice_list(rml_parse.rml_parse):
                 invoice_states.append('paid')
             if data['form']['cancel']:
                 invoice_states.append('cancel')
-            where = [('company_id','=',data['form']['company_id']),('type','in',invoice_types),('state','in',invoice_states)]
+            where = [('company_id','=',data['form']['company_id'][0]),('type','in',invoice_types),('state','in',invoice_states)]
             if data['form']['state'] in ['byperiod','all']:
                 period_ids = data['form']['periods'][0][2]
                 periods = ','.join([str(id) for id in period_ids])
@@ -171,4 +173,4 @@ class print_invoice_list(rml_parse.rml_parse):
         del tmp
 
 
-report_sxw.report_sxw('report.account.invoice.list.report', 'account.invoice', 'addons/account_financial_report/report/invoice_list.rml', parser=print_invoice_list, header=False)
+report_sxw.report_sxw('report.account.invoice.list.report.wzd', 'account.invoice', 'addons/account_financial_report/report/invoice_list.rml', parser=print_invoice_list, header=False)

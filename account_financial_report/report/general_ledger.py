@@ -4,6 +4,9 @@
 #    Copyright (c) 2005-2006 CamptoCamp
 #    Copyright (c) 2009 Zikzakmedia S.L. (http://zikzakmedia.com) All Rights Reserved.
 #                       Jordi Esteve <jesteve@zikzakmedia.com>
+#    Copyright (C) 2012 Pexego Sistemas Informáticos. All Rights Reserved
+#                       $Marta Vázquez Rodríguez$
+#                       $Omar Castiñeira Saavedra$
 #
 # WARNING: This program as such is intended to be used by professional
 # programmers who take the whole responsability of assessing all potential
@@ -31,7 +34,6 @@
 import time
 from report import report_sxw
 import rml_parse
-from tools import config
 from tools.translate import _
 
 
@@ -39,12 +41,12 @@ class general_ledger(rml_parse.rml_parse):
     _name = 'report.account.general.ledger.cumulative'
 
     def set_context(self, objects, data, ids, report_type = None):
-        self.get_context_date_period(data['form'])
+        self.get_context_date_period(data.get('form',{}))
         new_ids = []
         if (data['model'] == 'account.account'):
             new_ids = ids
         else:
-            new_ids = data['form']['account_list'][0][2]
+            new_ids = data['form']['account_list']
             objects = self.pool.get('account.account').browse(self.cr, self.uid, new_ids)
         super(general_ledger, self).set_context(objects, data, new_ids, report_type)
 
@@ -80,6 +82,8 @@ class general_ledger(rml_parse.rml_parse):
                 return ''
             self.cr.execute("SELECT name FROM account_fiscalyear WHERE id = %s" , (int(fisc_id),))
             res=self.cr.fetchone()
+        else:
+            res = [self.pool.get('account.fiscalyear').find(self.cr, self.uid)]
         return res and res[0] or ''
 
 
@@ -98,7 +102,7 @@ class general_ledger(rml_parse.rml_parse):
         elif form.has_key('date_from') and form.has_key('date_to'):
             result = self.formatLang(form['date_from'], date=True) + ' - ' + self.formatLang(form['date_to'], date=True) + ' '
         else:
-            fy_obj = self.pool.get('account.fiscalyear').browse(self.cr,self.uid,form['fiscalyear'])
+            fy_obj = self.pool.get('account.fiscalyear').browse(self.cr,self.uid,form.get('fiscalyear',self.pool.get('account.fiscalyear').find(self.cr, self.uid)))
             res = fy_obj.period_ids
             len_res = len(res)
             for r in res:
@@ -146,15 +150,15 @@ class general_ledger(rml_parse.rml_parse):
 
     def get_context_date_period(self, form):
         date_min = period_min = False
-
+        
         # ctx: Context for the given date or period
         ctx = self.context.copy()
-        ctx['state'] = form['context'].get('state','all')
+        #ctx['state'] = form.get('state','all')
         if 'fiscalyear' in form and form['fiscalyear']:
-            ctx['fiscalyear'] = form['fiscalyear']
-        if form['state'] in ['byperiod', 'all']:
-            ctx['periods'] = form['periods'][0][2]
-        if form['state'] in ['bydate', 'all']:
+            ctx['fiscalyear'] = form['fiscalyear'][0]
+        if 'state' in form and form['state'] in ['byperiod', 'all']:
+            ctx['periods'] = form['period_ids']
+        if 'state' in form and form['state'] in ['bydate', 'all']:
             ctx['date_from'] = form['date_from']
             ctx['date_to'] = form['date_to']
         if 'periods' not in ctx:
@@ -166,7 +170,7 @@ class general_ledger(rml_parse.rml_parse):
         ctxfy = ctx.copy()
         ctxfy['periods'] = ctx['periods'][:]
 
-        if form['state'] in ['byperiod', 'all'] and len(ctx['periods']):
+        if 'state' in form and form['state'] in ['byperiod', 'all'] and len(ctx['periods']):
             self.cr.execute("""SELECT id, date_start, fiscalyear_id
                 FROM account_period
                 WHERE date_start = (SELECT min(date_start) FROM account_period WHERE id in (%s))"""
@@ -180,7 +184,7 @@ class general_ledger(rml_parse.rml_parse):
             ids = filter(None, map(lambda x:x[0], self.cr.fetchall()))
             ctxfy['periods'].extend(ids)
 
-        if form['state'] in ['bydate', 'all']:
+        if 'state' in form and form['state'] in ['bydate', 'all']:
             self.cr.execute("""SELECT date_start
                 FROM account_fiscalyear
                 WHERE '%s' BETWEEN date_start AND date_stop""" % (ctx['date_from']))
@@ -188,7 +192,7 @@ class general_ledger(rml_parse.rml_parse):
             ctxfy['date_from'] = res['date_start']
             date_min = form['date_from']
 
-        if form['state'] == 'none' or (form['state'] == 'byperiod' and not len(ctx['periods'])):
+        if 'state' in form and form['state'] == 'none' or ('state' in form and form['state'] == 'byperiod' and not len(ctx['periods'])):
             if 'fiscalyear' in form and form['fiscalyear']:
                 sql = """SELECT id, date_start
                     FROM account_period
@@ -223,7 +227,7 @@ class general_ledger(rml_parse.rml_parse):
         account_obj = self.pool.get('account.account')
         invoice_obj = self.pool.get('account.invoice')
         self.child_ids = account_obj.search(self.cr, self.uid, [('parent_id', 'child_of', self.ids)])
-
+       
         res = []
         ctx = self.ctx.copy()
         if account and account.child_consol_ids: # add ids of consolidated childs also of selected account
@@ -234,13 +238,13 @@ class general_ledger(rml_parse.rml_parse):
             child_account = account_obj.browse(self.cr, self.uid, child_id)
             balance_account = self._sum_balance_account(child_account,form)
             self.balance_accounts[child_account.id] = balance_account
-            if form['display_account'] == 'bal_mouvement':
+            if form.get('display_account',False) and form['display_account'] == 'bal_mouvement':
                 if child_account.type != 'view' \
                 and len(move_line_obj.search(self.cr, self.uid,
                     [('account_id','=',child_account.id)],
                     context=ctx)) <> 0 :
                     res.append(child_account)
-            elif form['display_account'] == 'bal_solde':
+            elif form.get('display_account',False) and  form['display_account'] == 'bal_solde':
                 if child_account.type != 'view' \
                 and len(move_line_obj.search(self.cr, self.uid,
                     [('account_id','=',child_account.id)],
@@ -254,6 +258,7 @@ class general_ledger(rml_parse.rml_parse):
                     context=ctx)) <> 0 :
                     res.append(child_account)
         ##
+        
         if not len(res):
             return [account]
         else:
@@ -289,7 +294,7 @@ class general_ledger(rml_parse.rml_parse):
                 'out_refund': _('OR: '),
                 'in_refund': _('SR: '),
                 }
-
+        
         if form['sortbydate'] == 'sort_date':
             sorttag = 'l.date'
         else:
@@ -308,7 +313,7 @@ class general_ledger(rml_parse.rml_parse):
         move_line_obj = self.pool.get('account.move.line')
         account_obj = self.pool.get('account.account')
         invoice_obj = self.pool.get('account.invoice')
-
+       
         # Balance from init fiscal year to last date given by the user
         accounts = account_obj.read(self.cr, self.uid, [account.id], ['balance'], self.ctxfy)
         sum = accounts[0]['balance']
@@ -329,7 +334,7 @@ class general_ledger(rml_parse.rml_parse):
 
             # Cumulative balance update
             l['progress'] = sum
-            sum = sum - l['debit'] + l ['credit']
+            sum = sum - (l['debit'] or 0) + (l['credit'] or 0)
 
             # Modification of currency amount
             if (l['credit'] > 0):
@@ -410,5 +415,6 @@ class general_ledger(rml_parse.rml_parse):
             return currency_total
 
 
-report_sxw.report_sxw('report.account.general.ledger.cumulative', 'account.account', 'addons/account_financial_report/report/general_ledger.rml', parser=general_ledger, header=False)
+report_sxw.report_sxw('report.account.general.ledger.cumulative.report.wzd', 'account.account', 'addons/account_financial_report/report/general_ledger.rml', parser=general_ledger, header=False)
+report_sxw.report_sxw('report.account.general.ledger.cumulative.report.wzd1', 'account.account', 'addons/account_financial_report/report/general_ledger_landscape.rml', parser=general_ledger, header=False)
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

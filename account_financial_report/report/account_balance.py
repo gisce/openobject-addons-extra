@@ -5,6 +5,9 @@
 #    Copyright (C) 2004-2009 Tiny SPRL (<http://tiny.be>). All Rights Reserved
 #    Copyright (c) 2009 Zikzakmedia S.L. (http://zikzakmedia.com) All Rights Reserved.
 #                       Jordi Esteve <jesteve@zikzakmedia.com>
+#    Copyright (C) 2012 Pexego Sistemas Informáticos. All Rights Reserved
+#                       $Marta Vázquez Rodríguez$
+#                       $Omar Castiñeira Saavedra$
 #    $Id$
 #
 #    This program is free software: you can redistribute it and/or modify
@@ -22,16 +25,9 @@
 #
 ##############################################################################
 
-import xml
-import copy
-from operator import itemgetter
-import time
-import datetime
-from report import report_sxw
-from tools import config
-#import decimal_precision as dp
 
-#import sys
+import time
+from report import report_sxw
 
 class account_balance(report_sxw.rml_parse):
     _name = 'report.account.balance.full'
@@ -60,10 +56,11 @@ class account_balance(report_sxw.rml_parse):
         """
         Returns the fiscal year text used on the report.
         """
+        
         fiscalyear_obj = self.pool.get('account.fiscalyear')
         fiscalyear = None
         if form.get('fiscalyear'):
-            fiscalyear = fiscalyear_obj.browse(self.cr, self.uid, form['fiscalyear'])
+            fiscalyear = fiscalyear_obj.browse(self.cr, self.uid, form['fiscalyear'][0])
             return fiscalyear.name or fiscalyear.code
         else:
             fiscalyear = fiscalyear_obj.browse(self.cr, self.uid, fiscalyear_obj.find(self.cr, self.uid))
@@ -74,16 +71,19 @@ class account_balance(report_sxw.rml_parse):
         """
         Returns the text with the periods/dates used on the report.
         """
+        
+        fiscalyear_obj = self.pool.get('account.fiscalyear')
         period_obj = self.pool.get('account.period')
         periods_str = None
-        fiscalyear_id = form['fiscalyear'] or fiscalyear_obj.find(self.cr, self.uid)
+        fiscalyear_id = form.get('fiscalyear', False) and form['fiscalyear'][0] or fiscalyear_obj.find(self.cr, self.uid)
+       
         period_ids = period_obj.search(self.cr, self.uid, [('fiscalyear_id','=',fiscalyear_id),('special','=',False)])
-        if form['state'] in ['byperiod', 'all']:
+        if form.get('state', False) and form['state'] in ['byperiod', 'all']:
             period_ids = form['periods'][0][2]
         periods_str = ', '.join([period.name or period.code for period in period_obj.browse(self.cr, self.uid, period_ids)])
 
         dates_str = None
-        if form['state'] in ['bydate', 'all']:
+        if form.get('state', False) and form['state'] in ['bydate', 'all']:
             dates_str = self.formatLang(form['date_from'], date=True) + ' - ' + self.formatLang(form['date_to'], date=True) + ' '
 
         if periods_str and dates_str:
@@ -102,14 +102,16 @@ class account_balance(report_sxw.rml_parse):
         (account info plus debit/credit/balance in the selected period
         and the full year)
         """
+        account_ids = self.context.get('active_ids',[])
+        child_ids = {}
+        accounts = {}
+
         if not ids:
             ids = self.ids
-        if not ids:
-            return []
         if not done:
             done = {}
         if form.has_key('account_list') and form['account_list']:
-            account_ids = form['account_list'][0][2]
+            account_ids = form['account_list']
             del form['account_list']
         res = {}
         result_acc = []
@@ -121,14 +123,15 @@ class account_balance(report_sxw.rml_parse):
         # Get the fiscal year
         fiscalyear = None
         if form.get('fiscalyear'):
-            fiscalyear = fiscalyear_obj.browse(self.cr, self.uid, form['fiscalyear'])
+            fiscalyear = fiscalyear_obj.browse(self.cr, self.uid, form['fiscalyear'][0])
         else:
             fiscalyear = fiscalyear_obj.browse(self.cr, self.uid, fiscalyear_obj.find(self.cr, self.uid))
 
         #
         # Get the accounts
         #
-        child_ids = account_obj._get_children_and_consol(self.cr, self.uid, account_ids, self.context)
+        if account_ids:
+            child_ids = account_obj._get_children_and_consol(self.cr, self.uid, account_ids, self.context)
         if child_ids:
             account_ids = child_ids
 
@@ -136,6 +139,7 @@ class account_balance(report_sxw.rml_parse):
         # Calculate the FY Balance.
         # (from full fiscal year without closing periods)
         #
+       
         ctx = self.context.copy()
         if form.get('fiscalyear'):
             # Use only the current fiscal year
@@ -147,8 +151,9 @@ class account_balance(report_sxw.rml_parse):
             ctx['periods'] = period_obj.search(self.cr, self.uid, [('fiscalyear_id','in',open_fiscalyear_ids),'|',('special','=',False),('date_stop','<',fiscalyear.date_stop)])
 
         fy_balance = {}
-        for acc in account_obj.read(self.cr, self.uid, account_ids, ['balance'], ctx):
-            fy_balance[acc['id']] = acc['balance']
+        if account_ids:
+            for acc in account_obj.read(self.cr, self.uid, account_ids, ['balance'], ctx):
+                fy_balance[acc['id']] = acc['balance']
 
         #
         # Calculate the FY Debit/Credit
@@ -160,25 +165,26 @@ class account_balance(report_sxw.rml_parse):
 
         fy_debit = {}
         fy_credit = {}
-        for acc in account_obj.read(self.cr, self.uid, account_ids, ['debit','credit','balance'], ctx):
-            fy_debit[acc['id']] = acc['debit']
-            fy_credit[acc['id']] = acc['credit']
+        if account_ids:
+            for acc in account_obj.read(self.cr, self.uid, account_ids, ['debit','credit','balance'], ctx):
+                fy_debit[acc['id']] = acc['debit']
+                fy_credit[acc['id']] = acc['credit']
 
         #
         # Calculate the period Debit/Credit
         # (from the selected period or all the non special periods in the fy)
         #
         ctx = self.context.copy()
-        ctx['state'] = form['context'].get('state','all')
+        ctx['state'] = form.get('state','all')
         ctx['fiscalyear'] = fiscalyear.id
         ctx['periods'] = period_obj.search(self.cr, self.uid, [('fiscalyear_id','=',fiscalyear.id),('special','=',False)])
-        if form['state'] in ['byperiod', 'all']:
+        if 'state' in form and form['state'] in ['byperiod', 'all']:
             ctx['periods'] = form['periods'][0][2]
-        if form['state'] in ['bydate', 'all']:
+        if 'state' in form and form['state'] in ['bydate', 'all']:
             ctx['date_from'] = form['date_from']
             ctx['date_to'] = form['date_to']
-
-        accounts = account_obj.read(self.cr, self.uid, account_ids, ['type','code','name','debit','credit','balance','parent_id'], ctx)
+        if account_ids:
+            accounts = account_obj.read(self.cr, self.uid, account_ids, ['type','code','name','debit','credit','balance','parent_id'], ctx)
 
         #
         # Calculate the period initial Balance
@@ -186,20 +192,21 @@ class account_balance(report_sxw.rml_parse):
         #  to the end of the year)
         #
         ctx = self.context.copy()
-        ctx['state'] = form['context'].get('state','all')
+        ctx['state'] = form.get('state','all')
         ctx['fiscalyear'] = fiscalyear.id
         ctx['periods'] = period_obj.search(self.cr, self.uid, [('fiscalyear_id','=',fiscalyear.id),('special','=',False)])
-        if form['state'] in ['byperiod', 'all']:
-            ctx['periods'] = form['periods'][0][2]
+        if 'state' in form and form['state'] in ['byperiod', 'all']:
+            ctx['periods'] = form['periods']
             date_start = min([period.date_start for period in period_obj.browse(self.cr, self.uid, ctx['periods'])])
             ctx['periods'] = period_obj.search(self.cr, self.uid, [('fiscalyear_id','=',fiscalyear.id),('date_start','>=',date_start),('special','=',False)])
-        if form['state'] in ['bydate', 'all']:
+        if 'state' in form and form['state'] in ['bydate', 'all']:
             ctx['date_from'] = form['date_from']
             ctx['date_to'] = fiscalyear.date_stop
 
         period_balanceinit = {}
-        for acc in account_obj.read(self.cr, self.uid, account_ids, ['balance'], ctx):
-            period_balanceinit[acc['id']] = fy_balance[acc['id']] - acc['balance']
+        if account_ids:
+            for acc in account_obj.read(self.cr, self.uid, account_ids, ['balance'], ctx):
+                period_balanceinit[acc['id']] = fy_balance[acc['id']] - acc['balance']
 
         #
         # Generate the report lines (checking each account)
@@ -208,92 +215,92 @@ class account_balance(report_sxw.rml_parse):
         ids = decimal_precision_obj.search(self.cr, self.uid, [('name', '=', 'Account')])
         digits = decimal_precision_obj.browse(self.cr, self.uid, ids)[0].digits
         #print >>sys.stderr, 'digits',digits
+        if accounts:
+            for account in accounts:
+                account_id = account['id']
 
-        for account in accounts:
-            account_id = account['id']
+                if account_id in done:
+                    continue
 
-            if account_id in done:
-                continue
-
-            done[account_id] = 1
-
-            #
-            # Calculate the account level
-            #
-            parent_id = account['parent_id']
-            if parent_id:
-                if isinstance(parent_id, tuple):
-                    parent_id = parent_id[0]
-                account_level = accounts_levels.get(parent_id, 0) + 1
-            else:
-                account_level = level
-            accounts_levels[account_id] = account_level
-
-            #
-            # Check if we need to include this level
-            #
-            if not form['display_account_level'] or account_level <= form['display_account_level']:
-                #
-                # Copy the account values
-                #
-                res = {
-                        'id' : account_id,
-                        'type' : account['type'],
-                        'code': account['code'],
-                        'name': account['name'],
-                        'level': account_level,
-                        'balanceinit': period_balanceinit[account_id],
-                        'debit': account['debit'],
-                        'credit': account['credit'],
-                        'balance': period_balanceinit[account_id]+account['balance'],
-                        'balanceinit_fy': fy_balance[account_id]-fy_debit[account_id]+fy_credit[account_id],
-                        'debit_fy': fy_debit[account_id],
-                        'credit_fy': fy_credit[account_id],
-                        'balance_fy': fy_balance[account_id],
-                        'parent_id': account['parent_id'],
-                        'bal_type': '',
-                    }
+                done[account_id] = 1
 
                 #
-                # Round the values to zero if needed (-0.000001 ~= 0)
+                # Calculate the account level
                 #
-                res['balance'] = round(res['balance'],digits)
-                res['balance_fy'] = round(res['balance_fy'],digits)
-                res['balanceinit'] = round(res['balanceinit'],digits)
-                res['balanceinit_fy'] = round(res['balanceinit_fy'],digits)
-                res['debit'] = round(res['debit'],digits)
-                res['credit'] = round(res['credit'],digits)
-                #if abs(res['balance']) < 0.5 * 10**-int(config['price_accuracy']):
-                #    res['balance'] = 0.0
-                #if abs(res['balance_fy']) < 0.5 * 10**-int(config['price_accuracy']):
-                #    res['balance_fy'] = 0.0
-                #if abs(res['balanceinit']) < 0.5 * 10**-int(config['price_accuracy']):
-                #    res['balanceinit'] = 0.0
-                #if abs(res['balanceinit_fy']) < 0.5 * 10**-int(config['price_accuracy']):
-                #    res['balanceinit_fy'] = 0.0
-
-                #
-                # Check whether we must include this line in the report or not
-                #
-                if form['display_account'] == 'bal_mouvement' and account['parent_id']:
-                    # Include accounts with movements
-                    if res['balance'] <> 0.0 \
-                            or res['debit'] <> 0.0 \
-                            or res['credit'] <> 0.0:
-                #    if abs(res['balance']) >= 0.5 * 10**-int(config['price_accuracy']) \
-                #            or abs(res['credit']) >= 0.5 * 10**-int(config['price_accuracy']) \
-                #            or abs(res['debit']) >= 0.5 * 10**-int(config['price_accuracy']):
-                        result_acc.append(res)
-                elif form['display_account'] == 'bal_solde' and account['parent_id']:
-                    # Include accounts with balance
-                    #if abs(res['balance']) >= 0.5 * 10**-int(config['price_accuracy']):
-                    if res['balance'] <> 0.0 :
-                        result_acc.append(res)
+                parent_id = account['parent_id']
+                if parent_id:
+                    if isinstance(parent_id, tuple):
+                        parent_id = parent_id[0]
+                    account_level = accounts_levels.get(parent_id, 0) + 1
                 else:
-                    # Include all accounts
-                    result_acc.append(res)
+                    account_level = level
+                accounts_levels[account_id] = account_level
+
+                #
+                # Check if we need to include this level
+                #
+                if not form.get('display_account_level',False) or account_level <= form['display_account_level']:
+                    #
+                    # Copy the account values
+                    #
+                    res = {
+                            'id' : account_id,
+                            'type' : account['type'],
+                            'code': account['code'],
+                            'name': account['name'],
+                            'level': account_level,
+                            'balanceinit': period_balanceinit[account_id],
+                            'debit': account['debit'],
+                            'credit': account['credit'],
+                            'balance': period_balanceinit[account_id]+account['balance'],
+                            'balanceinit_fy': fy_balance[account_id]-fy_debit[account_id]+fy_credit[account_id],
+                            'debit_fy': fy_debit[account_id],
+                            'credit_fy': fy_credit[account_id],
+                            'balance_fy': fy_balance[account_id],
+                            'parent_id': account['parent_id'],
+                            'bal_type': '',
+                        }
+
+                    #
+                    # Round the values to zero if needed (-0.000001 ~= 0)
+                    #
+                    res['balance'] = round(res['balance'],digits)
+                    res['balance_fy'] = round(res['balance_fy'],digits)
+                    res['balanceinit'] = round(res['balanceinit'],digits)
+                    res['balanceinit_fy'] = round(res['balanceinit_fy'],digits)
+                    res['debit'] = round(res['debit'],digits)
+                    res['credit'] = round(res['credit'],digits)
+                    #if abs(res['balance']) < 0.5 * 10**-int(config['price_accuracy']):
+                    #    res['balance'] = 0.0
+                    #if abs(res['balance_fy']) < 0.5 * 10**-int(config['price_accuracy']):
+                    #    res['balance_fy'] = 0.0
+                    #if abs(res['balanceinit']) < 0.5 * 10**-int(config['price_accuracy']):
+                    #    res['balanceinit'] = 0.0
+                    #if abs(res['balanceinit_fy']) < 0.5 * 10**-int(config['price_accuracy']):
+                    #    res['balanceinit_fy'] = 0.0
+
+                    #
+                    # Check whether we must include this line in the report or not
+                    #
+                    if form.get('display_account') and form['display_account'] == 'bal_mouvement' and account['parent_id']:
+                        # Include accounts with movements
+                        if res['balance'] <> 0.0 \
+                                or res['debit'] <> 0.0 \
+                                or res['credit'] <> 0.0:
+                    #    if abs(res['balance']) >= 0.5 * 10**-int(config['price_accuracy']) \
+                    #            or abs(res['credit']) >= 0.5 * 10**-int(config['price_accuracy']) \
+                    #            or abs(res['debit']) >= 0.5 * 10**-int(config['price_accuracy']):
+                            result_acc.append(res)
+                    elif form.get('display_account') and form['display_account'] == 'bal_solde' and account['parent_id']:
+                        # Include accounts with balance
+                        #if abs(res['balance']) >= 0.5 * 10**-int(config['price_accuracy']):
+                        if res['balance'] <> 0.0 :
+                            result_acc.append(res)
+                    else:
+                        # Include all accounts
+                        result_acc.append(res)
 
         return result_acc
 
-report_sxw.report_sxw('report.account.balance.full', 'account.account', 'addons/account_financial_report/report/account_balance_full.rml', parser=account_balance, header=False)
+report_sxw.report_sxw('report.account.balance.full.report.wzd', 'account.account', 'addons/account_financial_report/report/account_balance_full.rml', parser=account_balance, header=False)
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

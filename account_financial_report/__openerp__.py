@@ -45,8 +45,14 @@ Some reports are based on previous work by Pexego and others on the c2c_finance_
 	"init_xml" : [],
 	"demo_xml" : [],
 	"update_xml" : [
+                "wizard/wizard_account_balance_report_view.xml",
+                "wizard/wizard_print_journal_entries_view.xml",
+                "wizard/wizard_general_ledger_report_view.xml",
+                'wizard/wizard_account_chart_view.xml',
+                "wizard/wizard_invoice_list_report_view.xml",
 		"account_report_report.xml",
 		"account_report_wizard.xml",
+                
 	],
 	"active": False,
 	"installable": True

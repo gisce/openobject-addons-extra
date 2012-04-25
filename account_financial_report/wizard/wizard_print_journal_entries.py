@@ -4,6 +4,9 @@
 #    OpenERP, Open Source Management Solution	
 #    Copyright (c) 2009 Zikzakmedia S.L. (http://zikzakmedia.com) All Rights Reserved.
 #                       Jordi Esteve <jesteve@zikzakmedia.com>
+#    Copyright (C) 2012 Pexego Sistemas Informáticos. All Rights Reserved
+#                       $Marta Vázquez Rodríguez$
+#                       $Omar Castiñeira Saavedra$
 #    $Id$
 #
 #    This program is free software: you can redistribute it and/or modify
@@ -21,88 +24,81 @@
 #
 ##############################################################################
 
-import wizard
-import pooler
 from tools.translate import _
+from osv import osv, fields
 
-form = '''<?xml version="1.0"?>
-<form string="Print Journal">
-    <field name="journal_ids"/>
-    <field name="period_ids"/>
-    <field name="sort_selection"/>
-    <field name="landscape"/>
-</form>'''
-
-fields = {
-  'journal_ids': {'string': 'Journal', 'type': 'many2many', 'relation': 'account.journal', 'required': True},
-  'period_ids': {'string': 'Period', 'type': 'many2many', 'relation': 'account.period', 'required': True},
-  'sort_selection': {
-        'string':"Entries Sorted By",
-        'type':'selection',
-        'selection':[('date','By date'),("to_number(name,'999999999')",'By entry number'),('ref','By reference number')],
-        'required':True,
-        'default': lambda *a: 'date',
-    },
-    'landscape': {'string':"Landscape Mode",'type':'boolean'},
-}
-
-
-class wizard_print_journal(wizard.interface):
-
-    def _get_defaults(self, cr, uid, data, context):
-        fiscalyear_obj = pooler.get_pool(cr.dbname).get('account.fiscalyear')
-        period_obj = pooler.get_pool(cr.dbname).get('account.period')
-        journal_obj = pooler.get_pool(cr.dbname).get('account.journal')
-        data['form']['period_ids'] = period_obj.search(cr, uid, [('fiscalyear_id','=',fiscalyear_obj.find(cr, uid))])
-        data['form']['journal_ids'] = journal_obj.search(cr, uid, [])
-        return data['form']
-
-
-    def _check_data(self, cr, uid, data, *args):
-        period_id = data['form']['period_ids'][0][2]
-        journal_id = data['form']['journal_ids'][0][2]
-
-        if type(period_id)==type([]):
-
-            ids_final = []
-            for journal in journal_id:
-                for period in period_id:
-                    ids_journal_period = pooler.get_pool(cr.dbname).get('account.journal.period').search(cr,uid, [('journal_id','=',journal),('period_id','=',period)])
-
-                    if ids_journal_period:
-                        ids_final.append(ids_journal_period)
-
-            if not ids_final:
-                raise wizard.except_wizard(_('No Data Available'), _('No records found for your selection!'))
-        return data['form']
-
-
-    def _check(self, cr, uid, data, context):
-        if data['form']['landscape']==True:
-            return 'report_landscape'
-        else:
-            return 'report'
-
-
-    states = {
-        'init': {
-            'actions': [_get_defaults],
-            'result': {'type': 'form', 'arch': form, 'fields': fields, 'state': (('end', 'Cancel'), ('print', 'Print'))},
-        },
-        'print': {
-            'actions': [_check_data],
-            'result': {'type':'choice','next_state':_check}
-        },
-        'report': {
-            'actions': [],
-            'result': {'type':'print', 'report':'account.print.journal.entries', 'state':'end'}
-        },
-        'report_landscape': {
-            'actions': [],
-            'result': {'type':'print', 'report':'account.print.journal.entriesh', 'state':'end'}
-        },
+class account_journal_entries_report(osv.osv_memory):
+    _name = "account.journal.entries.report"
+    _description = "Print journal by entries"
+    _columns = {
+        'journal_ids': fields.many2many('account.journal', 'account_journal_entries_journal_rel', 'acc_journal_entries_id','journal_id','Journal', required=True),
+        'period_ids': fields.many2many('account.period','account_journal_entries_account_period_rel','acc_journal_entries_id','account_period_id','Period'),
+        'sort_selection': fields.selection([
+                   ('date','By date'),
+                   ("to_number(name,'999999999')",'By entry number'),
+                   ('ref','By reference number')],'Entries Sorted By', required=True),
+        'landscape': fields.boolean('Landscape mode')
     }
-wizard_print_journal('account.journal.entries.report')
+    def default_get(self, cr, uid, fields, context=None):
+        if context is None: context = {}
+        res = {}
+        res['sort_selection'] = 'date'
+        res['journal_ids'] = self.pool.get('account.journal').search(cr,uid, [])
+        res['period_ids'] = self.pool.get('account.period').search(cr, uid, [('fiscalyear_id', '=', self.pool.get('account.fiscalyear').find(cr, uid))])
+        return res
+    
+    def _check_data(self, cr, uid, ids, context=None):
+        if ids:
+            current_obj = self.browse(cr, uid, ids[0], context=context)
+            if current_obj.period_ids and current_obj.journal_ids:
+                period_id =  current_obj.period_ids[0].id
+                journal_id = current_obj.journal_ids[0].id
+                if type(period_id)==type([]):
+                    ids_final = []
+                    for journal in journal_id:
+                        for period in period_id:
+                            ids_journal_period = self.pool.get('account.journal.period').search(cr,uid, [('journal_id','=',journal),('period_id','=',period)])
 
+                            if ids_journal_period:
+                                ids_final.append(ids_journal_period)
+
+                    if not ids_final:
+                        raise osv.except_osv(_('No Data Available'), _('No records found for your selection!'))
+        return True
+    
+    def _check(self, cr, uid, ids, context=None):
+         if ids:
+            current_obj = self.browse(cr, uid, ids[0], context=context)
+            if current_obj.landscape==True:
+                return 'report_landscape'
+            else:
+                return 'report'
+
+    def print_report(self, cr, uid, ids, context=None):
+        """prints report"""
+        if context is None:
+            context = {}
+
+        data = self.read(cr, uid, ids)[0]
+        datas = {
+             'ids': context.get('active_ids',[]),
+             'model': 'ir.ui.menu',
+             'form': data
+        }
+        if self._check_data(cr, uid, ids, context=context):
+            if self._check(cr, uid, ids, context=context) == 'report_landscape':
+                return {
+                    'type': 'ir.actions.report.xml',
+                    'report_name': 'account.journal.entries.report.wzd1',
+                    'datas': datas
+                    }
+            else:
+                return {
+                    'type': 'ir.actions.report.xml',
+                    'report_name': 'account.journal.entries.report.wzd',
+                    'datas': datas
+                    }
+
+account_journal_entries_report()
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
 

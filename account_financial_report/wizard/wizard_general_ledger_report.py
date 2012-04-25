@@ -5,6 +5,9 @@
 #    Copyright (C) 2004-2009 Tiny SPRL (<http://tiny.be>). All Rights Reserved
 #    Copyright (c) 2009 Zikzakmedia S.L. (http://zikzakmedia.com) All Rights Reserved.
 #                       Jordi Esteve <jesteve@zikzakmedia.com>
+#    Copyright (C) 2012 Pexego Sistemas Informáticos. All Rights Reserved
+#                       $Marta Vázquez Rodríguez$
+#                       $Omar Castiñeira Saavedra$
 #    $Id$
 #
 #    This program is free software: you can redistribute it and/or modify
@@ -21,157 +24,114 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-
-import wizard
-import pooler
-import locale
+from osv import osv, fields
 import time
 from tools.translate import _
+class account_general_ledger_cumulative_report(osv.osv_memory):
+    _name = "account.general.ledger.cumulative.report"
+    _description = "Cumulative general ledger"
+    _columns = {
+        'account_list': fields.many2many('account.account', 'account_gene_ledger_account_list_rel', 'acc_gen_ledger_id','account_id','Account', required=True),
+        'company_id': fields.many2one('res.company', 'Company', required=True),
+        'state': fields.selection([
+                    ('bydate','By Date'),
+                    ('byperiod','By Period'),
+                    ('all', 'By Date and Period'),
+                    ('none','No Filter')],'Date/Period Filter'),
+        'fiscalyear': fields.many2one('account.fiscalyear', 'Fiscal year', help='Keep empty for all open fiscal year'),
+        'period_ids': fields.many2many('account.period','account_gene_ledger_account_period_rel','acc_gen_ledger_id','account_period_id','Periods',help='All periods if empty'),
+        'sortbydate': fields.selection([
+                   ('sort_date','Date'),
+                   ('sort_mvt','Movement')],'Sort By', required=True),
+        'display_account': fields.selection([
+                    ('bal_all','All'),
+                    ('bal_solde', 'With balance is not equal to 0'),
+                    ('bal_mouvement','With movements')], 'Display accounts'),
+        'landscape': fields.boolean('Landscape mode'),
+        'initial_balance': fields.boolean('Show initial balances'),
+        'amount_currency': fields.boolean('With Currency'),
+        'date_from': fields.date('Start date', required=True),
+        'date_to': fields.date('End date', required=True),
+        'moment_form': fields.selection([
+                    ('checkreport', 'Check report'),
+                    ('report_landscape','Report landscape'),
+                    ('report','Report'),],'Time is the form'),
+    }
+#    ('checktype','Check type'),
+#                    ('account_selection','Account selection'),
+    def default_get(self, cr, uid, fields, context=None):
+        if context is None: context = {}
+        res = {}
+        result = []
+        if context and context.get('active_model') == 'account.account':
+            list_ids = context.get('active_ids',[])
+            if list_ids:
+                res['account_list'] = [(6,0,list_ids)]
+        res['company_id'] = self.pool.get('res.users').browse(cr, uid, uid, context).company_id.id
+        res['fiscalyear'] = self.pool.get('account.fiscalyear').find(cr, uid)
+        res['context'] = context
+        res['date_from'] = time.strftime('%Y-01-01')
+        res['date_to'] = time.strftime('%Y-%m-%d')
+        
+        return res
 
-account_form = '''<?xml version="1.0"?>
-<form string="Select parent account">
-    <field name="account_list" colspan="4"/>
-</form>'''
-
-account_fields = {
-    'account_list': {'string':'Account', 'type':'many2many', 'relation':'account.account', 'required':True ,'domain':[]},
-}
-
-period_form = '''<?xml version="1.0"?>
-<form string="Select Date-Period">
-    <field name="company_id" colspan="4"/>
-    <newline/>
-    <field name="fiscalyear"/>
-    <label colspan="2" string="(Keep empty for all open fiscal years)" align="0.0"/>
-    <newline/>
-
-    <field name="display_account" required="True"/>
-    <field name="sortbydate" required="True"/>
-    <field name="landscape"/>
-    <field name="amount_currency"/>
-    <field name="initial_balance"/>  
-    <newline/>
-    <separator string="Filters" colspan="4"/>
-    <field name="state" required="True"/>
-    <newline/>
-    <group attrs="{'invisible':[('state','=','none')]}" colspan="4">
-        <group attrs="{'invisible':[('state','=','byperiod')]}" colspan="4">
-            <separator string="Date Filter" colspan="4"/>
-            <field name="date_from"/>
-            <field name="date_to"/>
-        </group>
-        <group attrs="{'invisible':[('state','=','bydate')]}" colspan="4">
-            <separator string="Filter on Periods" colspan="4"/>
-            <field name="periods" colspan="4" nolabel="1"/>
-        </group>
-    </group> 
-</form>'''
-
-period_fields = {
-    'company_id': {'string': 'Company', 'type': 'many2one', 'relation': 'res.company', 'required': True},
-    'state':{
-        'string':"Date/Period Filter",
-        'type':'selection',
-        'selection':[('bydate','By Date'),('byperiod','By Period'),('all','By Date and Period'),('none','No Filter')],
-        'default': lambda *a:'none'
-    },
-    'fiscalyear': {'string': 'Fiscal year', 'type': 'many2one', 'relation': 'account.fiscalyear',
-        'help': 'Keep empty for all open fiscal year'},
-    'periods': {'string': 'Periods', 'type': 'many2many', 'relation': 'account.period', 'help': 'All periods if empty'},
-    'sortbydate':{'string':"Sort by", 'type':'selection', 'selection':[('sort_date','Date'),('sort_mvt','Movement')]},
-    'display_account':{'string':"Display accounts ", 'type':'selection', 'selection':[('bal_mouvement','With movements'),('bal_all','All'),('bal_solde','With balance is not equal to 0')]},
-    'landscape':{'string':"Landscape Mode", 'type':'boolean'},
-    'initial_balance':{'string':"Show initial balances", 'type':'boolean'},
-    'amount_currency':{'string':"With Currency", 'type':'boolean'},
-    'date_from': {'string':"Start date", 'type':'date', 'required':True, 'default': lambda *a: time.strftime('%Y-01-01')},
-    'date_to': {'string':"End date", 'type':'date', 'required':True, 'default': lambda *a: time.strftime('%Y-%m-%d')},
-}
-
-
-class wizard_report(wizard.interface):
-    def _get_defaults(self, cr, uid, data, context={}):
-        user = pooler.get_pool(cr.dbname).get('res.users').browse(cr, uid, uid, context=context)
-        if user.company_id:
-            company_id = user.company_id.id
-        else:
-            company_id = pooler.get_pool(cr.dbname).get('res.company').search(cr, uid, [('parent_id', '=', False)])[0]
-        data['form']['company_id'] = company_id
-        fiscalyear_obj = pooler.get_pool(cr.dbname).get('account.fiscalyear')
-        data['form']['fiscalyear'] = fiscalyear_obj.find(cr, uid)
-        # Better allow users to set theirs defaults
-        #periods_obj=pooler.get_pool(cr.dbname).get('account.period')
-        #data['form']['periods'] =periods_obj.search(cr, uid, [('fiscalyear_id','=',data['form']['fiscalyear'])])
-        #data['form']['display_account']='bal_all'
-        #data['form']['sortbydate'] = 'sort_date'
-        #data['form']['landscape']=True
-        #data['form']['amount_currency'] = True
-        data['form']['context'] = context
-        return data['form']
-
-
-    def _check_path(self, cr, uid, data, context):
-        if data['model'] == 'account.account':
-            return 'checktype'
-        else:
-            return 'account_selection'
-
-
-    def _check(self, cr, uid, data, context):
-        if data['form']['landscape']==True:
-            return 'report_landscape'
+    def _check(self, cr, uid, ids, context=None):
+        if ids:
+            current_obj = self.browse(cr, uid, ids[0], context=context)
+            if current_obj.landscape==True:
+                return 'report_landscape'
         else:
             return 'report'
 
-
-    def _check_date(self, cr, uid, data, context):
-        sql = """SELECT f.id, f.date_start, f.date_stop
-            FROM account_fiscalyear f
-            WHERE '%s' between f.date_start and f.date_stop """ % (data['form']['date_from'])
-        cr.execute(sql)
-        res = cr.dictfetchall()
-        if res:
-            if (data['form']['date_to'] > res[0]['date_stop'] or data['form']['date_to'] < res[0]['date_start']):
-                    raise  wizard.except_wizard(_('UserError'),_('Date to must be set between %s and %s') % (str(res[0]['date_start']), str(res[0]['date_stop'])))
+    def _check_date(self, cr, uid, ids, context=None):
+        if ids:
+            current_obj = self.browse(cr, uid, ids[0], context=context)
+            res = self.pool.get('account.fiscalyear').search(cr, uid, [('date_start', '<=', current_obj.date_from),('date_stop', '>=', current_obj.date_from)])
+            if res:
+                acc_fy = self.pool.get('account.fiscalyear').browse(cr, uid, res[0], context=context)
+                if current_obj.date_to > acc_fy.date_stop or current_obj.date_to < acc_fy.date_start:
+                    raise osv.except_osv(_('UserError'),_('Date to must be set between %s and %s') % (acc_fy.date_start,acc_fy.date_stop))
+                else:
+                    return 'checkreport'
             else:
-                return 'checkreport'
-        else:
-            raise wizard.except_wizard(_('UserError'),_('Date not in a defined fiscal year'))
+                raise osv.except_osv(_('UserError'),_('Date not in a defined fiscal year'))
+
+    def _check_state(self, cr, uid, ids, context=None):
+        if ids:
+            current_obj = self.browse(cr, uid, ids[0], context=context)
+            if current_obj.state == 'bydate':
+                self._check_date(cr, uid, ids, context=context)
+   
+        return True
 
 
-    def _check_state(self, cr, uid, data, context):
-            if data['form']['state'] == 'bydate':
-               self._check_date(cr, uid, data, context)
-    #           data['form']['fiscalyear'] = 0
-    #        else :
-    #           data['form']['fiscalyear'] = 1
-            return data['form']
+    def print_report(self, cr, uid, ids, context=None):
+        """prints report"""
+        if context is None:
+            context = {}
 
-
-    states = {
-        'init': {
-            'actions': [],
-            'result': {'type':'choice','next_state':_check_path}
-        },
-        'account_selection': {
-            'actions': [],
-            'result': {'type':'form', 'arch':account_form,'fields':account_fields, 'state':[('end','Cancel','gtk-cancel'),('checktype','Next','gtk-go-forward')]}
-        },
-        'checktype': {
-            'actions': [_get_defaults],
-            'result': {'type':'form', 'arch':period_form, 'fields':period_fields, 'state':[('end','Cancel','gtk-cancel'),('checkreport','Print','gtk-print')]}
-        },
-        'checkreport': {
-            'actions': [],
-            'result': {'type':'choice','next_state':_check}
-        },
-        'report_landscape': {
-            'actions': [_check_state],
-            'result': {'type':'print', 'report':'account.general.ledger.cumulative.landscape', 'state':'end'}
-        },
-        'report': {
-            'actions': [_check_state],
-            'result': {'type':'print', 'report':'account.general.ledger.cumulative', 'state':'end'}
+        data = self.read(cr, uid, ids)[0]
+        datas = {
+             'ids': context.get('active_ids',[]),
+             'model': 'ir.ui.menu',
+             'form': data
         }
-    }
-wizard_report('account.general.ledger.cumulative.report')
+        
+        if self._check(cr, uid, ids, context=context) == 'report_landscape':
+            if self._check_state(cr, uid, ids, context=context):
+                return {
+                'type': 'ir.actions.report.xml',
+                'report_name': 'account.general.ledger.cumulative.report.wzd1',
+                'datas': datas
+                }
+        else:
+            if self._check_state(cr, uid, ids, context=context):
+                return {
+                'type': 'ir.actions.report.xml',
+                'report_name': 'account.general.ledger.cumulative.report.wzd',
+                'datas': datas
+                }
+
+    
+account_general_ledger_cumulative_report()
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

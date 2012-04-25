@@ -4,6 +4,9 @@
 #    OpenERP, Open Source Management Solution
 #    Copyright (c) 2009 Zikzakmedia S.L. (http://zikzakmedia.com) All Rights Reserved.
 #                       Jordi Esteve <jesteve@zikzakmedia.com>
+#    Copyright (C) 2012 Pexego Sistemas Informáticos. All Rights Reserved
+#                       $Marta Vázquez Rodríguez$
+#                       $Omar Castiñeira Saavedra$
 #    $Id$
 #
 #    This program is free software: you can redistribute it and/or modify
@@ -21,36 +24,33 @@
 #
 ##############################################################################
 
-import wizard
-import pooler
-import time
-from tools.translate import _
 
-account_form = '''<?xml version="1.0"?>
-<form string="Select parent account">
-    <field name="account" colspan="4"/>
-</form>'''
-
-account_fields = {
-    'account': {'string':'Account', 'type':'many2one', 'relation':'account.account', 'required':True},
-}
-
-
-class wizard_report(wizard.interface):
-
-
-
-    states = {
-        
-        'init': {
-            'actions': [],
-            'result': {'type':'form', 'arch':account_form,'fields':account_fields, 'state':[('end','Cancel'),('report','Print')]}
-        },
-        'report': {
-            'actions': [],
-            'result': {'type':'print', 'report':'account.account.chart.report', 'state':'end'}
-        }
+from osv import osv, fields
+class account_account_chart_report(osv.osv_memory):
+    _name = "account.account.chart.report"
+    _description = "Chart of accounts"
+    _columns = {
+        'account':fields.many2one('account.account', 'Account', required=True)
     }
-wizard_report('account.account.chart.report')
+    def print_report(self, cr, uid, ids, context=None):
+        """prints report"""
+        if context is None:
+            context = {}
+
+        data = self.read(cr, uid, ids)[0]
+        datas = {
+             'ids': context.get('active_ids',[]),
+             'model': 'ir.ui.menu',
+             'form': data
+        }
+
+        return {
+            'type': 'ir.actions.report.xml',
+            'report_name': 'account.account.chart.report.wzd',
+            'datas': datas
+            }
+
+
+account_account_chart_report()
 
 
