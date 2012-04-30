@@ -291,7 +291,7 @@ class external_mapping_line(osv.osv):
         'related_model_id': fields.related('mapping_id', 'model_id', type='many2one', relation='ir.model', string='Related Model'),
         'type': fields.selection([('in_out', 'External <-> OpenERP'), ('in', 'External -> OpenERP'), ('out', 'External <- OpenERP'), ('sub-mapping','Sub Mapping Line')], 'Type'),
         'external_type': fields.selection([('unicode', 'String'), ('bool', 'Boolean'), ('int', 'Integer'), ('float', 'Float'), ('list', 'List'), ('dict', 'Dictionnary')], 'External Type'),
-        'evaluation_type': fields.selection([('function', 'Function'), ('sub-mapping','Sub Mapping Line')], 'Evalution Type'),
+        'evaluation_type': fields.selection([('function', 'Function'), ('sub-mapping','Sub Mapping Line')], 'Evaluation Type'),
         # TODO ('direct', 'Direct Evaluation'), for simple mapping line function we can evaluate it without mapping just by know the external field and the openerp field
         'in_function': fields.text('Import in OpenERP Mapping Python Function'),
         'out_function': fields.text('Export from OpenERP Mapping Python Function'),
@@ -303,8 +303,9 @@ class external_mapping_line(osv.osv):
             ),
     }
     
-    _default = {
-         'type' : lambda * a: 'in_out',
+    _defaults = {
+        'type' : 'in_out',
+        'evaluation_type': 'function',
     }
     
     def _check_mapping_line_name(self, cr, uid, ids):
