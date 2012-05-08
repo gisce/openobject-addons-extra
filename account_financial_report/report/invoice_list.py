@@ -67,8 +67,7 @@ class print_invoice_list(rml_parse.rml_parse):
     def set_context(self, objects, data, ids, report_type = None):
         """We do the grouping and proccessing of invoices"""
         invoice_obj = self.pool.get('account.invoice')
-
-        if data['model'] == 'ir.ui.menu':
+        if data.get('model') and data['model'] == 'ir.ui.menu':
             invoice_types = []
             if data['form']['out_invoice']:
                 invoice_types.append('out_invoice')
