@@ -330,6 +330,20 @@ class sale_shop(osv.osv):
         """Not Implemented in abstract base module!"""
         return {}
 
+    def _update_order_query(self, cr, uid, shop, context=None):
+        req = """
+            SELECT ir_model_data.res_id, ir_model_data.name 
+                FROM sale_order
+                INNER JOIN ir_model_data ON sale_order.id = ir_model_data.res_id
+                WHERE ir_model_data.model='sale.order' AND sale_order.shop_id=%s
+                    AND ir_model_data.referential_id NOTNULL
+        """
+        params = (shop.id,)
+        if shop.last_update_order_export_date:
+            req += "AND sale_order.update_state_date > %s" 
+            params = (shop.id, shop.last_update_order_export_date)
+        return req, params
+
     def update_orders(self, cr, uid, ids, context=None):
         if context is None:
             context = {}
@@ -337,14 +351,7 @@ class sale_shop(osv.osv):
         for shop in self.browse(cr, uid, ids):
             context['conn_obj'] = shop.referential_id.external_connection()
             #get all orders, which the state is not draft and the date of modification is superior to the last update, to exports 
-            req = "select ir_model_data.res_id, ir_model_data.name from sale_order inner join ir_model_data on sale_order.id = ir_model_data.res_id where ir_model_data.model='sale.order' and sale_order.shop_id=%s and ir_model_data.external_referential_id NOTNULL and sale_order.state != 'draft'"
-            param = (shop.id,)
-
-            if shop.last_update_order_export_date:
-                req += "and sale_order.write_date > %s" 
-                param = (shop.id, shop.last_update_order_export_date)
-
-            cr.execute(req, param)
+            cr.execute(*self._update_order_query(cr, uid, shop, context=context))
             results = cr.fetchall()
 
             for result in results:
@@ -497,12 +504,18 @@ class sale_order(osv.osv):
         'referential_id': fields.related(
                     'shop_id', 'referential_id',
                     type='many2one', relation='external.referential',
-                    string='External Referential')
+                    string='External Referential'),
+        'update_state_date': fields.datetime('Update State Date'),
     }
 
     _defaults = {
         'need_to_update': lambda *a: False,
     }
+
+    def write(self, cr, uid, ids, vals, context=None):
+        if 'state' in vals:
+            vals['update_state_date'] = datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT)
+        return super(sale_order, self).write(cr, uid, ids, vals, context=context)
 
     def _get_kwargs_onchange_partner_id(self, cr, uid, vals, context=None):
         return {
