@@ -526,8 +526,7 @@ def ext_import(self, cr, uid, external_data, external_referential_id, defaults=N
                     external_referential_id,
                     defaults=defaults,
                     context=import_ctx)
-            # TODO find common exceptions and reduce the exception domain
-            except:
+            except (MappingError, osv.except_osv, xmlrpclib.Fault):
                 record_cr.rollback()
                 self.pool.get('external.report.line').log_failed(
                     cr, uid,
