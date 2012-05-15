@@ -235,6 +235,8 @@ class sale_shop(osv.osv):
     def export_catalog(self, cr, uid, ids, context=None):
         if context is None:
             context = {}
+        context = dict(context)
+        context['use_external_log'] = True
         for shop in self.browse(cr, uid, ids):
             context['shop_id'] = shop.id
             context['conn_obj'] = shop.referential_id.external_connection()
