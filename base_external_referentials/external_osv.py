@@ -27,6 +27,7 @@ import time
 import datetime
 import netsvc
 import pooler
+import xmlrpclib
 
 from tools.translate import _
 from lxml import etree
@@ -551,7 +552,6 @@ def retry_import(self, cr, uid, id, ext_id, external_referential_id, defaults=No
     if context is None:
         context = {}
     context = dict(context)
-    context['use_external_log'] = True
     conn = self.pool.get('external.referential').external_connection(cr, uid, external_referential_id)
     context['id'] = ext_id
     result = self.get_external_data(
@@ -642,92 +642,128 @@ def extdata_from_oevals(self, cr, uid, external_referential_id, data_record, map
                     raise MappingError(_('Invalid format for the variable result.'), each_mapping_line['external_field'], self._name)
     return vals
 
+def _ext_export_one(self, cr, uid, record_data, referential_id, defaults=None, context=None):
+    logger = netsvc.Logger()
+    if context is None:
+        context = {}
+    # Find the mapping record
+    create_id = write_id = False
+    mapping_ids = self.pool.get('external.mapping').search(cr, uid, [('model', '=', self._name), ('referential_id', '=', referential_id)])
+    if mapping_ids:
+        mapping_id = mapping_ids[0]
+        mapping_rec = self.pool.get('external.mapping').read(cr, uid, mapping_id, ['external_update_method', 'external_create_method'])
+        #If a mapping exists for current model, search for mapping lines
+        mapping_line_ids = self.pool.get('external.mapping.line').search(cr, uid, [('mapping_id', '=', mapping_id), ('type', 'in', ['in_out', 'out'])])
+        mapping_lines = self.pool.get('external.mapping.line').read(cr, uid, mapping_line_ids, ['external_field', 'out_function'])
+        if mapping_lines:
+            #if mapping lines exist find the data conversion for each row in inward data
+            exp_data = self.extdata_from_oevals(cr, uid, referential_id, record_data, mapping_lines, defaults, context)
+            #Check if export for this referential demands a create or update
+            rec_check_ids = self.pool.get('ir.model.data').search(cr, uid, [('model', '=', self._name), ('res_id', '=', record_data['id']), ('module', 'ilike', 'extref'), ('external_referential_id', '=', referential_id)])
+            #rec_check_ids will indicate if the product already has a mapping record with ext system
+            conn = context.get('conn_obj', False)
+            if rec_check_ids and mapping_rec and len(rec_check_ids) == 1:
+                ext_id = self.oeid_to_extid(cr, uid, record_data['id'], referential_id, context)
+
+                if not context.get('force', False):#TODO rename this context's key in 'no_date_check' or something like that
+                    #Record exists, check if update is required, for that collect last update times from ir.data & record
+                    last_exported_times = self.pool.get('ir.model.data').read(cr, uid, rec_check_ids[0], ['write_date', 'create_date'])
+                    last_exported_time = last_exported_times.get('write_date', False) or last_exported_times.get('create_date', False)
+                    this_record_times = self.read(cr, uid, record_data['id'], ['write_date', 'create_date'])
+                    last_updated_time = this_record_times.get('write_date', False) or this_record_times.get('create_date', False)
+
+                    if not last_updated_time: #strangely seems that on inherits structure, write_date/create_date are False for children
+                        cr.execute("select write_date, create_date from %s where id=%s;" % (self._name.replace('.', '_'), record_data['id']))
+                        read = cr.fetchone()
+                        last_updated_time = read[0] and read[0].split('.')[0] or read[1] and read[1].split('.')[0] or False
+
+                    if last_updated_time and last_exported_time:
+                        last_exported_time = datetime.datetime.fromtimestamp(time.mktime(time.strptime(last_exported_time[:19], DEFAULT_SERVER_DATETIME_FORMAT)))
+                        last_updated_time = datetime.datetime.fromtimestamp(time.mktime(time.strptime(last_updated_time[:19], DEFAULT_SERVER_DATETIME_FORMAT)))
+                        if last_exported_time + datetime.timedelta(seconds=1) > last_updated_time:
+                            # skip update for this resource
+                            return False, False
+
+                if mapping_rec['external_update_method']:
+                    try:
+                        self.ext_update(cr, uid, exp_data, conn, mapping_rec['external_update_method'], record_data['id'], ext_id, rec_check_ids[0], mapping_rec['external_create_method'], context)
+                        write_id = record_data['id']
+                        #Just simply write to ir.model.data to update the updated time
+                        ir_model_data_vals = {
+                                                'res_id': record_data['id'],
+                                              }
+                        self.pool.get('ir.model.data').write(cr, uid, rec_check_ids[0], ir_model_data_vals)
+                        logger.notifyChannel('ext synchro', netsvc.LOG_INFO, "Updated in External Ref %s from OpenERP with external_id %s and OpenERP id %s successfully" %(self._name, ext_id, record_data['id']))
+                    except Exception, err:
+                        logger.notifyChannel('ext synchro', netsvc.LOG_ERROR, "Failed to Update in External Ref %s from OpenERP with external_id %s and OpenERP id %s" %(self._name, ext_id, record_data['id']))
+                        raise
+            else:
+                #Record needs to be created
+                if mapping_rec['external_create_method']:
+                    try:
+                        crid = self.ext_create(cr, uid, exp_data, conn, mapping_rec['external_create_method'], record_data['id'], context)
+                        create_id = record_data['id']
+                        self.create_external_id_vals(cr, uid, record_data['id'], crid, referential_id, context=context)
+                        logger.notifyChannel('ext synchro', netsvc.LOG_INFO, "Created in External Ref %s from OpenERP with external_id %s and OpenERP id %s successfully" %(self._name, crid, record_data['id']))
+                    except Exception, err:
+                        logger.notifyChannel('ext synchro', netsvc.LOG_ERROR, "Failed to create in External Ref %s from OpenERP with external_id %s and OpenERP id %s" %(self._name, crid, record_data['id']))
+                        raise
+
+        return create_id, write_id
 
 def ext_export(self, cr, uid, ids, external_referential_ids=[], defaults={}, context=None):
     if context is None:
         context = {}
-    #external_referential_ids has to be a list
-    logger = netsvc.Logger()
+
+    export_ctx = dict(context)
+    # avoid to use external logs in submethods as they are handle at this level
+    export_ctx.pop('use_external_log', False)
+
+    # external_referential_ids has to be a list
     report_line_obj = self.pool.get('external.report.line')
+    ir_data_obj = self.pool.get('ir.model.data')
     write_ids = []  #Will record ids of records modified, not sure if will be used
     create_ids = [] #Will record ids of newly created records, not sure if will be used
+    #If no external_ref_ids are mentioned, then take all ext_ref_this item has
+    if not external_referential_ids:
+        ir_model_data_recids = ir_data_obj.search(
+            cr, uid, [('model', '=', self._name), ('res_id', '=', id), ('module', 'ilike', 'extref')])
+        if ir_model_data_recids:
+            for each_model_rec in ir_data_obj.read(
+                    cr, uid, ir_model_data_recids, ['external_referential_id']):
+                if each_model_rec['external_referential_id']:
+                    external_referential_ids.append(each_model_rec['external_referential_id'][0])
+    # if still there no external_referential_ids then export to all referentials
+    if not external_referential_ids:
+        external_referential_ids = self.pool.get('external.referential').search(cr, uid, [])
     for record_data in self.read_w_order(cr, uid, ids, [], context):
-        #If no external_ref_ids are mentioned, then take all ext_ref_this item has
-        if not external_referential_ids:
-            ir_model_data_recids = self.pool.get('ir.model.data').search(cr, uid, [('model', '=', self._name), ('res_id', '=', id), ('module', 'ilike', 'extref')])
-            if ir_model_data_recids:
-                for each_model_rec in self.pool.get('ir.model.data').read(cr, uid, ir_model_data_recids, ['external_referential_id']):
-                    if each_model_rec['external_referential_id']:
-                        external_referential_ids.append(each_model_rec['external_referential_id'][0])
-        #if still there no external_referential_ids then export to all referentials
-        if not external_referential_ids:
-            external_referential_ids = self.pool.get('external.referential').search(cr, uid, [])
-        #Do an export for each external ID
+
+        # export the resource on each referential
         for ext_ref_id in external_referential_ids:
-            #Find the mapping record now
-            mapping_id = self.pool.get('external.mapping').search(cr, uid, [('model', '=', self._name), ('referential_id', '=', ext_ref_id)])
-            if mapping_id:
-                #If a mapping exists for current model, search for mapping lines
-                mapping_line_ids = self.pool.get('external.mapping.line').search(cr, uid, [('mapping_id', '=', mapping_id[0]), ('type', 'in', ['in_out', 'out'])])
-                mapping_lines = self.pool.get('external.mapping.line').read(cr, uid, mapping_line_ids, ['external_field', 'out_function'])
-                if mapping_lines:
-                    #if mapping lines exist find the data conversion for each row in inward data
-                    exp_data = self.extdata_from_oevals(cr, uid, ext_ref_id, record_data, mapping_lines, defaults, context)
-                    #Check if export for this referential demands a create or update
-                    rec_check_ids = self.pool.get('ir.model.data').search(cr, uid, [('model', '=', self._name), ('res_id', '=', record_data['id']), ('module', 'ilike', 'extref'), ('external_referential_id', '=', ext_ref_id)])
-                    #rec_check_ids will indicate if the product already has a mapping record with ext system
-                    mapping_id = self.pool.get('external.mapping').search(cr, uid, [('model', '=', self._name), ('referential_id', '=', ext_ref_id)])
-                    if mapping_id and len(mapping_id) == 1:
-                        mapping_rec = self.pool.get('external.mapping').read(cr, uid, mapping_id[0], ['external_update_method', 'external_create_method'])
-                        conn = context.get('conn_obj', False)
-                        if rec_check_ids and mapping_rec and len(rec_check_ids) == 1:
-                            ext_id = self.oeid_to_extid(cr, uid, record_data['id'], ext_ref_id, context)
+            record_cr = pooler.get_db(cr.dbname).cursor()
+            try:
+                cid, wid = self._ext_export_one(
+                    record_cr, uid, record_data, ext_ref_id, defaults=defaults, context=export_ctx)
+            #TODO remove Exception
+            except (MappingError, osv.except_osv, xmlrpclib.Fault):
+                record_cr.rollback()
+                report_line_obj.log_failed(
+                    cr, uid,
+                    self._name,
+                    'export',
+                    ext_ref_id,
+                    res_id=record_data['id'],
+                    defaults=defaults,
+                    context=context)
+            else:
+                if cid:
+                    create_ids.append(cid)
+                if wid:
+                    write_ids.append(wid)
+                record_cr.commit()
+            finally:
+                record_cr.close()
 
-                            if not context.get('force', False):#TODO rename this context's key in 'no_date_check' or something like that
-                                #Record exists, check if update is required, for that collect last update times from ir.data & record
-                                last_exported_times = self.pool.get('ir.model.data').read(cr, uid, rec_check_ids[0], ['write_date', 'create_date'])
-                                last_exported_time = last_exported_times.get('write_date', False) or last_exported_times.get('create_date', False)
-                                this_record_times = self.read(cr, uid, record_data['id'], ['write_date', 'create_date'])
-                                last_updated_time = this_record_times.get('write_date', False) or this_record_times.get('create_date', False)
-
-                                if not last_updated_time: #strangely seems that on inherits structure, write_date/create_date are False for children
-                                    cr.execute("select write_date, create_date from %s where id=%s;" % (self._name.replace('.', '_'), record_data['id']))
-                                    read = cr.fetchone()
-                                    last_updated_time = read[0] and read[0].split('.')[0] or read[1] and read[1].split('.')[0] or False
-
-                                if last_updated_time and last_exported_time:
-                                    last_exported_time = datetime.datetime.fromtimestamp(time.mktime(time.strptime(last_exported_time[:19], DEFAULT_SERVER_DATETIME_FORMAT)))
-                                    last_updated_time = datetime.datetime.fromtimestamp(time.mktime(time.strptime(last_updated_time[:19], DEFAULT_SERVER_DATETIME_FORMAT)))
-                                    if last_exported_time + datetime.timedelta(seconds=1) > last_updated_time:
-                                        continue
-
-                            if conn and mapping_rec['external_update_method']:
-                                try:
-                                    self.ext_update(cr, uid, exp_data, conn, mapping_rec['external_update_method'], record_data['id'], ext_id, rec_check_ids[0], mapping_rec['external_create_method'], context)
-                                    write_ids.append(record_data['id'])
-                                    #Just simply write to ir.model.data to update the updated time
-                                    ir_model_data_vals = {
-                                                            'res_id': record_data['id'],
-                                                          }
-                                    self.pool.get('ir.model.data').write(cr, uid, rec_check_ids[0], ir_model_data_vals)
-                                    logger.notifyChannel('ext synchro', netsvc.LOG_INFO, "Updated in External Ref %s from OpenERP with external_id %s and OpenERP id %s successfully" %(self._name, ext_id, record_data['id']))
-                                except Exception, err:
-                                    logger.notifyChannel('ext synchro', netsvc.LOG_ERROR, "Failed to Update in External Ref %s from OpenERP with external_id %s and OpenERP id %s" %(self._name, ext_id, record_data['id']))
-                                    report_line_obj.log_failed(
-                                        cr, uid, self._name, 'export', ext_ref_id, res_id=record_data['id'], external_id=ext_id, defaults=defaults, context=context)
-                        else:
-                            #Record needs to be created
-                            if conn and mapping_rec['external_create_method']:
-                                try:
-                                    crid = self.ext_create(cr, uid, exp_data, conn, mapping_rec['external_create_method'], record_data['id'], context)
-                                    create_ids.append(record_data['id'])
-                                    self.create_external_id_vals(cr, uid, record_data['id'], crid, ext_ref_id, context=context)
-                                    logger.notifyChannel('ext synchro', netsvc.LOG_INFO, "Created in External Ref %s from OpenERP with external_id %s and OpenERP id %s successfully" %(self._name, crid, record_data['id']))
-                                except Exception, err:
-                                    logger.notifyChannel('ext synchro', netsvc.LOG_ERROR, "Failed to create in External Ref %s from OpenERP with external_id %s and OpenERP id %s" %(self._name, crid, record_data['id']))
-                                    report_line_obj.log_failed(
-                                        cr, uid, self._name, 'export', ext_ref_id, res_id=record_data['id'], defaults=defaults, context=context)
-                        cr.commit()
     return {'create_ids': create_ids, 'write_ids': write_ids}
 
 def _prepare_external_id_vals(self, cr, uid, res_id, ext_id, external_referential_id, context=None):
@@ -755,9 +791,17 @@ def create_external_id_vals(self, cr, uid, existing_rec_id, external_id, externa
 def retry_export(self, cr, uid, id, ext_id, external_referential_id, defaults=None, context=None):
     """ When we export again a previously failed export
     """
+    if context is None:
+        context = {}
     conn = self.pool.get('external.referential').external_connection(cr, uid, external_referential_id)
     context['conn_obj'] = conn
-    return self.ext_export(cr, uid, [id], [external_referential_id], defaults, context)
+    result = self.ext_export(cr, uid, [id], [external_referential_id], defaults, context)
+    if any(result.values()):
+        log_obj = self.pool.get('external.report.line')
+        log_id = context.get('retry_report_line_id')
+        log_obj.log_success(cr, uid, log_id, context=context)
+        return True
+    return False
 
 def can_create_on_update_failure(self, error, data, context):
     return True
@@ -831,6 +875,7 @@ osv.osv.after_oe_update = after_oe_update
 osv.osv.oe_create = oe_create
 osv.osv.after_oe_create = after_oe_create
 osv.osv.extdata_from_oevals = extdata_from_oevals
+osv.osv._ext_export_one = _ext_export_one
 osv.osv.ext_export = ext_export
 osv.osv.retry_export = retry_export
 osv.osv.can_create_on_update_failure = can_create_on_update_failure
