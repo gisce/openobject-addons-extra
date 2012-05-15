@@ -434,38 +434,43 @@ def convert_extdata_into_oedata(self, cr, uid, external_data, external_referenti
                     result.append(self.oevals_from_extdata(cr, uid, external_referential_id, each_row, mapping_lines, key_for_external_id, parent_data, result, defaults, context))
     return result
 
-def ext_import_unbound(self, cr, uid, external_data, external_referential_id, defaults=None, context=None):
+def ext_import_unbound(self, cr, uid, external_data, external_referential_id, res_id=None, defaults=None, context=None):
     """
     Import external data into OpenERP but does not link the external
     resource with the imported resource in ir.model.data.
     This implies that no further synchronization will be possible
 
-    @param list/dict external_data: list of dict or standalone dict
-        of external_data to convert into OpenERP data
+    @param dict external_data: dict of external_data to 
+        convert into OpenERP data
     @param int external_referential_id: external referential id from
     where we import the resource
+    @param int res_id: optional id of the OpenERP resource on which we import
+        if provided, it will be updated, otherwise it will be created
     @param dict defaults: defaults value for empty fields
-    @return: list of created ids or one id if one data record was given
+    @return: created/updated id
     """
-    standalone = False
-    if not isinstance(external_data, list):
-        standalone = True
-        external_data = [external_data]
+    vals = self.convert_extdata_into_oedata(
+        cr, uid, [external_data], external_referential_id,
+        defaults=defaults, context=context)[0]
 
-    results = self.convert_extdata_into_oedata(
-        cr, uid, external_data, external_referential_id,
-        defaults=defaults, context=context)
-
-    created_ids = []
-    for vals in results:
-        created_id = self.oe_create(
+    imported_id = False
+    if res_id:
+        if self.oe_update(
+            cr, uid, res_id, vals, external_referential_id,
+            defaults=defaults, context=context):
+            self.after_oe_update(
+                cr, uid, res_id, external_data,
+                external_referential_id, context=context)
+            imported_id = res_id
+    else:
+        imported_id = self.oe_create(
             cr, uid, vals, external_referential_id,
             defaults=defaults, context=context)
         self.after_oe_create(
-            cr, uid, created_id, external_data,
+            cr, uid, imported_id, external_data,
             external_referential_id, context=context)
-        created_ids.append(created_id)
-    return standalone and created_ids[0] or created_ids
+
+    return imported_id
 
 def ext_import(self, cr, uid, external_data, external_referential_id, defaults=None, context=None):
     """
