@@ -8,14 +8,10 @@
             <field name="type">search</field>
             <field name="arch" type="xml">
                 <search string="External Report Lines">
-                   <filter string="Success" icon="terp-accessories-archiver" domain="[('state','=','success')]"/>
-                   <filter string="Failures" icon="terp-accessories-archiver" domain="[('state','=','fail')]"/>
-                   <separator orientation="vertical"/>
                    <field name="referential_id"/>
                    <field name="date"/>
                    <field name="res_model"/>
                    <field name="action"/>
-                   <field name="state"/>
                    <newline/>
                    <group  expand='0' string='Group by...' groups="base.group_extended">
                        <filter string='External Referential' icon="terp-stock_symbol-selection" domain="[]" context="{'group_by' : 'referential_id'}" />
@@ -40,13 +36,12 @@
                     <field name="external_id"/>
                     <field name="action"/>
                     <field name="date"/>
-                    <field name="state"/>
                     <separator colspan="4"/>
                     <field name="exception_type"/>
                     <field name="error_message"/>
                     <field name="traceback" colspan="4"/>
                     <separator colspan="4"/>
-                    <button name="retry" string="Retry" states="fail" icon="gtk-go-forward" type="object" colspan="2"/>
+                    <button name="retry" string="Retry" icon="gtk-go-forward" type="object" colspan="2"/>
                 </form>
             </field>
         </record>
@@ -56,16 +51,15 @@
             <field name="model">external.report.line</field>
             <field name="type">tree</field>
             <field name="arch" type="xml">
-                <tree colors="red:state=='fail'" string="External Report Lines">
+                <tree string="External Report Lines">
                     <field name="referential_id"/>
-                    <field name="state"/>
                     <field name="res_model"/>
                     <field name="action"/>
                     <field name="date"/>
                     <field name="res_id"/>
                     <field name="external_id"/>
                     <field name="error_message"/>
-                    <button name="retry" string="Retry" states="fail" icon="gtk-go-forward" type="object" colspan="2"/>
+                    <button name="retry" string="Retry" icon="gtk-go-forward" type="object" colspan="2"/>
                 </tree>
             </field>
         </record>

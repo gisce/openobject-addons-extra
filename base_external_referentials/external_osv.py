@@ -446,6 +446,21 @@ def ext_import_unbound(self, cr, uid, external_data, external_referential_id, de
 
 
 def _ext_import_one(self, cr, uid, external_id, vals, external_data, referential_id, defaults=None, context=None):
+    """ Import one external resource
+
+    This method can be inherited to do an action which have to be done
+    within the same transaction than the import of the resource.
+    All the database operations done within _ext_import_one
+    will be rollbacked if any error occurs.
+    So no action on an external referential should be done within this method.
+
+    @param int external_id: id of the resource on the external referential
+    @param dict vals: vals converted to openerp
+    @param dict external_data: vals of the external resource before conversion
+    @param int referential_id: external referential id from where we import the resource
+    @param dict defaults: defaults value for fields which are not in vals
+    @return: tuple created id, updated id
+    """
     if defaults is None:
         defaults = {}
     if context is None:
@@ -453,8 +468,7 @@ def _ext_import_one(self, cr, uid, external_id, vals, external_data, referential
 
     logger = netsvc.Logger()
 
-    create_id = False
-    write_id = False
+    create_id = write_id = False
     existing_ir_model_data_id, existing_rec_id = self._existing_oeid_for_extid_import(
         cr, uid, vals, external_id, referential_id, context=context)
     if existing_rec_id:
@@ -482,13 +496,68 @@ def _ext_import_one(self, cr, uid, external_id, vals, external_data, referential
             # means the external resource is bound to an already existing resource
             # but not registered in ir.model.data, we log it to inform the success of the binding
             logger.notifyChannel('ext synchro', netsvc.LOG_INFO, "Bound in OpenERP %s from External Ref with external_id %s and OpenERP id %s successfully" %(self._name, external_id, existing_rec_id))
-
-    if create_id:
-        create_id = existing_rec_id
-        logger.notifyChannel('ext synchro', netsvc.LOG_INFO, "Created in OpenERP %s from External Ref with external_id %s and OpenERP id %s successfully" %(self._name, external_id, existing_rec_id))
-    elif written:
-        logger.notifyChannel('ext synchro', netsvc.LOG_INFO, "Updated in OpenERP %s from External Ref with external_id %s and OpenERP id %s successfully" %(self._name, external_id, existing_rec_id))
     return create_id, write_id
+
+def _ext_import_one_cr(self, cr, uid, external_id, vals, external_data, referential_id, defaults=None, context=None):
+    """ Import one external resource, with cursor management, open a new cursor
+    which is commited on each import
+
+    This method can be inherited to do an action which have to be done after
+    that the imported resource is commited in database.
+
+    @param int external_id: id of the resource on the external referential
+    @param dict vals: vals converted to openerp
+    @param dict external_data: vals of the external resource before conversion
+    @param int referential_id: external referential id from where we import the resource
+    @param dict defaults: defaults value for fields which are not in vals
+    @return: tuple created id, updated id
+    """
+    if context is None:
+        context = {}
+    report_line_obj = self.pool.get('external.report.line')
+    logger = netsvc.Logger()
+    import_ctx = dict(context)
+    # avoid to use external logs in submethods as they are handle at this level
+    import_ctx.pop('use_external_log', False)
+    record_cr = pooler.get_db(cr.dbname).cursor()
+    try:
+        cid, wid = self._ext_import_one(
+            cr, uid, external_id,
+            vals,
+            external_data,
+            referential_id,
+            defaults=defaults,
+            context=import_ctx)
+    except (MappingError, osv.except_osv, xmlrpclib.Fault):
+        record_cr.rollback()
+        report_line_obj.log_failed(
+            cr, uid,
+            self._name,
+            'import',
+            referential_id,
+            external_id=external_id,
+            defaults=defaults,
+            context=context)
+    else:
+        record_cr.commit()
+        report_line_obj.log_success(
+            cr, uid,
+            self._name,
+            'import',
+            referential_id,
+            external_id=external_id,
+            context=context)
+        if cid:
+            logger.notifyChannel('ext synchro', netsvc.LOG_INFO,
+                "Created in OpenERP %s from External Ref with external_id %s and OpenERP id %s successfully" %
+                (self._name, external_id, cid))
+        elif wid:
+            logger.notifyChannel('ext synchro', netsvc.LOG_INFO,
+                "Updated in OpenERP %s from External Ref with external_id %s and OpenERP id %s successfully" %
+                (self._name, external_id, wid))
+    finally:
+        record_cr.close()
+    return cid, wid
 
 def ext_import(self, cr, uid, external_data, external_referential_id, defaults=None, context=None):
     """
@@ -503,56 +572,28 @@ def ext_import(self, cr, uid, external_data, external_referential_id, defaults=N
     """
     if context is None:
         context = {}
-    report_line_obj = self.pool.get('external.report.line')
     result = self.convert_extdata_into_oedata(cr, uid, external_data, external_referential_id, defaults=defaults, context=context)
 
-    import_ctx = dict(context)
-    # avoid to use external logs in submethods as they are handle at this level
-    import_ctx.pop('use_external_log', False)
     create_ids = []
     write_ids = []
 
     for index, vals in enumerate(result):
         if not 'external_id' in vals:
             raise osv.except_osv(_('External Import Error'), _("The object imported need an external_id, maybe the mapping doesn't exist for the object : %s" %self._name))
-        else:
-            external_id = vals['external_id']
-            del vals['external_id']
-            record_cr = pooler.get_db(cr.dbname).cursor()
-            try:
-                cid, wid = self._ext_import_one(
-                    cr, uid, external_id,
-                    vals,
-                    external_data[index],
-                    external_referential_id,
-                    defaults=defaults,
-                    context=import_ctx)
-            except (MappingError, osv.except_osv, xmlrpclib.Fault):
-                record_cr.rollback()
-                report_line_obj.log_failed(
-                    cr, uid,
-                    self._name,
-                    'import',
-                    external_referential_id,
-                    external_id=external_id,
-                    defaults=defaults,
-                    context=context)
-            else:
-                report_line_obj.log_success(
-                    cr, uid,
-                    self._name,
-                    'import',
-                    external_referential_id,
-                    external_id=external_id,
-                    context=context)
-                if cid:
-                    create_ids.append(cid)
-                if wid:
-                    write_ids.append(wid)
-                record_cr.commit()
-            finally:
-                record_cr.close()
-
+        external_id = vals['external_id']
+        del vals['external_id']
+        cid, wid = self._ext_import_one_cr(
+            cr, uid,
+            external_id,
+            vals,
+            external_data[index],
+            external_referential_id,
+            defaults=defaults,
+            context=context)
+        if cid:
+            create_ids.append(cid)
+        if wid:
+            write_ids.append(wid)
     return {'create_ids': create_ids, 'write_ids': write_ids}
 
 def retry_import(self, cr, uid, id, ext_id, external_referential_id, defaults=None, context=None):
@@ -761,6 +802,7 @@ def ext_export(self, cr, uid, ids, external_referential_ids=[], defaults={}, con
                     defaults=defaults,
                     context=context)
             else:
+                record_cr.commit()
                 report_line_obj.log_success(
                     cr, uid,
                     self._name,
@@ -772,7 +814,6 @@ def ext_export(self, cr, uid, ids, external_referential_ids=[], defaults={}, con
                     create_ids.append(cid)
                 if wid:
                     write_ids.append(wid)
-                record_cr.commit()
             finally:
                 record_cr.close()
 
@@ -877,6 +918,7 @@ osv.osv.get_external_data = get_external_data
 osv.osv._existing_oeid_for_extid_import = _existing_oeid_for_extid_import
 osv.osv.ext_import_unbound = ext_import_unbound
 osv.osv._ext_import_one = _ext_import_one
+osv.osv._ext_import_one_cr = _ext_import_one_cr
 osv.osv.ext_import = ext_import
 osv.osv.retry_import = retry_import
 osv.osv.oe_update = oe_update

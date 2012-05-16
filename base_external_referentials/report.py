@@ -35,9 +35,6 @@ class external_report_lines(osv.osv):
     _order = 'date desc'
 
     _columns = {
-        'state': fields.selection((('success', 'Success'),
-                                   ('fail', 'Failed')),
-                                   'Status', required=True, readonly=True),
         'res_model': fields.char('Resource Object', size=64,
                                  required=True, readonly=True),
         'res_id': fields.integer('Resource Id', readonly=True),
@@ -59,10 +56,9 @@ class external_report_lines(osv.osv):
         "date": lambda *a: time.strftime(DEFAULT_SERVER_DATETIME_FORMAT)
     }
 
-    def _prepare_log_vals(self, cr, uid, state, model, action, res_id,
+    def _prepare_log_vals(self, cr, uid, model, action, res_id,
         external_id, referential_id, data_record, context=None):
         return {
-            'state': state,
             'res_model': model,
             'action': action,
             'res_id': res_id,
@@ -71,24 +67,19 @@ class external_report_lines(osv.osv):
             'data_record': data_record,
         }
 
-    def _prepare_log_info(self, cr, uid, state, origin_defaults, origin_context, context=None):
-        vals = {
-            'state': state,
+    def _prepare_log_info(self, cr, uid, origin_defaults, origin_context, context=None):
+        exc_type, exc_value, exc_traceback = sys.exc_info()
+        return {
             'date': time.strftime(DEFAULT_SERVER_DATETIME_FORMAT),
             'origin_defaults': origin_defaults,
-            'origin_context': origin_context
+            'origin_context': origin_context,
+            'exception_type': exc_type,
+            'error_message': exc_value,
+            'traceback': ''.join(traceback.format_exception(
+                exc_type, exc_value, exc_traceback)),
         }
-        if state == 'fail':
-            exc_type, exc_value, exc_traceback = sys.exc_info()
-            vals.update({
-                'exception_type': exc_type,
-                'error_message': exc_value,
-                'traceback': ''.join(traceback.format_exception(
-                    exc_type, exc_value, exc_traceback)),
-            })
-        return vals
 
-    def _log_base(self, cr, uid, model, action, referential_id, state=None,
+    def log_failed(self, cr, uid, model, action, referential_id,
                   res_id=None, external_id=None,
                   data_record=None, defaults=None, context=None):
         defaults = defaults or {}
@@ -99,9 +90,7 @@ class external_report_lines(osv.osv):
         # This ensure a backward compatibility, synchro will continue to
         # work exactly the same way if use_external_log is not in context
         if not(existing_line_id or context.get('use_external_log', False)):
-            if state == 'fail':
-                raise
-            return False
+            raise
 
         log_cr = pooler.get_db(cr.dbname).cursor()
 
@@ -115,7 +104,7 @@ class external_report_lines(osv.osv):
             if origin_context.get('conn_obj', False):
                 del origin_context['conn_obj']
             info = self._prepare_log_info(
-                log_cr, uid, state, origin_defaults, origin_context, context=context)
+                log_cr, uid, origin_defaults, origin_context, context=context)
             if existing_line_id:
                 self.write(
                     log_cr, uid,
@@ -124,7 +113,7 @@ class external_report_lines(osv.osv):
                     context=context)
             else:
                 vals = self._prepare_log_vals(
-                    log_cr, uid, state, model, action, res_id, external_id,
+                    log_cr, uid, model, action, res_id, external_id,
                     referential_id, data_record, context=context)
                 vals.update(info)
                 existing_line_id = self.create(
@@ -139,15 +128,6 @@ class external_report_lines(osv.osv):
             log_cr.close()
         return existing_line_id
 
-    def log_failed(self, cr, uid, model, action, referential_id,
-           res_id=None, external_id=None,
-           data_record=None, defaults=None, context=None):
-        return self._log_base(
-            cr, uid, model, action, referential_id, 'fail', res_id=res_id,
-            external_id=external_id,
-            data_record=data_record, defaults=defaults,
-            context=context)
-
     def log_success(self, cr, uid, model, action, referential_id,
             res_id=None, external_id=None, context=None):
         if res_id is None and external_id is None:
@@ -161,9 +141,18 @@ class external_report_lines(osv.osv):
             domain += ('res_id', '=', res_id),
         if external_id is not None:
             domain += ('external_id', '=', external_id),
-        log_ids = self.search(
-            cr, uid, domain, context=context)
-        self.unlink(cr, uid, log_ids, context=context)
+        log_cr = pooler.get_db(cr.dbname).cursor()
+        try:
+            log_ids = self.search(
+                log_cr, uid, domain, context=context)
+            self.unlink(log_cr, uid, log_ids, context=context)
+        except:
+            log_cr.rollback()
+            raise
+        else:
+            log_cr.commit()
+        finally:
+            log_cr.close()
         return True
 
     def retry(self, cr, uid, ids, context=None):

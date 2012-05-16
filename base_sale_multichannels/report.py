@@ -30,11 +30,11 @@ class external_report_line(osv.osv):
         'shop_id': fields.many2one('sale.shop', 'Shop', readonly=True),
     }
 
-    def _prepare_log_vals(self, cr, uid, state, model, action, res_id,
+    def _prepare_log_vals(self, cr, uid, model, action, res_id,
         external_id, referential_id, data_record, context=None):
         if context is None: context = {}
         vals = super(external_report_line, self)._prepare_log_vals(
-            cr, uid, state, model, action, res_id, external_id,
+            cr, uid, model, action, res_id, external_id,
             referential_id, data_record, context=context)
 
         if context.get('shop_id'):
