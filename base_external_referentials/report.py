@@ -130,31 +130,40 @@ class external_report_lines(osv.osv):
                 existing_line_id = self.create(
                     log_cr, uid, vals,
                     context=context)
+        except:
+            log_cr.rollback()
+            raise
+        else:
             log_cr.commit()
-
         finally:
             log_cr.close()
         return existing_line_id
 
     def log_failed(self, cr, uid, model, action, referential_id,
-                   res_id=None, external_id=None,
-                   data_record=None, defaults=None, context=None):
+           res_id=None, external_id=None,
+           data_record=None, defaults=None, context=None):
         return self._log_base(
             cr, uid, model, action, referential_id, 'fail', res_id=res_id,
             external_id=external_id,
             data_record=data_record, defaults=defaults,
             context=context)
 
-    def log_success(self, cr, uid, ids, context=None):
-        self.write(
-            cr, uid, ids,
-            {'state': 'success',
-             'date': time.strftime(DEFAULT_SERVER_DATETIME_FORMAT),
-             'exception_type': False,
-             'error_message': False,
-             'traceback': False,
-             },
-            context=context)
+    def log_success(self, cr, uid, model, action, referential_id,
+            res_id=None, external_id=None, context=None):
+        if res_id is None and external_id is None:
+            raise ValueError('Missing ext_id or external_id')
+        domain = [
+            ('res_model', '=', model),
+            ('action', '=', action),
+            ('referential_id', '=', referential_id),
+        ]
+        if res_id is not None:
+            domain += ('res_id', '=', res_id),
+        if external_id is not None:
+            domain += ('external_id', '=', external_id),
+        log_ids = self.search(
+            cr, uid, domain, context=context)
+        self.unlink(cr, uid, log_ids, context=context)
         return True
 
     def retry(self, cr, uid, ids, context=None):

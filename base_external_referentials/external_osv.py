@@ -503,6 +503,7 @@ def ext_import(self, cr, uid, external_data, external_referential_id, defaults=N
     """
     if context is None:
         context = {}
+    report_line_obj = self.pool.get('external.report.line')
     result = self.convert_extdata_into_oedata(cr, uid, external_data, external_referential_id, defaults=defaults, context=context)
 
     import_ctx = dict(context)
@@ -528,7 +529,7 @@ def ext_import(self, cr, uid, external_data, external_referential_id, defaults=N
                     context=import_ctx)
             except (MappingError, osv.except_osv, xmlrpclib.Fault):
                 record_cr.rollback()
-                self.pool.get('external.report.line').log_failed(
+                report_line_obj.log_failed(
                     cr, uid,
                     self._name,
                     'import',
@@ -537,8 +538,17 @@ def ext_import(self, cr, uid, external_data, external_referential_id, defaults=N
                     defaults=defaults,
                     context=context)
             else:
-                if cid: create_ids.append(cid)
-                if wid: write_ids.append(wid)
+                report_line_obj.log_success(
+                    cr, uid,
+                    self._name,
+                    'import',
+                    external_referential_id,
+                    external_id=external_id,
+                    context=context)
+                if cid:
+                    create_ids.append(cid)
+                if wid:
+                    write_ids.append(wid)
                 record_cr.commit()
             finally:
                 record_cr.close()
@@ -556,9 +566,6 @@ def retry_import(self, cr, uid, id, ext_id, external_referential_id, defaults=No
     result = self.get_external_data(
         cr, uid, conn , external_referential_id, context=context)
     if any(result.values()):
-        log_obj = self.pool.get('external.report.line')
-        log_id = context.get('retry_report_line_id')
-        log_obj.log_success(cr, uid, log_id, context=context)
         return True
     return False
 
@@ -743,7 +750,6 @@ def ext_export(self, cr, uid, ids, external_referential_ids=[], defaults={}, con
             try:
                 cid, wid = self._ext_export_one(
                     record_cr, uid, record_data, ext_ref_id, defaults=defaults, context=export_ctx)
-            #TODO remove Exception
             except (MappingError, osv.except_osv, xmlrpclib.Fault):
                 record_cr.rollback()
                 report_line_obj.log_failed(
@@ -755,6 +761,13 @@ def ext_export(self, cr, uid, ids, external_referential_ids=[], defaults={}, con
                     defaults=defaults,
                     context=context)
             else:
+                report_line_obj.log_success(
+                    cr, uid,
+                    self._name,
+                    'export',
+                    ext_ref_id,
+                    res_id=record_data['id'],
+                    context=context)
                 if cid:
                     create_ids.append(cid)
                 if wid:
@@ -796,9 +809,6 @@ def retry_export(self, cr, uid, id, ext_id, external_referential_id, defaults=No
     context['conn_obj'] = conn
     result = self.ext_export(cr, uid, [id], [external_referential_id], defaults, context)
     if any(result.values()):
-        log_obj = self.pool.get('external.report.line')
-        log_id = context.get('retry_report_line_id')
-        log_obj.log_success(cr, uid, log_id, context=context)
         return True
     return False
 
