@@ -147,6 +147,8 @@ def _extid_to_expected_oeid(self, cr, uid, external_id, external_referential_id,
     @param external_referential_id: id of the external referential
     @return: tuple of (ir.model.data entry id, expected resource id in the current model)
     """
+    if not external_id:
+        return False, False
     model_data_obj = self.pool.get('ir.model.data')
     model_data_ids = model_data_obj.search(cr, uid,
         [('name', '=', self.prefixed_id(external_id)),
@@ -434,7 +436,7 @@ def convert_extdata_into_oedata(self, cr, uid, external_data, external_referenti
                     result.append(self.oevals_from_extdata(cr, uid, external_referential_id, each_row, mapping_lines, key_for_external_id, parent_data, result, defaults, context))
     return result
 
-def ext_import_unbound(self, cr, uid, external_data, external_referential_id, res_id=None, defaults=None, context=None):
+def ext_import_unbound(self, cr, uid, external_data, external_referential_id, defaults=None, context=None):
     """
     Import external data into OpenERP but does not link the external
     resource with the imported resource in ir.model.data.
@@ -444,8 +446,6 @@ def ext_import_unbound(self, cr, uid, external_data, external_referential_id, re
         convert into OpenERP data
     @param int external_referential_id: external referential id from
     where we import the resource
-    @param int res_id: optional id of the OpenERP resource on which we import
-        if provided, it will be updated, otherwise it will be created
     @param dict defaults: defaults value for empty fields
     @return: created/updated id
     """
@@ -453,6 +453,12 @@ def ext_import_unbound(self, cr, uid, external_data, external_referential_id, re
         cr, uid, [external_data], external_referential_id,
         defaults=defaults, context=context)[0]
 
+    # search if a resource already exists for the vals
+    # the method below is inherited in some classes in order
+    # to match on other criterias than external_id
+    # (like mail + website for partners)
+    __, res_id = self._existing_oeid_for_extid_import(
+        cr, uid, vals, False, external_referential_id, context=context)
     imported_id = False
     if res_id:
         if self.oe_update(
