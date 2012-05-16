@@ -753,7 +753,7 @@ def _ext_export_one(self, cr, uid, record_data, referential_id, defaults=None, c
                         self.create_external_id_vals(cr, uid, record_data['id'], crid, referential_id, context=context)
                         logger.notifyChannel('ext synchro', netsvc.LOG_INFO, "Created in External Ref %s from OpenERP with external_id %s and OpenERP id %s successfully" %(self._name, crid, record_data['id']))
                     except Exception, err:
-                        logger.notifyChannel('ext synchro', netsvc.LOG_ERROR, "Failed to create in External Ref %s from OpenERP with external_id %s and OpenERP id %s" %(self._name, crid, record_data['id']))
+                        logger.notifyChannel('ext synchro', netsvc.LOG_ERROR, "Failed to create in External Ref %s from OpenERP with OpenERP id %s" %(self._name, record_data['id']))
                         raise
 
         return create_id, write_id
