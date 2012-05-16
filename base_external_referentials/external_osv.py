@@ -520,6 +520,7 @@ def _ext_import_one_cr(self, cr, uid, external_id, vals, external_data, referent
     # avoid to use external logs in submethods as they are handle at this level
     import_ctx.pop('use_external_log', False)
     record_cr = pooler.get_db(cr.dbname).cursor()
+    cid = wid = False
     try:
         cid, wid = self._ext_import_one(
             cr, uid, external_id,
@@ -690,6 +691,27 @@ def extdata_from_oevals(self, cr, uid, external_referential_id, data_record, map
     return vals
 
 def _ext_export_one(self, cr, uid, record_data, referential_id, defaults=None, context=None):
+    """ Export one external resource, with cursor management, open a new cursor
+    which is commited on each export.
+
+    If something has to be done within the same transaction than the export
+    because it has to circumvent and provoke a rollback in case of failure
+    it has to be done in an inherit of _ext_export_one.
+    Warning: this method will not rollback any action done on an external system
+    but an eventual entry created in ir.model.data will be rollbacked,
+    so be careful with any failure in _ext_export_one.
+
+
+    If something must be done right after the export of a resource but must
+    not break the transaction if it fails, it can be done after
+    the execution of this method using super() in sub-classes.
+    So the external id is already created and commited in ir.model.data.
+
+    :param dict record_data: dict of values of the resource openerp (result of a self.read())
+    :param int referential_id: id of the external referential where to export
+    :param dict defaults: defaults values for empty fields
+    :return: tuple (openerp id created on external, openerp id updated on external)
+    """
     logger = netsvc.Logger()
     if context is None:
         context = {}
@@ -758,16 +780,67 @@ def _ext_export_one(self, cr, uid, record_data, referential_id, defaults=None, c
 
         return create_id, write_id
 
-def ext_export(self, cr, uid, ids, external_referential_ids=[], defaults={}, context=None):
+def _ext_export_one_cr(self, cr, uid, record_data, referential_id, defaults=None, context=None):
+    """ Export one external resource, with cursor management, open a new cursor
+    which is commited on each export.
+
+    If something must be done right after the export of a resource but must
+    not break the transaction if it fails, it can be done after
+    the execution of this method using super() in sub-classes.
+    So the external id is already created and commited in ir.model.data.
+
+    :param dict record_data: dict of values of the resource openerp (result of a self.read())
+    :param int referential_id: id of the external referential where to export
+    :param dict defaults: defaults values for empty fields
+    :return: tuple (openerp id created on external, openerp id updated on external)
+    """
     if context is None:
         context = {}
+
+    report_line_obj = self.pool.get('external.report.line')
 
     export_ctx = dict(context)
     # avoid to use external logs in submethods as they are handle at this level
     export_ctx.pop('use_external_log', False)
 
+    record_cr = pooler.get_db(cr.dbname).cursor()
+    cid = wid = False
+    try:
+        cid, wid = self._ext_export_one(
+            record_cr, uid, record_data, referential_id, defaults=defaults, context=export_ctx)
+    except (MappingError, osv.except_osv, xmlrpclib.Fault):
+        record_cr.rollback()
+        report_line_obj.log_failed(
+            cr, uid,
+            self._name,
+            'export',
+            referential_id,
+            res_id=record_data['id'],
+            defaults=defaults,
+            context=context)
+    else:
+        record_cr.commit()
+        report_line_obj.log_success(
+            cr, uid,
+            self._name,
+            'export',
+            referential_id,
+            res_id=record_data['id'],
+            context=context)
+    finally:
+        record_cr.close()
+    return cid, wid
+
+def ext_export(self, cr, uid, ids, external_referential_ids=[], defaults={}, context=None):
+    """ Export all resource with ids in all the external referentials in arguments
+    Without external_referential_ids given, it will try to find them
+
+    :param list ids: ids to export
+    :param list external_referential_ids: list of external referentials where to export
+    :param dict defaults: defaults values for empty fields
+    :return: tuple (openerp ids created on externals, openerp ids updated on externals)
+    """
     # external_referential_ids has to be a list
-    report_line_obj = self.pool.get('external.report.line')
     ir_data_obj = self.pool.get('ir.model.data')
     write_ids = []  #Will record ids of records modified, not sure if will be used
     create_ids = [] #Will record ids of newly created records, not sure if will be used
@@ -784,39 +857,18 @@ def ext_export(self, cr, uid, ids, external_referential_ids=[], defaults={}, con
     if not external_referential_ids:
         external_referential_ids = self.pool.get('external.referential').search(cr, uid, [])
     for record_data in self.read_w_order(cr, uid, ids, [], context):
-
         # export the resource on each referential
         for ext_ref_id in external_referential_ids:
-            record_cr = pooler.get_db(cr.dbname).cursor()
-            try:
-                cid, wid = self._ext_export_one(
-                    record_cr, uid, record_data, ext_ref_id, defaults=defaults, context=export_ctx)
-            except (MappingError, osv.except_osv, xmlrpclib.Fault):
-                record_cr.rollback()
-                report_line_obj.log_failed(
-                    cr, uid,
-                    self._name,
-                    'export',
-                    ext_ref_id,
-                    res_id=record_data['id'],
-                    defaults=defaults,
-                    context=context)
-            else:
-                record_cr.commit()
-                report_line_obj.log_success(
-                    cr, uid,
-                    self._name,
-                    'export',
-                    ext_ref_id,
-                    res_id=record_data['id'],
-                    context=context)
-                if cid:
-                    create_ids.append(cid)
-                if wid:
-                    write_ids.append(wid)
-            finally:
-                record_cr.close()
-
+            cid, wid = self._ext_export_one_cr(
+                cr, uid,
+                record_data,
+                ext_ref_id,
+                defaults=defaults,
+                context=context)
+            if cid:
+                create_ids.append(cid)
+            if wid:
+                write_ids.append(wid)
     return {'create_ids': create_ids, 'write_ids': write_ids}
 
 def _prepare_external_id_vals(self, cr, uid, res_id, ext_id, external_referential_id, context=None):
@@ -927,6 +979,7 @@ osv.osv.oe_create = oe_create
 osv.osv.after_oe_create = after_oe_create
 osv.osv.extdata_from_oevals = extdata_from_oevals
 osv.osv._ext_export_one = _ext_export_one
+osv.osv._ext_export_one_cr = _ext_export_one_cr
 osv.osv.ext_export = ext_export
 osv.osv.retry_export = retry_export
 osv.osv.can_create_on_update_failure = can_create_on_update_failure
