@@ -90,7 +90,7 @@ def get_last_imported_external_id(self, cr, object_name, referential_id, where_c
 def get_modified_ids(self, cr, uid, date=False, context=None): 
     """ This function will return the ids of the modified or created items of self object since the date
 
-    @return: a table of this format : [[id1, last modified date], [id2, last modified date] ...] """
+    :return: a table of this format : [[id1, last modified date], [id2, last modified date] ...] """
     if date:
         sql_request = "SELECT id, create_date, write_date FROM %s " % (self._name.replace('.', '_'),)
         sql_request += "WHERE create_date > %s OR write_date > %s;"
@@ -144,9 +144,9 @@ def _extid_to_expected_oeid(self, cr, uid, external_id, external_referential_id,
     Returns the id of the entry in ir.model.data and the expected id of the resource in the current model
     Warning the expected_oe_id may not exists in the model, that's the res_id registered in ir.model.data
 
-    @param external_id: id in the external referential
-    @param external_referential_id: id of the external referential
-    @return: tuple of (ir.model.data entry id, expected resource id in the current model)
+    :param int external_id: id in the external referential
+    :param int external_referential_id: id of the external referential
+    :return: tuple of (ir.model.data entry id, expected resource id in the current model)
     """
     if not external_id:
         return False, False
@@ -206,12 +206,12 @@ def call_sub_mapping(self, cr, uid, sub_mapping_list, external_data, external_re
     """
     Used in oevals_from_extdata in order to call the sub mapping
 
-    @param sub_mapping_list: list of sub-mapping to apply
-    @param external_data: list of data to convert into OpenERP data
-    @param external_referential_id: external referential id from where we import the resource
-    @param vals: dictionnary of value previously converted
-    @param defauls: defaults value for the data imported
-    @return: dictionary of converted data in OpenERP format 
+    :param list sub_mapping_list: list of sub-mapping to apply
+    :param list external_data: list of data to convert into OpenERP data
+    :param int external_referential_id: external referential id from where we import the resource
+    :param dict vals: values previously converted
+    :param dict defaults: defaults value for the data imported
+    :return: dictionary of converted data in OpenERP format 
     """
 
     if not defaults:
@@ -235,12 +235,12 @@ def merge_with_default_value(self, cr, uid, sub_mapping_list, data_record, exter
     """
     Used in oevals_from_extdata in order to merge the defaults values, some params are useless here but need in base_sale_multichannels to play the on_change
 
-    @param sub_mapping_list: list of sub-mapping to apply
-    @param external_data: list of data to convert into OpenERP data
-    @param external_referential_id: external referential id from where we import the resource
-    @param vals: dictionnary of value previously converted
-    @param defauls: defaults value for the data imported
-    @return: dictionary of converted data in OpenERP format 
+    :param list sub_mapping_list: list of sub-mapping to apply
+    :param list external_data: list of data to convert into OpenERP data
+    :param int external_referential_id: external referential id from where we import the resource
+    :param dict vals: dictionnary of value previously converted
+    :param dict defaults: defaults value for the data imported
+    :return: dictionary of converted data in OpenERP format 
     """
     for key in defaults:
         if not key in vals:
@@ -252,13 +252,13 @@ def oevals_from_extdata(self, cr, uid, external_referential_id, data_record, map
     """
     Used in convert_extdata_into_oedata in order to convert external row of data into OpenERP data
 
-    @param external_referential_id: external referential id from where we import the resource
-    @param external_data_row: a dictionnary of data to convert into OpenERP data
-    @param mapping_lines: list of mapping line used to convert external data row into OpenERP data
-    @param key_for_external_id: string which is the key for getting the external_id
-    @param previous_lines: list of the previous line converted. This is not used here but it's necessary for playing on change on sale order line
-    @param defauls: defaults value for the data imported
-    @return: dictionary of converted data in OpenERP format 
+    :param int external_referential_id: external referential id from where we import the resource
+    :param dict external_data_row: external data to convert into OpenERP data
+    :param list mapping_lines: mapping lines used to convert external data row into OpenERP data
+    :param string key_for_external_id: the key for getting the external_id
+    :param list previous_lines: the previous lines converted. This is not used here but it's necessary for playing on change on sale order line
+    :param dict defaults: defaults value for the data imported
+    :return: dictionary of converted data in OpenERP format 
     """
     if context is None:
         context = {}
@@ -358,10 +358,10 @@ def _existing_oeid_for_extid_import(self, cr, uid, vals, external_id, external_r
     As instance, search and bind partners by their mails. In such case, it must returns False for the ir_model_data.id and
     the partner to bind for the resource id
 
-    @param vals: vals to create in OpenERP, already evaluated by oevals_from_extdata
-    @param external_id: external id of the resource to create
-    @param external_referential_id: external referential id from where we import the resource
-    @return: tuple of (ir.model.data id / False: external id to create in ir.model.data, model resource id / False: resource to create)
+    :param dict vals: vals to create in OpenERP, already evaluated by oevals_from_extdata
+    :param int external_id: external id of the resource to create
+    :param int external_referential_id: external referential id from where we import the resource
+    :return: tuple of (ir.model.data id / False: external id to create in ir.model.data, model resource id / False: resource to create)
     """
     existing_ir_model_data_id, expected_res_id = self._extid_to_expected_oeid\
         (cr, uid, external_id, external_referential_id, context=context)
@@ -376,11 +376,11 @@ def convert_extdata_into_oedata(self, cr, uid, external_data, external_referenti
     """
     Used in ext_import in order to convert all of the external data into OpenERP data
 
-    @param external_data: list of external_data to convert into OpenERP data
-    @param external_referential_id: external referential id from where we import the resource
-    @param parent_data: data of the parent, only use when a mapping line have the type 'sub mapping'
-    @param defaults: defaults value for data converted
-    @return: list of the line converted into OpenERP value
+    :param list external_data: list of external_data to convert into OpenERP data
+    :param int external_referential_id: external referential id from where we import the resource
+    :param dict parent_data: data of the parent, only use when a mapping line have the type 'sub mapping'
+    :param dict defaults: defaults value for data converted
+    :return: list of the line converted into OpenERP value
     """
     if defaults is None:
         defaults = {}
@@ -408,12 +408,12 @@ def ext_import_unbound(self, cr, uid, external_data, external_referential_id, de
     resource with the imported resource in ir.model.data.
     This implies that no further synchronization will be possible
 
-    @param dict external_data: dict of external_data to 
+    :param dict external_data: dict of external_data to 
         convert into OpenERP data
-    @param int external_referential_id: external referential id from
+    :param int external_referential_id: external referential id from
     where we import the resource
-    @param dict defaults: defaults value for empty fields
-    @return: created/updated id
+    :param dict defaults: defaults value for empty fields
+    :return: created/updated id
     """
     vals = self.convert_extdata_into_oedata(
         cr, uid, [external_data], external_referential_id,
@@ -454,12 +454,12 @@ def _ext_import_one(self, cr, uid, external_id, vals, external_data, referential
     will be rollbacked if any error occurs.
     So no action on an external referential should be done within this method.
 
-    @param int external_id: id of the resource on the external referential
-    @param dict vals: vals converted to openerp
-    @param dict external_data: vals of the external resource before conversion
-    @param int referential_id: external referential id from where we import the resource
-    @param dict defaults: defaults value for fields which are not in vals
-    @return: tuple created id, updated id
+    :param int external_id: id of the resource on the external referential
+    :param dict vals: vals converted to openerp
+    :param dict external_data: vals of the external resource before conversion
+    :param int referential_id: external referential id from where we import the resource
+    :param dict defaults: defaults value for fields which are not in vals
+    :return: tuple created id, updated id
     """
     if defaults is None:
         defaults = {}
@@ -505,12 +505,12 @@ def _ext_import_one_cr(self, cr, uid, external_id, vals, external_data, referent
     This method can be inherited to do an action which have to be done after
     that the imported resource is commited in database.
 
-    @param int external_id: id of the resource on the external referential
-    @param dict vals: vals converted to openerp
-    @param dict external_data: vals of the external resource before conversion
-    @param int referential_id: external referential id from where we import the resource
-    @param dict defaults: defaults value for fields which are not in vals
-    @return: tuple created id, updated id
+    :param int external_id: id of the resource on the external referential
+    :param dict vals: vals converted to openerp
+    :param dict external_data: vals of the external resource before conversion
+    :param int referential_id: external referential id from where we import the resource
+    :param dict defaults: defaults value for fields which are not in vals
+    :return: tuple created id, updated id
     """
     if context is None:
         context = {}
@@ -566,10 +566,10 @@ def ext_import(self, cr, uid, external_data, external_referential_id, defaults=N
     This data will converted into OpenERP data by using the function convert_extdata_into_oedata
     And then created or updated, and an external id will be added into the table ir.model.data
 
-    @param external_data: list of external_data to convert into OpenERP data
-    @param external_referential_id: external referential id from where we import the resource
-    @param defaults: defaults value for
-    @return: dictionary with the key "create_ids" and "write_ids" which containt a list of ids created/written
+    :param list external_data: list of external_data to convert into OpenERP data
+    :param int external_referential_id: external referential id from where we import the resource
+    :param dict defaults: defaults value for
+    :return: dictionary with the key "create_ids" and "write_ids" which containt a list of ids created/written
     """
     if context is None:
         context = {}
