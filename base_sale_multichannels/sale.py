@@ -742,20 +742,15 @@ class sale_order(osv.osv):
                     if order.state == 'draft' and datetime.strptime(order.date_order, DEFAULT_SERVER_DATE_FORMAT) < datetime.now() - relativedelta(days=payment_settings.days_before_order_cancel or 30):
                         wf_service.trg_validate(uid, 'sale.order', order.id, 'cancel', cr)
                         self.write(cr, uid, order.id, {'need_to_update': False})
-                        self.log(cr, uid, order.id, "order %s canceled in OpenERP because older than % days and still not confirmed" % (order.id, payment_settings.days_before_order_cancel or 30))
                         #TODO eventually call a trigger to cancel the order in the external system too
                         logger.notifyChannel('ext synchro', netsvc.LOG_INFO, "order %s canceled in OpenERP because older than % days and still not confirmed" % (order.id, payment_settings.days_before_order_cancel or 30))
                     else:
                         self.write(cr, uid, order.id, {'need_to_update': True})
                 else:
                     if payment_settings.validate_order:
-                        try:
-                            wf_service.trg_validate(uid, 'sale.order', order.id, 'order_confirm', cr)
-                            self.write(cr, uid, order.id, {'need_to_update': False})
-                        except Exception:
-                            self.log(cr, uid, order.id, "ERROR could not valid order")
-                            raise
-                        
+                        wf_service.trg_validate(uid, 'sale.order', order.id, 'order_confirm', cr)
+                        self.write(cr, uid, order.id, {'need_to_update': False})
+                    
                         if payment_settings.validate_picking:
                             self.pool.get('stock.picking').validate_picking_from_order(cr, uid, order.id)
                         
@@ -785,13 +780,16 @@ class sale_order(osv.osv):
                         elif order.order_policy == 'picking':
                             if payment_settings.create_invoice:
                                 try:
-                                    invoice_id = self.pool.get('stock.picking').action_invoice_create(cr, uid, [picking.id for picking in order.picking_ids])
-                                except Exception, e:
-                                    self.log(cr, uid, order.id, "Cannot create invoice from picking for order %s" %(order.name,))
-                                if payment_settings.validate_invoice:
-                                    wf_service.trg_validate(uid, 'account.invoice', invoice_id, 'invoice_open', cr)
-                                    if payment_settings.is_auto_reconcile:
-                                        self.pool.get('account.invoice').auto_reconcile(cr, uid, [invoice_id], context=context)
+                                    invoice_id = self.pool.get('stock.picking').action_invoice_create(
+                                        cr, uid, [picking.id for picking in order.picking_ids])
+                                except osv.except_osv:
+                                    logger.notifyChannel('ext synchro', netsvc.LOG_INFO,
+                                        "Cannot create invoice from picking for order %s" % (order.name,))
+                                else:
+                                    if payment_settings.validate_invoice:
+                                        wf_service.trg_validate(uid, 'account.invoice', invoice_id, 'invoice_open', cr)
+                                        if payment_settings.is_auto_reconcile:
+                                            self.pool.get('account.invoice').auto_reconcile(cr, uid, [invoice_id], context=context)
 
         return True
 
