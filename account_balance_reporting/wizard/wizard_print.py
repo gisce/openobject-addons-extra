@@ -27,76 +27,58 @@ Account balance report print wizard
 __author__ = "Borja López Soilán (Pexego)"
 
 
-import wizard
+from osv import fields, osv
 import pooler
 
 
-class wizard_print(wizard.interface):
-    """
-    Account balance report print wizard.
-    Allows the user to select which 'balance report' will be printed,
-    and which printing template will be used. By default the current
-    balance report and its template printing design will be used.
-    """
-
-    init_fields = {
-        'report_id' : {'type':'many2one', 'relation': 'account.balance.reporting', 'required': True},
-        'report_xml_id' : {'type':'many2one', 'relation': 'ir.actions.report.xml', 'required': True},
-    }
-
-
-    init_form = """<?xml version="1.0" encoding="utf-8"?>
-    <form string="Print report" colspan="4">
-        <field string="Report data" name="report_id"/>
-        <newline/>
-        <field string="Report design" name="report_xml_id" domain="[('model','=','account.balance.reporting')]"/>
-    </form>"""
-
-
-    def _init_action(self, cr, uid, data, context):
-        """
-        Gets the currently selected balance report to use it as the
-        default value for the wizard form.
-        """
+class print_wizard(osv.osv_memory):
+    _name='account.balance.reporting.print.wizard'
+    
+    def _get_current_report_id(self, cr, uid, ctx):   
         rpt_facade = pooler.get_pool(cr.dbname).get('account.balance.reporting')
         report_id = None
-        report_xml_id = None
-        if data.get('model') == 'account.balance.reporting':
-            report_id = data.get('id')
+        if ctx.get('active_model') == 'account.balance.reporting' and ctx.get('active_ids') and ctx.get('active_ids')[0]:
+            report_id = ctx.get('active_ids')[0]
             report_ids = rpt_facade.search(cr, uid, [('id', '=', report_id)])
             report_id = report_ids and report_ids[0] or None
-            if report_id:
-                report = rpt_facade.browse(cr, uid, [report_id])[0]
-                if report.template_id and report.template_id.report_xml_id:
-                    report_xml_id = report.template_id.report_xml_id.id
-        return { 'report_id' : report_id, 'report_xml_id' : report_xml_id,  }
+        return report_id
 
+    def _get_current_report_xml_id(self, cr, uid, ctx):
+        report_id = self._get_current_report_id(cr, uid, ctx)
+        rpt_facade = pooler.get_pool(cr.dbname).get('account.balance.reporting')
+        report = rpt_facade.browse(cr, uid, [report_id])[0]
+        report_xml_id = None
+        if report.template_id and report.template_id.report_xml_id:
+            report_xml_id = report.template_id.report_xml_id.id
+        return report_xml_id
 
-    def _print_action(self, cr, uid, data, context):
-        """
-        Sets the printing template (as selected by the user) before printing.
-        """
+    def print_report(self, cr, uid, ids, context=None):
+        data = self.read(cr,uid,ids)[-1]
         rpt_facade = pooler.get_pool(cr.dbname).get('ir.actions.report.xml')
-
-        if data['form'].get('report_xml_id'):
-            report_xml_id = data['form']['report_xml_id']
-            report_xml_ids = rpt_facade.search(cr, uid, [('id', '=', report_xml_id)])
+        report_xml = None
+        if data.get('report_xml_id'):
+            report_xml_id = data['report_xml_id']
+            report_xml_ids = rpt_facade.search(cr, uid, [('id', '=', report_xml_id[0])])
             report_xml_id = report_xml_ids and report_xml_ids[0] or None
             if report_xml_id:
                 report_xml = rpt_facade.browse(cr, uid, [report_xml_id])[0]
-                self.states['print']['result']['report'] = report_xml.report_name
-
-        return { }
-
-    states = {
-        'init': {
-            'actions': [_init_action],
-            'result': {'type':'form', 'arch': init_form, 'fields': init_fields, 'state':[('end','Cancel'),('print','Print')]}
-        },
-        'print': {
-            'actions': [_print_action],
-            'result': {'type':'print', 'report': 'NOTFOUND', 'state':'end'}
-        }
+            if report_xml:
+                return {
+                    'type' : 'ir.actions.report.xml',
+                    'report_name' : report_xml.report_name,
+                    'datas' : {'ids': [data.get('report_id') and data['report_id'][0] or None]},
+                }
+        return { 'type': 'ir.actions.act_window_close' }
+        
+    _columns = {
+        'report_id' : fields.many2one('account.balance.reporting', "Report"),
+        'report_xml_id': fields.many2one('ir.actions.report.xml', "Design"),
     }
-wizard_print('account_balance_reporting.print_wizard')
+    
+    _defaults = {
+        'report_id': _get_current_report_id,
+        'report_xml_id': _get_current_report_xml_id
+    }
+
+print_wizard()
 

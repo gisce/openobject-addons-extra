@@ -37,7 +37,8 @@ Author: Borja López Soilán (Pexego) - borjals@pexego.es
             <field name="type">form</field>
             <field name="arch" type="xml">
                 <form string="Account balance report">
-                    <field name="name" select="1"/>
+                    <field name="name" select="1" />
+                    <newline/>
                     <notebook>
                         <page string="Configuration">
                             <group string="Parameters" colspan="4">

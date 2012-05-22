@@ -127,10 +127,10 @@
         </td>
       </tr>
     </blockTable>
+    [[repeatIn(report.line_ids,'line')]]
     <blockTable colWidths="229.0,59.0,57.0,86.0,80.0" style="Tabla9">
-      <tr>
-        [[repeatIn(report.line_ids,'line')]]
         [[ line.current_value==0.0 and line.previous_value==0.0 and removeParentNode('tr')]]
+        <tr>
         <td>
           <para style="Bal1">
             <font face="Times-Bold" size="10.0">[[(line.css_class=='l1') and line.name or removeParentNode('font')]]</font>
