@@ -990,8 +990,13 @@ class stock_picking(osv.osv):
             self.force_assign(cr, uid, [picking.id])
             partial_data = {}
             for move in picking.move_lines:
-                partial_data["move" + str(move.id)] = {'product_qty': move.product_qty}
-            self.do_partial(cr, uid, [picking.id], partial_data)
+                partial_data["move%s" % (move.id)] = {
+                    'product_id': move.product_id.id,
+                    'product_qty': move.product_qty,
+                    'product_uom': move.product_uom.id,
+                    'prodlot_id': move.prodlot_id.id,
+                }
+            self.do_partial(cr, uid, [picking.id], partial_data, context=context)
         return True
         
     def validate_manufactoring_order(self, cr, uid, origin, context=None): #we do not create class mrp.production to avoid dependence with the module mrp
