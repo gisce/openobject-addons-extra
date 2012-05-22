@@ -19,11 +19,15 @@
 #
 ##############################################################################
 
+import netsvc
 from osv import osv, fields
+
 
 
 class reconcile_job(osv.osv):
     """
+    Deprecated model, replace by auto.workflow.job
+
     Pool of invoices to auto-reconcile
     Workaround for bug:https://bugs.launchpad.net/openobject-server/+bug/961919
     As we cannot reconcile within action_invoice_create
@@ -41,36 +45,163 @@ class reconcile_job(osv.osv):
 
     def create(self, cr, uid, vals, context=None):
         """
-        Inherited to skip job creation if invoice_id
-        already exists in the list.
+        Deprecated, create an auto.workflow.job instead
         """
-        if vals.get('invoice_id') and \
-            not self.search(
-                cr, uid, [('invoice_id', '=', vals['invoice_id'])]):
-            # also call super() if no invoice_id is given in vals
-            # in order to let pop the orm exception because this
-            # is a required field
-            return super(reconcile_job, self).create(
-                cr, uid, vals, context=context)
-        return False
+        logger = netsvc.Logger()
+        logger.notifyChannel(
+            "Deprecated", netsvc.LOG_WARNING,
+            "Use auto.workflow.job instead of "
+            "base.sale.auto.reconcile.job")
+        return self.pool.get('auto.workflow.job').create(
+            cr, uid,
+            {'res_model': 'account.invoice',
+             'res_id': vals.get('invoice_id'),
+             'action': 'auto_wkf_reconcile'},
+            context=context)
 
     def run(self, cr, uid, ids=None, context=None):
+        logger = netsvc.Logger()
+        logger.notifyChannel(
+            "Deprecated", netsvc.LOG_WARNING,
+            "use workflow.job instead of "
+            "base.sale.auto.reconcile.job")
+        return self.pool.get('auto.workflow.job').run(
+            cr, uid, ids, context=context)
+
+reconcile_job()
+
+
+class auto_workflow_job(osv.osv):
+    """ Previously the automatic workflows (validate invoice, picking,
+    reconcile, ...) where all implemented in a method oe_status().
+
+    This was not working because all the operations were done in the same time,
+    provoking workflows / concurrency errors.
+
+    This model aims to delay each automatic workflow actions using jobs.
+    So a job is represented by :
+     - a model
+     - an id
+     - an action (auto_wkf_validate, auto_wkf_reconcile, ...)
+
+    Jobs should be called by a cron, but they can also be called once at a time
+    if necessary.
+
+    By convention, automatic workflow methods should begin with auto_wkf on
+    models and their signature should be (self, cr, uid, one_id, context=None)
+
+    They must return True if the operation is done or has already be done, so
+    the job can be deleted. They must return False if the job still needs to be
+    done
+    """
+
+    _name = 'auto.workflow.job'
+
+    _columns = {
+        'res_model': fields.char(
+            'Resource Object', size=64, required=True, readonly=True),
+        'res_id': fields.integer('Resource ID', required=True, readonly=True),
+        'action': fields.char('Action', size=32),
+    }
+
+    def init(self, cr):
+        """ Migration from base.sale.auto.reconcile.job"""
+        cr.execute("""
+        INSERT INTO auto_workflow_job (res_model, res_id, action)
+          SELECT 'account.invoice', invoice_id, 'auto_wkf_reconcile'
+          FROM base_sale_auto_reconcile_job
+          EXCEPT
+          SELECT res_model, res_id, action from auto_workflow_job
+        """)
+
+    def _call_action(self, cr, uid, job, context=None):
+        """ Call the action of a job on the res_model model
+
+        :param browse_record job: browse record instance of an
+            auto.workflow.job
+        :return: the return of the actions
+        """
+        model = self.pool.get(job.res_model)
+
+        action_meth = getattr(model, job.action)
+        return action_meth(cr, uid, job.res_id, context=context)
+
+    def run(self, cr, uid, ids=None, context=None):
+        """ Call the actions of each job and commit after each job
+
+        :param list/int/long ids: id of workflow jobs to process, if None
+            they will all be processed
+        :return: True
+        """
         if ids is None:
             ids = self.search(cr, uid, [], context=context)
-        inv_obj = self.pool.get('account.invoice')
+        elif isinstance(ids, (int, long)):
+            ids = [ids]
+
         for job in self.browse(cr, uid, ids, context=context):
-            invoice = job.invoice_id
-
-            reconciled = False
-            if not invoice.reconciled:
-                reconciled = inv_obj.auto_reconcile_single(
-                    cr, uid, invoice.id, context=context)
-
-            # if the reconciliation have just been done
-            # or it was already done, we drop the job
-            if reconciled or invoice.reconciled:
+            if self._call_action(cr, uid, job, context=context):
                 self.unlink(cr, uid, job.id, context=context)
             cr.commit()
         return True
 
-reconcile_job()
+auto_workflow_job()
+
+
+class account_invoice(osv.osv):
+
+    _inherit = 'account.invoice'
+
+    def auto_wkf_validate(self, cr, uid, invoice_id, context=None):
+        """Interface method for the automatic worflow.
+        Validate an invoice in draft state.
+
+        :param int invoice_id: id of the invoice to validate
+        :return: True if the invoice have been opened, False if not
+        """
+        invoice = self.browse(cr, uid, invoice_id, context=context)
+        if invoice.state in ('open', 'paid'):
+            return True
+        if invoice.state == 'draft':
+            wf_service = netsvc.LocalService("workflow")
+            wf_service.trg_validate(
+                uid, 'account.invoice', invoice_id, 'invoice_open', cr)
+            return True
+        return False
+
+    def auto_wkf_reconcile(self, cr, uid, invoice_id, context=None):
+        """Interface method for the automatic worflow.
+        Auto-reconcile an invoice in open state.
+
+        :param int invoice_id: id of the invoice to reconcile
+        :return: True if the invoice have been reconciled, False if not
+        """
+        invoice = self.browse(cr, uid, invoice_id, context=context)
+        if invoice.state == 'paid':
+            return True
+        if invoice.state == 'open':
+            res = self.auto_reconcile_single(
+                cr, uid, invoice_id, context=context)
+            return res 
+        return False
+
+class stock_picking(osv.osv):
+
+    _inherit = 'stock.picking'
+
+    def auto_wkf_validate(self, cr, uid, picking_id, context=None):
+        """Interface method for the automatic worflow.
+        Validate a picking in draft, confirmed or assigned state.
+
+        :param int picking_id: id of the picking to validate
+        :return: True if the picking have been confirmed, False if not
+        """
+        picking = self.browse(cr, uid, picking_id, context=context)
+        if picking.state == 'done':
+            return True
+        if picking.state in ('draft', 'confirmed', 'assigned'):
+            self.validate_picking(cr, uid, [picking_id], context=context)
+            return True
+        return False
+
+stock_picking()
+
