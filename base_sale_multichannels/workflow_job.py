@@ -88,7 +88,8 @@ class auto_workflow_job(osv.osv):
     if necessary.
 
     By convention, automatic workflow methods should begin with auto_wkf on
-    models and their signature should be (self, cr, uid, one_id, context=None)
+    models and their signature should be:
+    auto_wkf_something(self, cr, uid, browse_record, context=None)
 
     They must return True if the operation is done or has already be done, so
     the job can be deleted. They must return False if the job still needs to be
@@ -124,7 +125,12 @@ class auto_workflow_job(osv.osv):
         model = self.pool.get(job.res_model)
 
         action_meth = getattr(model, job.action)
-        return action_meth(cr, uid, job.res_id, context=context)
+        record = model.browse(cr, uid, job.res_id, context=context)
+        # the record could have been deleted meanwhile
+        if not record:
+            self.unlink(cr, uid, job.id, context=context)
+            return False
+        return action_meth(cr, uid, record, context=context)
 
     def run(self, cr, uid, ids=None, context=None):
         """ Call the actions of each job and commit after each job
@@ -151,36 +157,34 @@ class account_invoice(osv.osv):
 
     _inherit = 'account.invoice'
 
-    def auto_wkf_validate(self, cr, uid, invoice_id, context=None):
+    def auto_wkf_validate(self, cr, uid, invoice, context=None):
         """Interface method for the automatic worflow.
         Validate an invoice in draft state.
 
-        :param int invoice_id: id of the invoice to validate
+        :param browse_record invoice_id: the invoice to validate
         :return: True if the invoice have been opened, False if not
         """
-        invoice = self.browse(cr, uid, invoice_id, context=context)
         if invoice.state in ('open', 'paid'):
             return True
         if invoice.state == 'draft':
             wf_service = netsvc.LocalService("workflow")
             wf_service.trg_validate(
-                uid, 'account.invoice', invoice_id, 'invoice_open', cr)
+                uid, 'account.invoice', invoice.id, 'invoice_open', cr)
             return True
         return False
 
-    def auto_wkf_reconcile(self, cr, uid, invoice_id, context=None):
+    def auto_wkf_reconcile(self, cr, uid, invoice, context=None):
         """Interface method for the automatic worflow.
         Auto-reconcile an invoice in open state.
 
-        :param int invoice_id: id of the invoice to reconcile
+        :param browse_record invoice: the invoice to reconcile
         :return: True if the invoice have been reconciled, False if not
         """
-        invoice = self.browse(cr, uid, invoice_id, context=context)
         if invoice.state == 'paid':
             return True
         if invoice.state == 'open':
             res = self.auto_reconcile_single(
-                cr, uid, invoice_id, context=context)
+                cr, uid, invoice.id, context=context)
             return res 
         return False
 
@@ -188,18 +192,17 @@ class stock_picking(osv.osv):
 
     _inherit = 'stock.picking'
 
-    def auto_wkf_validate(self, cr, uid, picking_id, context=None):
+    def auto_wkf_validate(self, cr, uid, picking, context=None):
         """Interface method for the automatic worflow.
         Validate a picking in draft, confirmed or assigned state.
 
-        :param int picking_id: id of the picking to validate
+        :param browse_record picking: the picking to validate
         :return: True if the picking have been confirmed, False if not
         """
-        picking = self.browse(cr, uid, picking_id, context=context)
         if picking.state == 'done':
             return True
         if picking.state in ('draft', 'confirmed', 'assigned'):
-            self.validate_picking(cr, uid, [picking_id], context=context)
+            self.validate_picking(cr, uid, [picking.id], context=context)
             return True
         return False
 
