@@ -415,6 +415,7 @@ def ext_import_unbound(self, cr, uid, external_data, external_referential_id, de
     :param dict defaults: defaults value for empty fields
     :return: created/updated id
     """
+    imported_id = False
     vals = self.convert_extdata_into_oedata(
         cr, uid, [external_data], external_referential_id,
         defaults=defaults, context=context)[0]
@@ -425,7 +426,6 @@ def ext_import_unbound(self, cr, uid, external_data, external_referential_id, de
     # (like mail + website for partners)
     __, res_id = self._existing_oeid_for_extid_import(
         cr, uid, vals, False, external_referential_id, context=context)
-    imported_id = False
     if res_id:
         if self.oe_update(
             cr, uid, res_id, vals, external_referential_id,
@@ -441,7 +441,6 @@ def ext_import_unbound(self, cr, uid, external_data, external_referential_id, de
         self.after_oe_create(
             cr, uid, imported_id, external_data,
             external_referential_id, context=context)
-
     return imported_id
 
 
@@ -498,15 +497,13 @@ def _ext_import_one(self, cr, uid, external_id, vals, external_data, referential
             logger.notifyChannel('ext synchro', netsvc.LOG_INFO, "Bound in OpenERP %s from External Ref with external_id %s and OpenERP id %s successfully" %(self._name, external_id, existing_rec_id))
     return create_id, write_id
 
-def _ext_import_one_cr(self, cr, uid, external_id, vals, external_data, referential_id, defaults=None, context=None):
+def _ext_import_one_cr(self, cr, uid, external_data, referential_id, defaults=None, context=None):
     """ Import one external resource, with cursor management, open a new cursor
     which is commited on each import
 
     This method can be inherited to do an action which have to be done after
     that the imported resource is commited in database.
 
-    :param int external_id: id of the resource on the external referential
-    :param dict vals: vals converted to openerp
     :param dict external_data: vals of the external resource before conversion
     :param int referential_id: external referential id from where we import the resource
     :param dict defaults: defaults value for fields which are not in vals
@@ -519,18 +516,43 @@ def _ext_import_one_cr(self, cr, uid, external_id, vals, external_data, referent
     import_ctx = dict(context)
     # avoid to use external logs in submethods as they are handle at this level
     import_ctx.pop('use_external_log', False)
-    record_cr = pooler.get_db(cr.dbname).cursor()
+    import_ctx['import_no_new_cr'] = True
+    record_cr = None
+    # other items imported within an import (addresses of an order as instance)
+    # should not use a new cursor
+    if not context.get('import_no_new_cr'):
+        record_cr = pooler.get_db(cr.dbname).cursor()
     cid = wid = False
+    external_id = False
     try:
+        vals = self.convert_extdata_into_oedata(record_cr or cr, uid,
+            [external_data], referential_id, defaults=defaults,
+            context=import_ctx)[0]
+        if not 'external_id' in vals:
+            raise osv.except_osv(_('External Import Error'), _("The object imported need an external_id, maybe the mapping doesn't exist for the object : %s" %self._name))
+        external_id = vals['external_id']
+        del vals['external_id']
         cid, wid = self._ext_import_one(
-            cr, uid, external_id,
+            record_cr or cr, uid, external_id,
             vals,
             external_data,
             referential_id,
             defaults=defaults,
             context=import_ctx)
     except (MappingError, osv.except_osv, xmlrpclib.Fault):
-        record_cr.rollback()
+        if record_cr:
+            record_cr.rollback()
+        if not external_id:
+            # try to find the external_id based on the mapping key
+            mapping_obj = self.pool.get('external.mapping')
+            mapping_id = mapping_obj.search(
+                cr, uid,
+                [('model', '=', self._name),
+                 ('referential_id', '=', referential_id)])
+            id_key = mapping_obj.read(
+                cr, uid, mapping_id[0], ['external_key_name'])['external_key_name']
+            external_id = external_data.get(id_key, False)
+
         report_line_obj.log_failed(
             cr, uid,
             self._name,
@@ -540,7 +562,8 @@ def _ext_import_one_cr(self, cr, uid, external_id, vals, external_data, referent
             defaults=defaults,
             context=context)
     else:
-        record_cr.commit()
+        if record_cr:
+            record_cr.commit()
         report_line_obj.log_success(
             cr, uid,
             self._name,
@@ -557,7 +580,8 @@ def _ext_import_one_cr(self, cr, uid, external_id, vals, external_data, referent
                 "Updated in OpenERP %s from External Ref with external_id %s and OpenERP id %s successfully" %
                 (self._name, external_id, wid))
     finally:
-        record_cr.close()
+        if record_cr:
+            record_cr.close()
     return cid, wid
 
 def ext_import(self, cr, uid, external_data, external_referential_id, defaults=None, context=None):
@@ -573,21 +597,14 @@ def ext_import(self, cr, uid, external_data, external_referential_id, defaults=N
     """
     if context is None:
         context = {}
-    result = self.convert_extdata_into_oedata(cr, uid, external_data, external_referential_id, defaults=defaults, context=context)
 
     create_ids = []
     write_ids = []
 
-    for index, vals in enumerate(result):
-        if not 'external_id' in vals:
-            raise osv.except_osv(_('External Import Error'), _("The object imported need an external_id, maybe the mapping doesn't exist for the object : %s" %self._name))
-        external_id = vals['external_id']
-        del vals['external_id']
+    for record_data in external_data:
         cid, wid = self._ext_import_one_cr(
             cr, uid,
-            external_id,
-            vals,
-            external_data[index],
+            record_data,
             external_referential_id,
             defaults=defaults,
             context=context)
