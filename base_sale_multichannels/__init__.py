@@ -28,6 +28,6 @@ import wizard
 import delivery
 import partner
 import account
-import reconcile_job
+import workflow_job
 
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

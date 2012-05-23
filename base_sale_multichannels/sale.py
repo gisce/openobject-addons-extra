@@ -730,6 +730,7 @@ class sale_order(osv.osv):
             ids = [ids]
 
         wf_service = netsvc.LocalService("workflow")
+        auto_wkf_obj = self.pool.get('auto.workflow.job')
         logger = netsvc.Logger()
         for order in self.browse(cr, uid, ids, context):
             payment_settings = order.base_payment_type_id
@@ -750,32 +751,27 @@ class sale_order(osv.osv):
                     if payment_settings.validate_order:
                         wf_service.trg_validate(uid, 'sale.order', order.id, 'order_confirm', cr)
                         self.write(cr, uid, order.id, {'need_to_update': False})
-                    
-                        if payment_settings.validate_picking:
-                            self.pool.get('stock.picking').validate_picking_from_order(cr, uid, order.id)
-                        
+
+                        self._auto_wkf_picking(cr, uid, order, context=context)
+
                         cr.execute('select * from ir_module_module where name=%s and state=%s', ('mrp','installed'))
                         if payment_settings.validate_manufactoring_order and cr.fetchone(): #if mrp module is installed
                             self.pool.get('stock.picking').validate_manufactoring_order(cr, uid, order.name, context)
 
                         if order.order_policy == 'prepaid':
-                            if payment_settings.validate_invoice:
-                                for invoice in order.invoice_ids:
-                                    wf_service.trg_validate(uid, 'account.invoice', invoice.id, 'invoice_open', cr)
-                                    if payment_settings.is_auto_reconcile:
-                                        invoice.auto_reconcile(context=context)
+                            for invoice in order.invoice_ids:
+                                self._auto_wkf_invoice(cr, uid, order, invoice.id, context=context)
 
                         elif order.order_policy == 'manual':
                             if payment_settings.create_invoice:
                                 wf_service.trg_validate(uid, 'sale.order', order.id, 'manual_invoice', cr)
                                 order.refresh()
-                                invoice_id = order.invoice_ids[0].id
-                                if payment_settings.validate_invoice:
-                                    wf_service.trg_validate(uid, 'account.invoice', invoice_id, 'invoice_open', cr)
-                                    if payment_settings.is_auto_reconcile:
-                                        self.pool.get('account.invoice').auto_reconcile(cr, uid, [invoice_id], context=context)
+                                if order.invoice_ids:
+                                    self._auto_wkf_invoice(cr, uid, order, invoice.id, context=context)
 
                         # IF postpaid DO NOTHING
+                        # automatic worflows are handled in
+                        # action_invoice_create()
 
                         elif order.order_policy == 'picking':
                             if payment_settings.create_invoice:
@@ -786,11 +782,7 @@ class sale_order(osv.osv):
                                     logger.notifyChannel('ext synchro', netsvc.LOG_INFO,
                                         "Cannot create invoice from picking for order %s" % (order.name,))
                                 else:
-                                    if payment_settings.validate_invoice:
-                                        wf_service.trg_validate(uid, 'account.invoice', invoice_id, 'invoice_open', cr)
-                                        if payment_settings.is_auto_reconcile:
-                                            self.pool.get('account.invoice').auto_reconcile(cr, uid, [invoice_id], context=context)
-
+                                    self._auto_wkf_invoice(cr, uid, order, invoice_id, context=context)
         return True
 
     def _prepare_invoice(self, cr, uid, order, lines, context=None):
@@ -809,6 +801,50 @@ class sale_order(osv.osv):
             vals['journal_id'] = order.shop_id.sale_journal.id
         return vals
 
+    def _auto_wkf_invoice(self, cr, uid, order, invoice_id, context=None):
+        """Initialize the automatic workflow action to validate
+        and reconcile the invoices based on payment settings
+
+        :param browse_record order: order with invoices to validate
+        :return: True
+        """
+        payment_settings = order.base_payment_type_id
+        if payment_settings and payment_settings.validate_invoice:
+            auto_wkf_obj = self.pool.get('auto.workflow.job')
+            auto_wkf_obj.create(
+                cr, uid,
+                {'res_model': 'account.invoice',
+                 'res_id': invoice_id,
+                 'action': 'auto_wkf_validate'},
+                context=context)
+            if payment_settings.is_auto_reconcile:
+                auto_wkf_obj.create(
+                    cr, uid,
+                    {'res_model': 'account.invoice',
+                     'res_id': invoice_id,
+                     'action': 'auto_wkf_reconcile'},
+                    context=context)
+        return True
+
+    def _auto_wkf_picking(self, cr, uid, order, context=None):
+        """Initialize the automatic workflow action to validate
+        the order based on payment settings
+
+        :param browse_record order: order with pickings to validate
+        :return: True
+        """
+        payment_settings = order.base_payment_type_id
+        if payment_settings and payment_settings.validate_picking:
+            auto_wkf_obj = self.pool.get('auto.workflow.job')
+            for picking in order.picking_ids:
+                auto_wkf_obj.create(
+                    cr, uid,
+                    {'res_model': 'stock.picking',
+                     'res_id': picking.id,
+                     'action': 'auto_wkf_validate'},
+                    context=context)
+        return True
+
     def action_invoice_create(self, cr, uid, ids, grouped=False, states=['confirmed', 'done', 'exception'], date_inv = False, context=None):
         inv_obj = self.pool.get('account.invoice')
         job_obj = self.pool.get('base.sale.auto.reconcile.job')
@@ -819,26 +855,9 @@ class sale_order(osv.osv):
             if payment_settings and payment_settings.invoice_date_is_order_date:
                 inv_obj.write(cr, uid, [inv.id for inv in order.invoice_ids], {'date_invoice' : order.date_order}, context=context)
             if order.order_policy == 'postpaid':
-                if payment_settings and payment_settings.validate_invoice:
-                    for invoice in order.invoice_ids:
-                        wf_service.trg_validate(uid, 'account.invoice', invoice.id, 'invoice_open', cr)
-                        if payment_settings.is_auto_reconcile:
-                            # we could not auto-reconcile here because
-                            # action_invoice_create is an action of the activity (subflow)
-                            # invoice, and so the workflow is going crazy, and the
-                            # activity never pass from "invoice" to "invoice_end"
-                            # the signal subflow.paid never move the sale order
-                            # workflow to invoice_end
-                            # sale.order's workflow stucks in "progress"
-                            # even if the invoice is paid and the picking delivered
-                            #
-                            # workaround: create an autoreconcile job to
-                            # reconcile the payment later
-                            # report for the workflow: https://bugs.launchpad.net/openobject-server/+bug/961919
-                            # report for this module: https://bugs.launchpad.net/magentoerpconnect/+bug/957136
-                            job_obj.create(
-                                cr, uid, {'invoice_id': invoice.id}, context=context)
-
+                for invoice in order.invoice_ids:
+                    self._auto_wkf_invoice(
+                         cr, uid, order, invoice.id, context=context)
         return res
 
     def oe_update(self, cr, uid, existing_rec_id, vals, each_row, external_referential_id, defaults, context):
@@ -965,22 +984,19 @@ base_sale_payment_type()
 
 class stock_picking(osv.osv):
     _inherit = "stock.picking"
-    
-    def validate_picking_from_order(self, cr, uid, order_id, context=None):
-        order= self.pool.get('sale.order').browse(cr, uid, order_id, context=context)
-        if not order.picking_ids:
-            raise Exception('For an unknow reason the picking for the sale order %s was not created'%order.name)
-        for picking in order.picking_ids:
-            picking.validate_picking(context=context)
-        return True
         
     def validate_picking(self, cr, uid, ids, context=None):
         for picking in self.browse(cr, uid, ids, context=context):
             self.force_assign(cr, uid, [picking.id])
             partial_data = {}
             for move in picking.move_lines:
-                partial_data["move" + str(move.id)] = {'product_qty': move.product_qty}
-            self.do_partial(cr, uid, [picking.id], partial_data)
+                partial_data["move%s" % (move.id)] = {
+                    'product_id': move.product_id.id,
+                    'product_qty': move.product_qty,
+                    'product_uom': move.product_uom.id,
+                    'prodlot_id': move.prodlot_id.id,
+                }
+            self.do_partial(cr, uid, [picking.id], partial_data, context=context)
         return True
         
     def validate_manufactoring_order(self, cr, uid, origin, context=None): #we do not create class mrp.production to avoid dependence with the module mrp
