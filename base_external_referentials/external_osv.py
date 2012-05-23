@@ -523,6 +523,7 @@ def _ext_import_one_cr(self, cr, uid, external_data, referential_id, defaults=No
     if not context.get('import_no_new_cr'):
         record_cr = pooler.get_db(cr.dbname).cursor()
     cid = wid = False
+    external_id = False
     try:
         vals = self.convert_extdata_into_oedata(record_cr or cr, uid,
             [external_data], referential_id, defaults=defaults,
@@ -541,6 +542,17 @@ def _ext_import_one_cr(self, cr, uid, external_data, referential_id, defaults=No
     except (MappingError, osv.except_osv, xmlrpclib.Fault):
         if record_cr:
             record_cr.rollback()
+        if not external_id:
+            # try to find the external_id based on the mapping key
+            mapping_obj = self.pool.get('external.mapping')
+            mapping_id = mapping_obj.search(
+                cr, uid,
+                [('model', '=', self._name),
+                 ('referential_id', '=', referential_id)])
+            id_key = mapping_obj.read(
+                cr, uid, mapping_id[0], ['external_key_name'])['external_key_name']
+            external_id = external_data.get(id_key, False)
+
         report_line_obj.log_failed(
             cr, uid,
             self._name,
