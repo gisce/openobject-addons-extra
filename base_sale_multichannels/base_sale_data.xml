@@ -17,7 +17,7 @@
 			<field name="categ_id" ref="categ_0"/>
 		</record>
 
-        <record forcecreate="True" id="ir_cron_auto_wkf_job" model="ir.cron">
+        <record forcecreate="True" id="ir_cron_autoreconcile_job" model="ir.cron">
             <field name="name">Base Sale Auto-Workflows Job</field>
             <field eval="True" name="active"/>
             <field name="user_id" ref="base.user_root"/>
