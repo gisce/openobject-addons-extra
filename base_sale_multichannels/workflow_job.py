@@ -21,6 +21,7 @@
 
 import netsvc
 import pooler
+import logging
 from osv import osv, fields
 
 _logger = logging.getLogger('auto.workflow.job')
