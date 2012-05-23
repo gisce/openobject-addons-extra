@@ -113,6 +113,7 @@ class auto_workflow_job(osv.osv):
           EXCEPT
           SELECT res_model, res_id, action from auto_workflow_job
         """)
+        cr.execute("DELETE FROM base_sale_auto_reconcile_job")
 
     def _call_action(self, cr, uid, job, context=None):
         """ Call the action of a job on the res_model model
