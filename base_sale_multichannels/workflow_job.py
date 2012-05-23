@@ -174,7 +174,7 @@ class account_invoice(osv.osv):
         :param browse_record invoice_id: the invoice to validate
         :return: True if the invoice have been opened, False if not
         """
-        if invoice.state in ('open', 'paid'):
+        if invoice.state in ('cancel', 'open', 'paid'):
             return True
         if invoice.state == 'draft':
             wf_service = netsvc.LocalService("workflow")
@@ -190,7 +190,7 @@ class account_invoice(osv.osv):
         :param browse_record invoice: the invoice to reconcile
         :return: True if the invoice have been reconciled, False if not
         """
-        if invoice.state == 'paid':
+        if invoice.state in ('paid', 'cancel'):
             return True
         if invoice.state == 'open':
             return self.auto_reconcile_single(
@@ -208,7 +208,7 @@ class stock_picking(osv.osv):
         :param browse_record picking: the picking to validate
         :return: True if the picking have been confirmed, False if not
         """
-        if picking.state == 'done':
+        if picking.state in ('cancel', 'done'):
             return True
         if picking.state in ('draft', 'confirmed', 'assigned'):
             self.validate_picking(cr, uid, [picking.id], context=context)
