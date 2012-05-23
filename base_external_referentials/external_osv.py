@@ -523,7 +523,7 @@ def _ext_import_one_cr(self, cr, uid, external_id, vals, external_data, referent
     cid = wid = False
     try:
         cid, wid = self._ext_import_one(
-            cr, uid, external_id,
+            record_cr, uid, external_id,
             vals,
             external_data,
             referential_id,
