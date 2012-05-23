@@ -729,7 +729,6 @@ class sale_order(osv.osv):
         if type(ids) in [int, long]:
             ids = [ids]
 
-        wf_service = netsvc.LocalService("workflow")
         auto_wkf_obj = self.pool.get('auto.workflow.job')
         logger = netsvc.Logger()
         for order in self.browse(cr, uid, ids, context):
@@ -741,7 +740,7 @@ class sale_order(osv.osv):
 
                 if payment_settings.check_if_paid and not paid:
                     if order.state == 'draft' and datetime.strptime(order.date_order, DEFAULT_SERVER_DATE_FORMAT) < datetime.now() - relativedelta(days=payment_settings.days_before_order_cancel or 30):
-                        wf_service.trg_validate(uid, 'sale.order', order.id, 'cancel', cr)
+                        self.init_auto_wkf_cancel( cr, uid, order, context=context)
                         self.write(cr, uid, order.id, {'need_to_update': False})
                         #TODO eventually call a trigger to cancel the order in the external system too
                         logger.notifyChannel('ext synchro', netsvc.LOG_INFO, "order %s canceled in OpenERP because older than % days and still not confirmed" % (order.id, payment_settings.days_before_order_cancel or 30))
@@ -749,40 +748,9 @@ class sale_order(osv.osv):
                         self.write(cr, uid, order.id, {'need_to_update': True})
                 else:
                     if payment_settings.validate_order:
-                        wf_service.trg_validate(uid, 'sale.order', order.id, 'order_confirm', cr)
+                        self.init_auto_wkf_validate(cr, uid, order, context=context)
                         self.write(cr, uid, order.id, {'need_to_update': False})
 
-                        self._auto_wkf_picking(cr, uid, order, context=context)
-
-                        cr.execute('select * from ir_module_module where name=%s and state=%s', ('mrp','installed'))
-                        if payment_settings.validate_manufactoring_order and cr.fetchone(): #if mrp module is installed
-                            self.pool.get('stock.picking').validate_manufactoring_order(cr, uid, order.name, context)
-
-                        if order.order_policy == 'prepaid':
-                            for invoice in order.invoice_ids:
-                                self._auto_wkf_invoice(cr, uid, order, invoice.id, context=context)
-
-                        elif order.order_policy == 'manual':
-                            if payment_settings.create_invoice:
-                                wf_service.trg_validate(uid, 'sale.order', order.id, 'manual_invoice', cr)
-                                order.refresh()
-                                if order.invoice_ids:
-                                    self._auto_wkf_invoice(cr, uid, order, invoice.id, context=context)
-
-                        # IF postpaid DO NOTHING
-                        # automatic worflows are handled in
-                        # action_invoice_create()
-
-                        elif order.order_policy == 'picking':
-                            if payment_settings.create_invoice:
-                                try:
-                                    invoice_id = self.pool.get('stock.picking').action_invoice_create(
-                                        cr, uid, [picking.id for picking in order.picking_ids])
-                                except osv.except_osv:
-                                    logger.notifyChannel('ext synchro', netsvc.LOG_INFO,
-                                        "Cannot create invoice from picking for order %s" % (order.name,))
-                                else:
-                                    self._auto_wkf_invoice(cr, uid, order, invoice_id, context=context)
         return True
 
     def _prepare_invoice(self, cr, uid, order, lines, context=None):
@@ -801,54 +769,9 @@ class sale_order(osv.osv):
             vals['journal_id'] = order.shop_id.sale_journal.id
         return vals
 
-    def _auto_wkf_invoice(self, cr, uid, order, invoice_id, context=None):
-        """Initialize the automatic workflow action to validate
-        and reconcile the invoices based on payment settings
-
-        :param browse_record order: order with invoices to validate
-        :return: True
-        """
-        payment_settings = order.base_payment_type_id
-        if payment_settings and payment_settings.validate_invoice:
-            auto_wkf_obj = self.pool.get('auto.workflow.job')
-            auto_wkf_obj.create(
-                cr, uid,
-                {'res_model': 'account.invoice',
-                 'res_id': invoice_id,
-                 'action': 'auto_wkf_validate'},
-                context=context)
-            if payment_settings.is_auto_reconcile:
-                auto_wkf_obj.create(
-                    cr, uid,
-                    {'res_model': 'account.invoice',
-                     'res_id': invoice_id,
-                     'action': 'auto_wkf_reconcile'},
-                    context=context)
-        return True
-
-    def _auto_wkf_picking(self, cr, uid, order, context=None):
-        """Initialize the automatic workflow action to validate
-        the order based on payment settings
-
-        :param browse_record order: order with pickings to validate
-        :return: True
-        """
-        payment_settings = order.base_payment_type_id
-        if payment_settings and payment_settings.validate_picking:
-            auto_wkf_obj = self.pool.get('auto.workflow.job')
-            for picking in order.picking_ids:
-                auto_wkf_obj.create(
-                    cr, uid,
-                    {'res_model': 'stock.picking',
-                     'res_id': picking.id,
-                     'action': 'auto_wkf_validate'},
-                    context=context)
-        return True
-
     def action_invoice_create(self, cr, uid, ids, grouped=False, states=['confirmed', 'done', 'exception'], date_inv = False, context=None):
         inv_obj = self.pool.get('account.invoice')
         job_obj = self.pool.get('base.sale.auto.reconcile.job')
-        wf_service = netsvc.LocalService("workflow")
         res = super(sale_order, self).action_invoice_create(cr, uid, ids, grouped, states, date_inv, context)
         for order in self.browse(cr, uid, ids, context=context):
             payment_settings = order.base_payment_type_id
@@ -856,8 +779,7 @@ class sale_order(osv.osv):
                 inv_obj.write(cr, uid, [inv.id for inv in order.invoice_ids], {'date_invoice' : order.date_order}, context=context)
             if order.order_policy == 'postpaid':
                 for invoice in order.invoice_ids:
-                    self._auto_wkf_invoice(
-                         cr, uid, order, invoice.id, context=context)
+                    self.init_auto_wkf_invoice(cr, uid, order, invoice.id, context=context)
         return res
 
     def oe_update(self, cr, uid, existing_rec_id, vals, each_row, external_referential_id, defaults, context):
