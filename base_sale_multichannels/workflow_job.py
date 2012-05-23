@@ -20,8 +20,10 @@
 ##############################################################################
 
 import netsvc
+import pooler
 from osv import osv, fields
 
+_logger = logging.getLogger('auto.workflow.job')
 
 
 class reconcile_job(osv.osv):
@@ -47,10 +49,8 @@ class reconcile_job(osv.osv):
         """
         Deprecated, create an auto.workflow.job instead
         """
-        logger = netsvc.Logger()
-        logger.notifyChannel(
-            "Deprecated", netsvc.LOG_WARNING,
-            "Use auto.workflow.job instead of "
+        _logger.debug(
+            "Deprecated: use auto.workflow.job instead of "
             "base.sale.auto.reconcile.job")
         return self.pool.get('auto.workflow.job').create(
             cr, uid,
@@ -60,10 +60,8 @@ class reconcile_job(osv.osv):
             context=context)
 
     def run(self, cr, uid, ids=None, context=None):
-        logger = netsvc.Logger()
-        logger.notifyChannel(
-            "Deprecated", netsvc.LOG_WARNING,
-            "use workflow.job instead of "
+        _logger.debug(
+            "Deprecated: use auto.workflow.job instead of "
             "base.sale.auto.reconcile.job")
         return self.pool.get('auto.workflow.job').run(
             cr, uid, ids, context=context)
@@ -145,9 +143,19 @@ class auto_workflow_job(osv.osv):
             ids = [ids]
 
         for job in self.browse(cr, uid, ids, context=context):
-            if self._call_action(cr, uid, job, context=context):
-                self.unlink(cr, uid, job.id, context=context)
-            cr.commit()
+            local_cr = pooler.get_db(cr.dbname).cursor()
+            try:
+                if self._call_action(local_cr, uid, job, context=context):
+                    self.unlink(local_cr, uid, job.id, context=context)
+            except Exception:
+                local_cr.rollback()
+                _logger.exception(
+                    "Failed to execute automatic workflow job %s"
+                    "on %s with id %s", job.action, job.res_id, job.res_model)
+            else:
+                local_cr.commit()
+            finally:
+                local_cr.close()
         return True
 
 auto_workflow_job()
@@ -183,9 +191,8 @@ class account_invoice(osv.osv):
         if invoice.state == 'paid':
             return True
         if invoice.state == 'open':
-            res = self.auto_reconcile_single(
+            return self.auto_reconcile_single(
                 cr, uid, invoice.id, context=context)
-            return res 
         return False
 
 class stock_picking(osv.osv):
