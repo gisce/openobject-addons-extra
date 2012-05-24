@@ -21,6 +21,7 @@
 #
 ##############################################################################
 
+from psycopg2 import IntegrityError
 from osv import fields, osv
 import base64
 import time
@@ -539,7 +540,7 @@ def _ext_import_one_cr(self, cr, uid, external_data, referential_id, defaults=No
             referential_id,
             defaults=defaults,
             context=import_ctx)
-    except (MappingError, osv.except_osv, xmlrpclib.Fault):
+    except (MappingError, osv.except_osv, xmlrpclib.Fault, IntegrityError):
         if record_cr:
             record_cr.rollback()
         if not external_id:
