@@ -32,23 +32,26 @@ from datetime import datetime, timedelta
 from dateutil.relativedelta import relativedelta
 from tools import DEFAULT_SERVER_DATETIME_FORMAT, DEFAULT_SERVER_DATE_FORMAT
 
+import logging
+_logger = logging.getLogger(__name__)
+
 
 class external_shop_group(osv.osv):
     _name = 'external.shop.group'
     _description = 'External Referential Shop Group'
-    
+
     _columns = {
         'name': fields.char('Name', size=64, required=True),
         'referential_id': fields.many2one('external.referential', 'Referential', select=True, ondelete='cascade'),
         'shop_ids': fields.one2many('sale.shop', 'shop_group_id', 'Sale Shops'),
     }
-    
+
 external_shop_group()
 
 
 class external_referential(osv.osv):
     _inherit = 'external.referential'
-    
+
     _columns = {
         'shop_group_ids': fields.one2many('external.shop.group', 'referential_id', 'Sub Entities'),
     }
@@ -58,7 +61,7 @@ external_referential()
 
 class product_category(osv.osv):
     _inherit = "product.category"
-    
+
     def collect_children(self, category, children=None):
         if children is None:
             children = []
@@ -68,7 +71,7 @@ class product_category(osv.osv):
             self.collect_children(child, children)
 
         return children
-    
+
     def _get_recursive_children_ids(self, cr, uid, ids, name, args, context=None):
         res = {}
         for category in self.browse(cr, uid, ids):
@@ -78,7 +81,7 @@ class product_category(osv.osv):
     _columns = {
         'recursive_childen_ids': fields.function(_get_recursive_children_ids, method=True, type='one2many', relation="product.category", string='All Child Categories'),
     }
-    
+
 product_category()
 
 
@@ -111,7 +114,7 @@ class sale_shop(osv.osv):
                 product_ids = self.pool.get("product.product").search(cr, uid, [('categ_id', 'in', all_categories)])
             res[shop.id] = product_ids
         return res
-    
+
     def _get_referential_id(self, cr, uid, ids, name, args, context=None):
         res = {}
         for shop in self.browse(cr, uid, ids, context=context):
@@ -125,7 +128,7 @@ class sale_shop(osv.osv):
                 result = cr.fetchone()
                 res[shop.id] = result[0]
         return res
-                
+
     def _set_referential_id(self, cr, uid, id, name, value, arg, context=None):
         shop = self.browse(cr, uid, id, context=context)
         if shop.shop_group_id:
@@ -200,7 +203,7 @@ class sale_shop(osv.osv):
                  "stock inventory updates.\nIf empty, Quantity Available "
                  "is used")
     }
-    
+
     _defaults = {
         'payment_default_id': lambda * a: 1, #required field that would cause trouble if not set when importing
         'auto_import': lambda * a: True,
@@ -212,7 +215,7 @@ class sale_shop(osv.osv):
             return shop.pricelist_id.id
         else:
             return self.pool.get('product.pricelist').search(cr, uid, [('type', '=', 'sale'), ('active', '=', True)])[0]
-    
+
     def export_categories(self, cr, uid, shop, context=None):
         if context is None:
             context = {}
@@ -224,14 +227,14 @@ class sale_shop(osv.osv):
                 categories.add(categ_id)
         context['shop_id'] = shop.id
         self.pool.get('product.category').ext_export(cr, uid, [categ_id for categ_id in categories], [shop.referential_id.id], {}, context)
-       
+
     def export_products_collection(self, cr, uid, shop, context):
         product_to_export = context.get('force_product_ids', [product.id for product in shop.exportable_product_ids])
         self.pool.get('product.product').ext_export(cr, uid, product_to_export, [shop.referential_id.id], {}, context)
 
     def export_products(self, cr, uid, shop, context):
         self.export_products_collection(cr, uid, shop, context)
-    
+
     def export_catalog(self, cr, uid, ids, context=None):
         if context is None:
             context = {}
@@ -286,11 +289,11 @@ class sale_shop(osv.osv):
             shop.write({'last_inventory_export_date':
                             time.strftime(DEFAULT_SERVER_DATETIME_FORMAT)})
         return True
-    
+
     def import_catalog(self, cr, uid, ids, context):
         #TODO import categories, then products
         raise osv.except_osv(_("Not Implemented"), _("Not Implemented in abstract base module!"))
-        
+
     def import_orders(self, cr, uid, ids, context=None):
         if context is None:
             context = {}
@@ -305,7 +308,7 @@ class sale_shop(osv.osv):
                             'ext_payment_method': shop.default_payment_method,
                             'company_id': shop.company_id.id,
                         }
-            
+
             context.update({
                             'conn_obj': shop.referential_id.external_connection(),
                             'shop_name': shop.name,
@@ -320,14 +323,14 @@ class sale_shop(osv.osv):
 
             self.import_shop_orders(cr, uid, shop, defaults, context)
         return False
-            
+
     def import_shop_orders(self, cr, uid, shop, defaults, context):
         """Not Implemented in abstract base module!"""
         return {}
 
     def _update_order_query(self, cr, uid, shop, context=None):
         req = """
-            SELECT ir_model_data.res_id, ir_model_data.name 
+            SELECT ir_model_data.res_id, ir_model_data.name
                 FROM sale_order
                 INNER JOIN ir_model_data ON sale_order.id = ir_model_data.res_id
                 WHERE ir_model_data.model='sale.order' AND sale_order.shop_id=%s
@@ -335,17 +338,16 @@ class sale_shop(osv.osv):
         """
         params = (shop.id,)
         if shop.last_update_order_export_date:
-            req += "AND sale_order.update_state_date > %s" 
+            req += "AND sale_order.update_state_date > %s"
             params = (shop.id, shop.last_update_order_export_date)
         return req, params
 
     def update_orders(self, cr, uid, ids, context=None):
         if context is None:
             context = {}
-        logger = netsvc.Logger()
         for shop in self.browse(cr, uid, ids):
             context['conn_obj'] = shop.referential_id.external_connection()
-            #get all orders, which the state is not draft and the date of modification is superior to the last update, to exports 
+            #get all orders, which the state is not draft and the date of modification is superior to the last update, to exports
             cr.execute(*self._update_order_query(cr, uid, shop, context=context))
             results = cr.fetchall()
 
@@ -356,7 +358,7 @@ class sale_shop(osv.osv):
                     order = self.pool.get('sale.order').browse(cr, uid, id, context)
                     order_ext_id = result[1].split('sale_order/')[1]
                     self.update_shop_orders(cr, uid, order, order_ext_id, context)
-                    logger.notifyChannel('ext synchro', netsvc.LOG_INFO, "Successfully updated order with OpenERP id %s and ext id %s in external sale system" % (id, order_ext_id))
+                    _logger.info("Successfully updated order with OpenERP id %s and ext id %s in external sale system", id, order_ext_id)
             self.pool.get('sale.shop').write(cr, uid, shop.id, {'last_update_order_export_date': time.strftime(DEFAULT_SERVER_DATETIME_FORMAT)})
         return False
 
@@ -406,13 +408,12 @@ class sale_shop(osv.osv):
 
     def export_shipping(self, cr, uid, ids, context):
         picking_obj = self.pool.get('stock.picking')
-        logger = netsvc.Logger()
         for shop in self.browse(cr, uid, ids):
             cr.execute(*self._export_shipping_query(
                             cr, uid, shop, context=context))
             results = cr.dictfetchall()
             if not results:
-                logger.notifyChannel('ext synchro', netsvc.LOG_INFO, "There is no shipping to export for the shop '%s' to the external referential" % (shop.name,))
+                _logger.info("There is no shipping to export for the shop '%s' to the external referential", shop.name)
                 return True
             context['conn_obj'] = shop.referential_id.external_connection()
 
@@ -451,7 +452,7 @@ class sale_shop(osv.osv):
                             ext_shipping_id,
                             shop.referential_id.id,
                             context=context)
-                        logger.notifyChannel('ext synchro', netsvc.LOG_INFO, "Successfully creating shipping with OpenERP id %s and ext id %s in external sale system" % (result["picking_id"], ext_shipping_id))
+                        _logger.info("Successfully creating shipping with OpenERP id %s and ext id %s in external sale system", result["picking_id"], ext_shipping_id)
                     picking_cr.commit()
             finally:
                 picking_cr.close()
@@ -557,7 +558,7 @@ class sale_order(osv.osv):
         vals = self.play_order_onchange(
             cr, uid, vals, defaults=defaults, context=context)
         return super(sale_order, self).merge_with_default_value(cr, uid, sub_mapping_list, external_data, external_referential_id, vals, defaults=defaults, context=context)
-    
+
     def create_payments(self, cr, uid, order_id, data_record, context):
         """not implemented in this abstract module"""
         if not context.get('external_referential_type'):
@@ -614,7 +615,7 @@ class sale_order(osv.osv):
                                 external_referential_id, context=context)
         return super(sale_order, self).after_oe_create(
             cr, uid, rec_id, external_data, external_referential_id, context=context)
-    
+
     def generate_payment_from_order(self, cr, uid, ids, payment_ref, entry_name=None, paid=True, date=None, context=None):
         if type(ids) in [int, long]:
             ids = [ids]
@@ -652,7 +653,7 @@ class sale_order(osv.osv):
                 entry_name, date, payment_settings.validate_payment,
                 context=context)
         return False
-        
+
     def generate_payment_with_journal(self, cr, uid, journal_id, partner_id,
                                       amount, payment_ref, entry_name,
                                       date, should_validate, context):
@@ -730,7 +731,6 @@ class sale_order(osv.osv):
             ids = [ids]
 
         auto_wkf_obj = self.pool.get('auto.workflow.job')
-        logger = netsvc.Logger()
         for order in self.browse(cr, uid, ids, context):
             payment_settings = order.base_payment_type_id
 
@@ -743,7 +743,7 @@ class sale_order(osv.osv):
                         self.init_auto_wkf_cancel( cr, uid, order, context=context)
                         self.write(cr, uid, order.id, {'need_to_update': False})
                         #TODO eventually call a trigger to cancel the order in the external system too
-                        logger.notifyChannel('ext synchro', netsvc.LOG_INFO, "order %s canceled in OpenERP because older than % days and still not confirmed" % (order.id, payment_settings.days_before_order_cancel or 30))
+                        logger.info("order %s canceled in OpenERP because older than % days and still not confirmed", order.id, payment_settings.days_before_order_cancel or 30)
                     else:
                         self.write(cr, uid, order.id, {'need_to_update': True})
                 else:
@@ -803,7 +803,7 @@ sale_order()
 
 class sale_order_line(osv.osv):
     _inherit='sale.order.line'
-    
+
     _columns = {
         'ext_product_ref': fields.char('Product Ext Ref', help="This is the original external product reference", size=256),
     }
@@ -827,7 +827,7 @@ class sale_order_line(osv.osv):
             'flag': False,
             'context': context,
         }
-    
+
     def play_sale_order_line_onchange(self, cr, uid, line, parent_data, previous_lines, defaults, context=None):
         line = self.call_onchange(cr, uid, 'product_id_change', line, defaults=defaults, parent_data=parent_data, previous_lines=previous_lines, context=context)
         #TODO all m2m should be mapped correctly
@@ -876,7 +876,7 @@ class base_sale_payment_type(osv.osv):
         'invoice_date_is_order_date' : fields.boolean('Force Invoice Date', help="If it's check the invoice date will be the same as the order date"),
         'payment_term_id': fields.many2one('account.payment.term', 'Payment Term'),
     }
-    
+
     _defaults = {
         'picking_policy': lambda *a: 'direct',
         'order_policy': lambda *a: 'manual',
@@ -906,7 +906,7 @@ base_sale_payment_type()
 
 class stock_picking(osv.osv):
     _inherit = "stock.picking"
-        
+
     def validate_picking(self, cr, uid, ids, context=None):
         for picking in self.browse(cr, uid, ids, context=context):
             self.force_assign(cr, uid, [picking.id])
@@ -920,7 +920,7 @@ class stock_picking(osv.osv):
                 }
             self.do_partial(cr, uid, [picking.id], partial_data, context=context)
         return True
-        
+
     def validate_manufactoring_order(self, cr, uid, origin, context=None): #we do not create class mrp.production to avoid dependence with the module mrp
         if context is None:
             context = {}
@@ -936,6 +936,6 @@ class stock_picking(osv.osv):
             mrp_product_produce_obj.do_produce(cr, uid, [produce], context)
             self.validate_manufactoring_order(cr, uid, production.name, context)
         return True
-        
+
 stock_picking()
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
