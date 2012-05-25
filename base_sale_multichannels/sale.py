@@ -331,7 +331,7 @@ class sale_shop(osv.osv):
                 FROM sale_order
                 INNER JOIN ir_model_data ON sale_order.id = ir_model_data.res_id
                 WHERE ir_model_data.model='sale.order' AND sale_order.shop_id=%s
-                    AND ir_model_data.referential_id NOTNULL
+                    AND ir_model_data.external_referential_id NOTNULL
         """
         params = (shop.id,)
         if shop.last_update_order_export_date:
