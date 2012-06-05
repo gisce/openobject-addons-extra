@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+    
+        <report auto="False" id="account_general_ledger" menu="False"
+        	 model="account.account" 
+        	 name="account.general.ledger_accounts"
+        	 rml="account/report/account_general_ledger.rml" 
+        	 string="General Ledger"/>
+        <report auto="False" id="account_general_ledger_landscape" menu="False" 
+        	model="account.account" 
+        	name="account.general.ledger_landscape_accounts" 
+        	rml="account/report/account_general_ledger_landscape.rml" 
+        	string="General Ledger"/>
+
+    </data>
+</openerp>
