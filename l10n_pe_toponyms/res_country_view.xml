@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>       
+   
+    <record model="ir.ui.view" id="view_country_state_form_toponyms">
+        <field name="name">view_country_state_form_toponyms</field>
+        <field name="model">res.country.state</field>
+        <field name="inherit_id" ref="base.view_country_state_form"/>
+        <field name="arch" type="xml">
+            <field name="code" position="after">
+                <field name="province_ids" colspan="4" mode="tree,form" nolabel="1">
+                    <tree string="Provinces">
+                        <field name="name"/>
+                        <field name="code"/>
+                    </tree>
+                    <form string="Provinces">
+                        <field name="name"/>
+                        <field name="code"/>
+                        <separator string="Districts" colspan="4"/>
+                        <field name="district_ids" nolabel="1" colspan="4"/>
+                    </form>
+                 </field>
+            </field>
+        </field>
+    </record>
+        
+    </data>
+</openerp>

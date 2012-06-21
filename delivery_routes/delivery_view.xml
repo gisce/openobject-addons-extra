@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+	<data>
+		<record model='ir.ui.view' id='delivery_routes_carrier_form_view'>
+			<field name='name'>Delivery Routes Carrier Form Inherit</field>
+			<field name='model'>delivery.carrier</field>
+			<field name='inherit_id' ref='delivery.view_delivery_carrier_form'/>
+			<field name='type'>form</field>
+			<field name='arch' type='xml'>
+				<xpath expr="/form/field[@name='pricelist_ids']" position="after">
+					<field name="driver_ids" nolabel="1" colspan="4"/>
+				</xpath>
+			</field>
+		</record>
+
+        <!-- Delivery Driver -->
+        <record id="view_delivery_driver_tree" model="ir.ui.view">
+            <field name="name">delivery.driver.tree</field>
+            <field name="model">delivery.driver</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Delivery Drivers">
+                    <field name="name"/>
+                    <field name="carrier_id"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_delivery_driver_form" model="ir.ui.view">
+            <field name="name">delivery.driver.form</field>
+            <field name="model">delivery.driver</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Delivery Driver">
+                    <field name="name"/>
+                    <field name="carrier_id"/>
+		    <field name="outsourcing"/>
+		    <group colspan="2" col="4">
+			    <field name="employee_id" attrs="{'invisible':[('outsourcing','=',True)]}"/>
+			    <field name="partner_id" attrs="{'invisible':[('outsourcing','=',False)]}"/>
+		    </group>
+                </form>
+            </field>
+        </record>
+
+	<record id="action_delivery_driver_form" model="ir.actions.act_window">
+            <field name="name">Delivery Driver</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">delivery.driver</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+        <menuitem action="action_delivery_driver_form" id="menu_action_delivery_driver_form" parent="delivery.menu_delivery" groups="base.group_extended"/>
+
+        <!-- Delivery Time -->
+        <record id="view_delivery_time_tree" model="ir.ui.view">
+            <field name="name">delivery.time.tree</field>
+            <field name="model">delivery.time</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Delivery Time">
+                    <field name="name"/>
+                    <field name="start_hour"/>
+                    <field name="start_minute"/>
+                    <field name="end_hour"/>
+                    <field name="end_minute"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_delivery_time_form" model="ir.ui.view">
+            <field name="name">delivery.time.form</field>
+            <field name="model">delivery.time</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Delivery Time">
+                    <field name="name"/>
+                    <field name="sequence"/>
+                    <group colspan="2" col="4">
+			    <field name="start_hour"/>
+			    <field name="start_minute"/>
+		    </group>
+		    <group colspan="2" col="4">
+			    <field name="end_hour"/>
+			    <field name="end_minute"/>
+		    </group>
+		    <field name="active"/>
+                </form>
+            </field>
+        </record>
+
+	<record id="action_delivery_time_form" model="ir.actions.act_window">
+            <field name="name">Delivery Time</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">delivery.time</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+        <menuitem action="action_delivery_time_form" id="menu_action_delivery_time_form" parent="delivery.menu_delivery" groups="base.group_extended"/>
+
+        <!-- Delivery Route -->
+        <record id="view_delivery_route_line_tree" model="ir.ui.view">
+            <field name="name">delivery.route.line.tree</field>
+            <field name="model">delivery.route.line</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Delivery Route Lines">
+			<field name="sequence"/>
+			<field name="address_id"/>
+			<field name="state"/>
+			<field name="visit_date"/>
+			<field name="visit_note"/>
+			<field name="picking_id"/>
+		</tree>
+            </field>
+        </record>
+        <record id="view_delivery_route_line_form" model="ir.ui.view">
+            <field name="name">delivery.route.line.form</field>
+            <field name="model">delivery.route.line</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+		<form string="Delivery Route Line">
+		    <field name="sequence"/>
+		    <field name="address_id"/>
+		    <field name="picking_id"/>
+		    <field name="visit_date"/>
+		    <field name="visit_note"/>
+		    <separator string="Notes" colspan="4"/>
+		    <field name="note" nolabel="1" colspan="4"/>
+		    <field name="state"/>
+		    <group colspan="2" col="5">
+			<button name="action_draft" string="Draft" type="object" states="cancel"/>
+			<button name="action_delivered" string="Delivered" type="object" states="draft"/>
+			<button name="action_received" string="Received" type="object" states="delivered"/>
+			<button name="action_returned" string="Returned" type="object" states="delivered"/>
+			<button name="action_cancel" string="Cancel" type="object" states="received,returned,delivered"/>
+		    </group>
+		</form>
+            </field>
+        </record>
+
+        <record id="view_delivery_route_tree" model="ir.ui.view">
+            <field name="name">delivery.route.tree</field>
+            <field name="model">delivery.route</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Delivery Routes">
+                    <field name="name"/>
+                    <field name="date"/>
+                    <field name="time_id"/>
+                    <field name="driver_id"/>
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record>
+        <record id="view_delivery_route_form" model="ir.ui.view">
+            <field name="name">delivery.route.form</field>
+            <field name="model">delivery.route</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Delivery Route">
+                    <field name="name"/>
+                    <field name="date"/>
+                    <field name="time_id"/>
+                    <field name="driver_id"/>
+		    <group colspan="2" col="4">
+			<field name="departure_date"/>
+			<field name="arrive_date"/>
+		    </group>
+		    <button name="%(action_fill_picking)d" string="Fill Pickings" type="action" states="draft" colspan="2"/>
+                    <field name="line_ids" colspan="4" nolabel="1"/>
+		    <field name="state"/>
+		    <group colspan="2" col="5">
+			    <button name="action_draft" string="Draft" type="object" states="cancel"/>
+			    <button name="action_departure" string="Departure" type="object" states="draft"/>
+			    <button name="action_arrive" string="Arrive" type="object" states="departure"/>
+			    <button name="action_done" string="Done" type="object" states="arrive"/>
+			    <button name="action_cancel" string="Cancel" type="object" states="departure"/>
+		    </group>
+                </form>
+            </field>
+        </record>
+
+	<record id="action_delivery_route_form" model="ir.actions.act_window">
+            <field name="name">Delivery Route</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">delivery.route</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+        <menuitem action="action_delivery_route_form" id="menu_action_delivery_route_form" parent="stock.menu_stock_warehouse_mgmt"/>
+                    
+	</data>
+</openerp>

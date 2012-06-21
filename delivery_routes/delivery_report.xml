@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<openerp>
+    <data>
+        <report id="report_delivery_route_print" name="delivery.route.print" string="Delivery Route Print" model="delivery.route" 
+            rml="delivery_routes/report/delivery_route_print.rml" auto="False" header = "False" menu="True"/>
+            
+    </data>
+</openerp>

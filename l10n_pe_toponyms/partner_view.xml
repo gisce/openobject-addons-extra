@@ -1,0 +1,69 @@
+<?xml version="1.0" ?>
+<openerp>
+<data>
+
+    <!-- Views for Addresses -->
+      <record model="ir.ui.view" id="view_partner_address_form_toponyms">
+        <field name='name'>res.partner.address.form.toponyms</field>
+        <field name='model'>res.partner.address</field>
+        <field name="inherit_id" ref="base.view_partner_address_form1"/>
+        <field name='type'>form</field>
+        <field name='arch' type='xml'>
+            <field name="state_id" position="after">
+                <field name="province_id"/>
+                <field name="district_id"/>
+            </field>
+        </field>
+    </record>
+    
+    <record model="ir.ui.view" id="view_partner_address_tree_toponyms">
+        <field name="name">res.partner.address.tree.toponyms</field>
+        <field name="model">res.partner.address</field>
+        <field name="inherit_id" ref="base.view_partner_address_tree"/>
+        <field name="arch" type="xml">
+            <field name="city" position="replace">
+                <field name="address_ref"/>
+            </field>
+        </field>
+    </record>
+    
+    <record model="ir.ui.view" id="view_partner_address_form1_toponyms">
+        <field name="name">res.partner.address.form1.toponyms</field>
+        <field name="model">res.partner.address</field>
+        <field name="inherit_id" ref="base.view_partner_address_form1"/>
+        <field name="arch" type="xml">
+            <field name="city" position="replace">
+                <field name="address_ref"/>
+            </field>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="view_partner_address_form2_toponyms">
+        <field name="name">res.partner.address.form2.toponyms</field>
+        <field name="model">res.partner.address</field>
+        <field name="inherit_id" ref="base.view_partner_address_form2"/>
+        <field name="arch" type="xml">
+            <field name="city" position="replace">
+                <field name="address_ref"/>
+            </field>
+        </field>
+    </record>
+    
+    <record model="ir.ui.view" id="view_partner_form_toponyms">
+        <field name="name">res.partner.form.toponyms</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="/form/notebook/page[@string='General']/field[@name='address']/form/group/field[@name='city']" position="replace">
+                <field name="address_ref"/>
+            </xpath>
+            <xpath expr="/form/notebook/page[@string='General']/field[@name='address']/form/group/field[@name='state_id']" position="after">
+                <field name="province_id"/>
+                <field name="district_id"/>
+            </xpath>
+            
+        </field>
+    </record>
+
+</data>
+</openerp>

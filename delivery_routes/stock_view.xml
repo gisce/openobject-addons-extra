@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+	<data>
+		<record model='ir.ui.view' id='delivery_routes_picking_form_view'>
+			<field name='name'>Delivery Routes Picking Form Inherit</field>
+			<field name='model'>stock.picking</field>
+			<field name='inherit_id' ref='stock.view_picking_out_form'/>
+			<field name='type'>form</field>
+			<field name='arch' type='xml'>
+				<xpath expr="/form/group/group/field[@name='stock_journal_id']" position="before">
+					<field name="route_line_id"/>
+					<group colspan="2" col="4">
+						<field name="delivery_date"/>
+						<field name="time_id"/>
+						<field name="route_state"/>
+						<field name="delivered"/>
+					</group>
+				</xpath>
+			</field>
+		</record>
+
+	</data>
+</openerp>

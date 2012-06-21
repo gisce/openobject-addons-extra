@@ -1,0 +1,3 @@
+"id","name","model_id:id","group_id:id","perm_read","perm_write","perm_create","perm_unlink"
+"access_country_province","res.country.province","l10n_pe_toponyms.model_res_country_province",,1,0,0,0
+"access_country_district","res.country.district","model_res_country_district",,1,0,0,0
