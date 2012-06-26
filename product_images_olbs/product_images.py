@@ -97,7 +97,15 @@ class product_images(osv.osv):
             with open(filename , 'rb') as f:
                 img = base64.b64encode(f.read())
         else:
-            full_path = self._image_path(cr, uid, image, context=context)
+            try:
+                if isinstance(image.product_id.default_code, bool):
+                    _logger.debug('product not completely setup, no image available')
+                    full_path = False
+                else:
+                    full_path = self._image_path(cr, uid, image, context=context)
+            except Exception, e:
+                _logger.error("Can not find the path for image %s: %s", id, e, exc_info=True)
+                return False
             if full_path:
                 if os.path.exists(full_path):
                     try:
