@@ -14,11 +14,11 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2012-05-24 11:37+0000\n"
-"X-Generator: Launchpad (build 15288)\n"
+"X-Launchpad-Export-Date: 2012-07-13 05:01+0000\n"
+"X-Generator: Launchpad (build 15614)\n"
 
 #. module: label
-#: wizard_field:res.partner.address.label,init,printer_right:0
+#: field:label.wizard,printer_right:0
 msgid "Right"
 msgstr "Jobbra"
 
@@ -29,17 +29,17 @@ msgid ""
 msgstr ""
 
 #. module: label
-#: selection:res.partner.address.label,init,font_type:0
+#: selection:label.wizard,font_type:0
 msgid "Helvetica-Bold"
 msgstr "Helvetica-Bold"
 
 #. module: label
-#: wizard_view:res.partner.address.label,init:0
+#: view:label.wizard:0
 msgid "Label Char Font"
 msgstr "Címke betűje"
 
 #. module: label
-#: wizard_field:res.partner.address.label,init,printer_bottom:0
+#: field:label.wizard,printer_bottom:0
 msgid "Bottom"
 msgstr "Lent"
 
@@ -52,17 +52,17 @@ msgid "Notification"
 msgstr "Megjegyzés"
 
 #. module: label
-#: wizard_field:res.partner.address.label,init,printer_top:0
+#: field:label.wizard,printer_top:0
 msgid "Top"
 msgstr "Fent"
 
 #. module: label
-#: wizard_field:res.partner.address.label,init,first_row:0
+#: field:label.wizard,first_row:0
 msgid "First Row"
 msgstr "Első sor"
 
 #. module: label
-#: wizard_field:res.partner.address.label,init,font_type:0
+#: field:label.wizard,font_type:0
 msgid "Font Type"
 msgstr "Betűtípus"
 
@@ -72,7 +72,7 @@ msgid "Number of Columns"
 msgstr "Oszlopok száma"
 
 #. module: label
-#: selection:res.partner.address.label,init,font_type:0
+#: selection:label.wizard,font_type:0
 msgid "Helvetica"
 msgstr "Helvetica"
 
@@ -116,8 +116,8 @@ msgstr ""
 "in). Például 29.cm vagy 11in."
 
 #. module: label
-#: field:report.label.manufacturer,name:0
 #: field:report.label,name:0
+#: field:report.label.manufacturer,name:0
 #: field:report.pagesize,name:0
 msgid "Name"
 msgstr "Név"
@@ -128,12 +128,12 @@ msgid "Description"
 msgstr "Leírás"
 
 #. module: label
-#: selection:res.partner.address.label,init,font_type:0
+#: selection:label.wizard,font_type:0
 msgid "Courier"
 msgstr "Courier"
 
 #. module: label
-#: selection:res.partner.address.label,init,font_type:0
+#: selection:label.wizard,font_type:0
 msgid "Courier-BoldOblique"
 msgstr "Courier-BoldOblique"
 
@@ -163,7 +163,7 @@ msgstr ""
 "értékkel. Például 29.7cm vagy 11in."
 
 #. module: label
-#: selection:res.partner.address.label,init,font_type:0
+#: selection:label.wizard,font_type:0
 msgid "Helvetica-BoldOblique"
 msgstr "Helvetica-BoldOblique"
 
@@ -193,7 +193,7 @@ msgstr ""
 "Például 29.7cm vagy 11in."
 
 #. module: label
-#: wizard_view:res.partner.address.label,notify_bottom:0
+#: selection:label.wizard,state:0
 msgid ""
 "Printer bottom margin bigger than (bottom label margin + label height). Try "
 "again."
@@ -202,27 +202,27 @@ msgstr ""
 "összegénél. Próbálja újra."
 
 #. module: label
-#: selection:res.partner.address.label,init,font_size:0
+#: selection:label.wizard,font_size:0
 msgid "7"
 msgstr "7"
 
 #. module: label
-#: selection:res.partner.address.label,init,font_size:0
+#: selection:label.wizard,font_size:0
 msgid "6"
 msgstr "6"
 
 #. module: label
-#: selection:res.partner.address.label,init,font_size:0
+#: selection:label.wizard,font_size:0
 msgid "9"
 msgstr "9"
 
 #. module: label
-#: selection:res.partner.address.label,init,font_size:0
+#: selection:label.wizard,font_size:0
 msgid "8"
 msgstr "8"
 
 #. module: label
-#: wizard_view:res.partner.address.label,notify_left:0
+#: selection:label.wizard,state:0
 msgid ""
 "Printer left margin bigger than (left label margin + label width). Try again."
 msgstr ""
@@ -235,7 +235,7 @@ msgid "Manufacturer"
 msgstr "Gyártó"
 
 #. module: label
-#: selection:res.partner.address.label,init,font_type:0
+#: selection:label.wizard,font_type:0
 msgid "Courier-Oblique"
 msgstr "Courier-Oblique"
 
@@ -281,12 +281,12 @@ msgid "Left Margin"
 msgstr "Bal margó"
 
 #. module: label
-#: wizard_field:res.partner.address.label,init,font_size:0
+#: field:label.wizard,font_size:0
 msgid "Font Size"
 msgstr "Betűméret"
 
 #. module: label
-#: wizard_view:res.partner.address.label,notify_right:0
+#: selection:label.wizard,state:0
 msgid ""
 "Printer right margin bigger than (right label margin + label width). Try "
 "again."
@@ -295,7 +295,7 @@ msgstr ""
 "az összegénél. Próbálja újra."
 
 #. module: label
-#: selection:res.partner.address.label,init,font_type:0
+#: selection:label.wizard,font_type:0
 msgid "Times-Italic"
 msgstr "Times-Italic"
 
@@ -314,47 +314,47 @@ msgstr ""
 "Például 29.cm vagy 11in."
 
 #. module: label
-#: wizard_view:res.partner.address.label,init:0
+#: view:label.wizard:0
 msgid "First Label"
 msgstr "Első címke"
 
 #. module: label
-#: wizard_field:res.partner.address.label,init,printer_left:0
+#: field:label.wizard,printer_left:0
 msgid "Left"
 msgstr "Balra"
 
 #. module: label
-#: selection:res.partner.address.label,init,font_size:0
+#: selection:label.wizard,font_size:0
 msgid "11"
 msgstr "11"
 
 #. module: label
-#: selection:res.partner.address.label,init,font_size:0
+#: selection:label.wizard,font_size:0
 msgid "10"
 msgstr "10"
 
 #. module: label
-#: selection:res.partner.address.label,init,font_type:0
+#: selection:label.wizard,font_type:0
 msgid "Times-BoldItalic"
 msgstr "Times-BoldItalic"
 
 #. module: label
-#: selection:res.partner.address.label,init,font_size:0
+#: selection:label.wizard,font_size:0
 msgid "12"
 msgstr "12"
 
 #. module: label
-#: wizard_field:res.partner.address.label,init,first_col:0
+#: field:label.wizard,first_col:0
 msgid "First Column"
 msgstr "Első oszlop"
 
 #. module: label
-#: selection:res.partner.address.label,init,font_size:0
+#: selection:label.wizard,font_size:0
 msgid "14"
 msgstr "14"
 
 #. module: label
-#: wizard_view:res.partner.address.label,init:0
+#: view:label.wizard:0
 msgid "Printer Margins"
 msgstr "Nyomtató margói"
 
@@ -366,12 +366,12 @@ msgid "Label Formats"
 msgstr "Címkeformátumok"
 
 #. module: label
-#: model:ir.actions.wizard,name:label.res_partner_address_report
+#: model:ir.ui.menu,name:label.label_reports_menu
 msgid "Labels"
 msgstr "Címkék"
 
 #. module: label
-#: selection:res.partner.address.label,init,font_type:0
+#: selection:label.wizard,font_type:0
 msgid "Times-Bold"
 msgstr "Times-Bold"
 
@@ -388,7 +388,7 @@ msgid "Height"
 msgstr "Magasság"
 
 #. module: label
-#: selection:res.partner.address.label,init,font_type:0
+#: selection:label.wizard,font_type:0
 msgid "Courier-Bold"
 msgstr "Courier-Bold"
 
@@ -408,17 +408,17 @@ msgid "Cancel"
 msgstr "Mégsem"
 
 #. module: label
-#: selection:res.partner.address.label,init,font_type:0
+#: selection:label.wizard,font_type:0
 msgid "Times-Roman"
 msgstr "Times-Roman"
 
 #. module: label
-#: selection:res.partner.address.label,init,font_type:0
+#: selection:label.wizard,font_type:0
 msgid "Helvetica-Oblique"
 msgstr "Helvetica-Oblique"
 
 #. module: label
-#: wizard_view:res.partner.address.label,notify_top:0
+#: selection:label.wizard,state:0
 msgid ""
 "Printer top margin bigger than (top label margin + label height). Try again."
 msgstr ""
@@ -431,6 +431,6 @@ msgid "Landscape"
 msgstr "Fekvő"
 
 #. module: label
-#: wizard_field:res.partner.address.label,init,label_format:0
+#: field:label.wizard,label_format:0
 msgid "Label Format"
 msgstr "Címke formátum"

@@ -13,18 +13,18 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2012-05-24 11:37+0000\n"
-"X-Generator: Launchpad (build 15288)\n"
+"X-Launchpad-Export-Date: 2012-07-13 05:01+0000\n"
+"X-Generator: Launchpad (build 15614)\n"
 
 #. module: project_contact
 #: constraint:ir.ui.view:0
 msgid "Invalid XML for View Architecture!"
-msgstr ""
+msgstr "Felaktig XML för vyarkitektur!"
 
 #. module: project_contact
 #: field:project.project,contact_id2:0
 msgid "Contact"
-msgstr ""
+msgstr "Kontakt"
 
 #. module: project_contact
 #: model:ir.module.module,description:project_contact.module_meta_information
@@ -32,6 +32,9 @@ msgid ""
 "Module to managed contact on project when base_contact module is installed.\n"
 "    "
 msgstr ""
+"Modul för hantering av kontaktinformation på projekt då base_contact är "
+"installerad.\n"
+"    "
 
 #. module: project_contact
 #: model:ir.module.module,shortdesc:project_contact.module_meta_information

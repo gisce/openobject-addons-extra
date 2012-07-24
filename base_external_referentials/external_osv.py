@@ -623,7 +623,7 @@ def retry_import(self, cr, uid, id, ext_id, external_referential_id, defaults=No
     context['id'] = ext_id
     result = self.get_external_data(
         cr, uid, conn , external_referential_id, context=context)
-    if any(result.values()):
+    if isinstance(result, dict) and any(result.values()):
         return True
     return False
 
@@ -913,9 +913,9 @@ def retry_export(self, cr, uid, id, ext_id, external_referential_id, defaults=No
     if context is None:
         context = {}
     conn = self.pool.get('external.referential').external_connection(cr, uid, external_referential_id)
-    context['conn_obj'] = conn
-    result = self.ext_export(cr, uid, [id], [external_referential_id], defaults, context)
-    if any(result.values()):
+    ctx = dict(context, conn_obj=conn, force=True, force_export=True)
+    result = self.ext_export(cr, uid, [id], [external_referential_id], defaults=defaults, context=ctx)
+    if isinstance(result, dict) and any(result.values()):
         return True
     return False
 
