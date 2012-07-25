@@ -190,6 +190,8 @@ def extid_to_oeid(self, cr, uid, id, external_referential_id, context=None):
     Creates the resource from the external connection if the resource does not exist."""
     #First get the external key field name
     #conversion external id -> OpenERP object using Object mapping_column_name key!
+    if context is None:
+        context = {}
     if id:
         existing_id = self.extid_to_existing_oeid(cr, uid, id, external_referential_id, context)
         if existing_id:
@@ -197,8 +199,11 @@ def extid_to_oeid(self, cr, uid, id, external_referential_id, context=None):
         try:
             if context and context.get('alternative_key', False): #FIXME dirty fix for Magento product.info id/sku mix bug: https://bugs.launchpad.net/magentoerpconnect/+bug/688225
                 id = context.get('alternative_key', False)
+            ctx = {'id': id,
+                   'import_no_new_cr': context.get('import_no_new_cr', False),
+                   }
             conn = self.pool.get('external.referential').external_connection(cr, uid, external_referential_id)
-            result = self.get_external_data(cr, uid, conn , external_referential_id, {}, {'id':id})
+            result = self.get_external_data(cr, uid, conn , external_referential_id, {}, ctx)
             if len(result['create_ids']) == 1:
                 return result['create_ids'][0]
         except Exception, error: #external system might return error because no such record exists
