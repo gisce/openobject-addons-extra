@@ -556,7 +556,8 @@ def _ext_import_one_cr(self, cr, uid, external_data, referential_id, defaults=No
             id_key = mapping_obj.read(
                 cr, uid, mapping_id[0], ['external_key_name'])['external_key_name']
             external_id = external_data.get(id_key, False)
-
+        _logger.exception('error in _import of %s with external_id %s. Creating report',
+                          external_data, referential_id)
         report_line_obj.log_failed(
             cr, uid,
             self._name,
@@ -828,6 +829,7 @@ def _ext_export_one_cr(self, cr, uid, record_data, referential_id, defaults=None
         cid, wid = self._ext_export_one(
             record_cr, uid, record_data, referential_id, defaults=defaults, context=export_ctx)
     except (MappingError, osv.except_osv, xmlrpclib.Fault):
+        _logger.exception('error during export of %s (id: %s) with referential_id %s. Creating a report line', record_data.get('name', 'NONAME'), record_data.get('id'), referential_id)
         record_cr.rollback()
         report_line_obj.log_failed(
             cr, uid,
@@ -943,6 +945,8 @@ def ext_update(self, cr, uid, data, conn, method, oe_id, external_id, ir_model_d
             crid = self.ext_create(cr, uid, data, conn, create_method, oe_id, context)
             self.pool.get('ir.model.data').write(cr, uid, ir_model_data_id, {'name': self.prefixed_id(crid)})
             return crid
+        else:
+            raise 
 
 def report_action_mapping(self, cr, uid, context=None):
         """
