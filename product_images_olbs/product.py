@@ -91,8 +91,14 @@ class product_product(osv.osv):
                 if old_product['image_ids']:
                     if old_product['default_code'] != vals['default_code']:
                         old_path = os.path.join(local_media_repository, old_product['default_code'])
+                        new_path = os.path.join(local_media_repository, vals['default_code'])
                         if os.path.isdir(old_path):
-                            os.rename(old_path,  os.path.join(local_media_repository, vals['default_code']))
+                            if not os.path.isdir(os.path.dirname(new_path)):
+                                os.makedirs(os.path.dirname(new_path))
+                            if os.path.isdir(new_path):
+                                shutil.rmtree(new_path)
+                            shutil.copytree(old_path, new_path)
+                            shutil.rmtree(old_path)
                 return res
         return super(product_product, self).write(cr, uid, ids, vals, context=context)
 
