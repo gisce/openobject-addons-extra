@@ -21,7 +21,7 @@
 import math
 from osv import fields,osv
 import tools
-import ir
+# import ir
 import pooler
 
 class product_pricelist(osv.osv):
