@@ -107,7 +107,7 @@ class account_move_import(osv.osv_memory):
 
     def run_import_generic(self, cr, uid, ids, setup, context=None):
         import_data = self.browse(cr, uid, ids[0])
-        _logger.info('Starting to import CSV file')
+        _logger.debug('Starting to import CSV file')
         # Code inspired by module/wizard/base_import_language.py
         #print "Imported file=", base64.decodestring(import_data.file_to_import)
         fullstr = base64.decodestring(import_data.file_to_import)
@@ -119,8 +119,8 @@ class account_move_import(osv.osv_memory):
             end_seq = None
         if top_lines_to_skip or bottom_lines_to_skip:
             cutstr = '\n'.join(fullstr.split('\n')[top_lines_to_skip:end_seq])
-            _logger.info('%d top lines skipped' % top_lines_to_skip)
-            _logger.info('%d bottom lines skipped' % bottom_lines_to_skip)
+            _logger.debug('%d top lines skipped' % top_lines_to_skip)
+            _logger.debug('%d bottom lines skipped' % bottom_lines_to_skip)
         else:
             cutstr = fullstr
         fileobj = TemporaryFile('w+')
@@ -143,7 +143,7 @@ class account_move_import(osv.osv_memory):
         line_seq = []
         for row in reader:
             line_csv +=1
-            _logger.info('[line %d] Content : %s' % (line_csv, row))
+            _logger.debug('[line %d] Content : %s' % (line_csv, row))
             # Date and journal are read from the first line
             if not date_datetime:
                 date_datetime = datetime.strptime(row['date'], setup.get('date_format'))
@@ -178,7 +178,7 @@ class account_move_import(osv.osv_memory):
                 raise osv.except_osv('Error :', "Check that the decimal separator for the 'Debit' and 'Credit' columns is a dot")
             # If debit and credit = 0, we skip the move line
             if not debit and not credit:
-                _logger.info('[line %d] Skipped because debit=credit=0' % line_csv)
+                _logger.debug('[line %d] Skipped because debit=credit=0' % line_csv)
                 continue
 
             line_seq.append((0, 0, {
@@ -210,14 +210,14 @@ class account_move_import(osv.osv_memory):
             'ref': move_ref, # in v6.1, 'name' <-> 'Number' -> do not fill !
             'line_id': line_seq,
             }, context=context)
-        _logger.info('Account move ID %d created with %d move lines' % (move_id, move_lines))
+        _logger.debug('Account move ID %d created with %d move lines' % (move_id, move_lines))
         fileobj.close()
 
         res_validate = self.pool.get('account.move').validate(cr, uid, [move_id], context=context)
-        _logger.info('Account move ID %d validated' % (move_id))
+        _logger.debug('Account move ID %d validated' % (move_id))
         if import_data.post_move:
             res_post = self.pool.get('account.move').post(cr, uid, [move_id], context=context)
-            _logger.info('Account move ID %d posted' % (move_id))
+            _logger.debug('Account move ID %d posted' % (move_id))
         action = {
             'name': 'Account move',
             'view_type': 'form',
