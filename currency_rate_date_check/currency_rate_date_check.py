@@ -48,7 +48,7 @@ class res_currency(osv.osv):
     def _current_rate_with_date_check(self, cr, uid, ids, name, arg, context=None):
         # We only do the check if there is an explicit date in the context and 
         # there is no specific currency_rate_type_id
-        if context and context.get('date', False) and not context.get('currency_rate_type_id', False):
+        if context and context.get('date') and not context.get('currency_rate_type_id') and not context.get('disable_rate_date_check'):
             #print "context=", context
             for currency_id in ids:
                 #print "currency_id=", currency_id
