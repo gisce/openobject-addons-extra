@@ -21,7 +21,6 @@
 from osv import fields, osv
 import time
 import netsvc
-import ir
 from mx import DateTime
 import datetime
 from tools import config
