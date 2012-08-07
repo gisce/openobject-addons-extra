@@ -2,10 +2,6 @@
 <openerp>
 	<data>
 
-		<record model="board.note.type" id="note_reservation_type">
-			<field name="name">Reservation</field>
-		</record>
-				
 		<record model="ir.actions.act_window" id="action_view_reservation_tree_draft">
 			<field name="name">Today's Reservation</field>
 			<field name="res_model">hotel.reservation</field>
@@ -23,7 +19,7 @@
 			<field name="domain">[('checkout','&gt;',time.strftime('%Y-%m-%d 00:00:00')),('checkout','&lt;',time.strftime('%Y-%m-%d 23:59:59'))]</field>
 			<field name="view_id" ref="hotel_reservation.view_hotel_reservation_tree" />
 		</record>
-		
+
 		<record model="ir.ui.view" id="board_reservation_form">
 			<field name="name">board.reservation.form</field>
 			<field name="model">board.board</field>
@@ -48,7 +44,7 @@
 								string="State By Reservation"
 								name="%(report_hotel_reservation.action_report_hotel_reservation_status_tree_graph)d"
 								colspan="4"/>
-							
+
 							<action
 								string="State By Reservation"
 								name="%(report_hotel_reservation.action_report_hotel_reservation_status_tree_graph_bar)d"
@@ -61,7 +57,7 @@
 				</form>
 			</field>
 		</record>
-		
+
 		<record model="ir.actions.act_window" id="open_board_reservation">
 			<field name="name">Reservation Dashboard</field>
 			<field name="res_model">board.board</field>
@@ -75,6 +71,6 @@
 			action="open_board_reservation"
 			sequence="1"
 			id="menu_board_reservation" icon="terp-graph"
-			parent="board.dashboard_menu"/>
+			parent="hotel.hotel_report_menu"/>
 	</data>
 </openerp>

@@ -1,6 +1,6 @@
 # -*- encoding: utf-8 -*-
 ##############################################################################
-#    
+#
 #    OpenERP, Open Source Management Solution
 #    Copyright (C) 2004-2009 Tiny SPRL (<http://tiny.be>).
 #
@@ -15,14 +15,13 @@
 #    GNU Affero General Public License for more details.
 #
 #    You should have received a copy of the GNU Affero General Public License
-#    along with this program.  If not, see <http://www.gnu.org/licenses/>.     
+#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
 
 from osv import fields
 from osv import osv
 import time
-import ir
 from mx import DateTime
 import datetime
 import pooler
@@ -33,10 +32,10 @@ class hotel_reservation(osv.osv):
     _name = "hotel.reservation"
     _description = "Reservation"
     _columns = {
-                
+
                 'reservation_no': fields.char('Reservation No', size=64, required=True, select=True),
                 'date_order':fields.datetime('Date Ordered', required=True, readonly=True, states={'draft':[('readonly',False)]}),
-                'shop_id':fields.many2one('sale.shop', 'Shop', required=True, readonly=True, states={'draft':[('readonly',False)]}),      
+                'shop_id':fields.many2one('sale.shop', 'Shop', required=True, readonly=True, states={'draft':[('readonly',False)]}),
                 'partner_id':fields.many2one('res.partner', 'Guest Name', required=True,readonly=True, states={'draft':[('readonly',False)]}),
                 'pricelist_id':fields.many2one('product.pricelist', 'Pricelist', required=True,readonly=True, states={'draft':[('readonly',False)]}),
                 'partner_invoice_id':fields.many2one('res.partner.address', 'Invoice Address', readonly=True, required=True, states={'draft':[('readonly',False)]}),
@@ -45,36 +44,36 @@ class hotel_reservation(osv.osv):
                 'checkin': fields.datetime('Expected-Date-Arrival',required=True,readonly=True, states={'draft':[('readonly',False)]}),
                 'checkout': fields.datetime('Expected-Date-Departure',required=True, readonly=True, states={'draft':[('readonly',False)]}),
                 'adults':fields.integer('Adults',size=64,readonly=True, states={'draft':[('readonly',False)]}),
-                'childs':fields.integer('Children',size=64,readonly=True, states={'draft':[('readonly',False)]}),             
+                'childs':fields.integer('Children',size=64,readonly=True, states={'draft':[('readonly',False)]}),
                 'reservation_line':fields.one2many('hotel_reservation.line','line_id','Reservation Line'),
                 'state': fields.selection([('draft', 'Draft'),('confirm','Confirm'),('cancle','Cancle'),('done','Done')], 'State',readonly=True),
                 'folio_id': fields.many2many('hotel.folio', 'hotel_folio_reservation_rel', 'order_id', 'invoice_id', 'Folio'),
                 'dummy': fields.datetime('Dummy'),
-               
+
         }
     _defaults = {
-       
+
         'reservation_no': lambda obj, cr, uid, context: obj.pool.get('ir.sequence').get(cr, uid,'hotel.reservation'),
-        'state': lambda *a: 'draft', 
-        'date_order': lambda *a: time.strftime('%Y-%m-%d %H:%M:%S'), 
-         
+        'state': lambda *a: 'draft',
+        'date_order': lambda *a: time.strftime('%Y-%m-%d %H:%M:%S'),
+
        }
     def on_change_checkout(self,cr, uid, ids, checkin_date=time.strftime('%Y-%m-%d %H:%M:%S'),checkout_date=time.strftime('%Y-%m-%d %H:%M:%S'),context=None):
         delta = datetime.timedelta(days=1)
         addDays = datetime.datetime(*time.strptime(checkout_date,'%Y-%m-%d %H:%M:%S')[:5]) + delta
         val = {'value':{'dummy':addDays.strftime('%Y-%m-%d %H:%M:%S')}}
         return val
-        
+
     def onchange_partner_id(self, cr, uid, ids, part):
         if not part:
             return {'value':{'partner_invoice_id': False, 'partner_shipping_id':False, 'partner_order_id':False}}
         addr = self.pool.get('res.partner').address_get(cr, uid, [part], ['delivery','invoice','contact'])
         pricelist = self.pool.get('res.partner').browse(cr, uid, part).property_product_pricelist.id
         return {'value':{'partner_invoice_id': addr['invoice'], 'partner_order_id':addr['contact'], 'partner_shipping_id':addr['delivery'], 'pricelist_id': pricelist}}
-    
-     
+
+
     def confirmed_reservation(self,cr,uid,ids):
-         
+
          for reservation in self.browse(cr, uid, ids):
              cr.execute("select count(*) from hotel_reservation as hr " \
                         "inner join hotel_reservation_line as hrl on hrl.line_id = hr.id " \
@@ -94,10 +93,10 @@ class hotel_reservation(osv.osv):
              if roomcount:
                  raise osv.except_osv('Warning', 'You tried to confirm reservation with room those already reserved in this reservation period')
              else:
-                 
+
                  self.write(cr, uid, ids, {'state':'confirm'})
              return True
-    
+
     def _create_folio(self,cr,uid,ids):
         for reservation in self.browse(cr,uid,ids):
             for line in reservation.reservation_line:
@@ -115,30 +114,30 @@ class hotel_reservation(osv.osv):
                                                                       'room_lines': [(0,0,{'folio_id':line['id'],
                                                                                            'checkin_date':reservation['checkin'],
                                                                                            'checkout_date':reservation['checkout'],
-                                                                                           'product_id':r['id'], 
+                                                                                           'product_id':r['id'],
                                                                                            'name':reservation['reservation_no'],
                                                                                            'product_uom':r['uom_id'].id,
                                                                                            'price_unit':r['lst_price'],
-                                                                                           'product_uom_qty':(datetime.datetime(*time.strptime(reservation['checkout'],'%Y-%m-%d %H:%M:%S')[:5]) - datetime.datetime(*time.strptime(reservation['checkin'],'%Y-%m-%d %H:%M:%S')[:5])).days   
-                                                                                           
+                                                                                           'product_uom_qty':(datetime.datetime(*time.strptime(reservation['checkout'],'%Y-%m-%d %H:%M:%S')[:5]) - datetime.datetime(*time.strptime(reservation['checkin'],'%Y-%m-%d %H:%M:%S')[:5])).days
+
                                                                                            })],
-                                                                     'service_lines':reservation['folio_id']     
+                                                                     'service_lines':reservation['folio_id']
                                                                        })
-            cr.execute('insert into hotel_folio_reservation_rel (order_id,invoice_id) values (%s,%s)', (reservation.id, folio))
+                    cr.execute('insert into hotel_folio_reservation_rel (order_id,invoice_id) values (%s,%s)', (reservation.id, folio))
             self.write(cr, uid, ids, {'state':'done'})
         return True
 hotel_reservation()
 
 class hotel_reservation_line(osv.osv):
      _name = "hotel_reservation.line"
-   
+
      _description = "Reservation Line"
      _columns = {
-                 
+
                'line_id':fields.many2one('hotel.reservation'),
-               'reserve':fields.many2many('product.product','hotel_reservation_line_room_rel','room_id','hotel_reservation_line_id', domain="[('isroom','=',True),('categ_id','=',categ_id)]"),   
-               'categ_id': fields.many2one('product.category','Room Type',domain="[('isroomtype','=',True)]"), 
-              
+               'reserve':fields.many2many('product.product','hotel_reservation_line_room_rel','room_id','hotel_reservation_line_id', domain="[('isroom','=',True),('categ_id','=',categ_id)]"),
+               'categ_id': fields.many2one('product.category','Room Type',domain="[('isroomtype','=',True)]"),
+
         }
 hotel_reservation_line()
 

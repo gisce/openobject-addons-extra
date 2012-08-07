@@ -1,6 +1,6 @@
 # -*- encoding: utf-8 -*-
 ##############################################################################
-#    
+#
 #    OpenERP, Open Source Management Solution
 #    Copyright (C) 2004-2009 Tiny SPRL (<http://tiny.be>).
 #
@@ -15,13 +15,12 @@
 #    GNU Affero General Public License for more details.
 #
 #    You should have received a copy of the GNU Affero General Public License
-#    along with this program.  If not, see <http://www.gnu.org/licenses/>.     
+#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
 from osv import fields
 from osv import osv
 import time
-import ir
 from mx import DateTime
 import datetime
 import pooler
@@ -40,7 +39,7 @@ room_res_form= """<?xml version="1.0"?>
 room_res_field= {
     'date_start': {'string':'Start Date','type':'datetime','required': True},
     'date_end': {'string':'End Date','type':'datetime','required': True},
-    
+
 }
 
 room_result_form = """<?xml version="1.0"?>
@@ -82,12 +81,12 @@ class get_reservation_room_list(wizard.interface):
             'action' : [],
             'result' : {'type' : 'print',
                     'report':'maxroom.detail',
-                    'state' : 'end'}             
-        },    
-    
-       
+                    'state' : 'end'}
+        },
+
+
     }
-get_reservation_room_list("hotel.reservation.report_reservation")     
+get_reservation_room_list("hotel.reservation.report_reservation")
 
 folio_form = """<?xml version="1.0"?>
 <form string="Create Folio">
@@ -107,8 +106,8 @@ ack_form = """<?xml version="1.0"?>
 ack_fields = {}
 
 def _makeFolios(self, cr, uid, data, context):
-    
-    
+
+
     order_obj = pooler.get_pool(cr.dbname).get('hotel.reservation')
     newinv = []
     for o in order_obj.browse(cr, uid, data['ids'], context):
@@ -122,7 +121,7 @@ def _makeFolios(self, cr, uid, data, context):
         'res_model': 'hotel.folio',
         'view_id': False,
         'type': 'ir.actions.act_window'
-         
+
     }
     return {}
 

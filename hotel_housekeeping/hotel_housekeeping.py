@@ -1,6 +1,6 @@
 # -*- encoding: utf-8 -*-
 ##############################################################################
-#    
+#
 #    OpenERP, Open Source Management Solution
 #    Copyright (C) 2004-2009 Tiny SPRL (<http://tiny.be>).
 #
@@ -15,7 +15,7 @@
 #    GNU Affero General Public License for more details.
 #
 #    You should have received a copy of the GNU Affero General Public License
-#    along with this program.  If not, see <http://www.gnu.org/licenses/>.     
+#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
 
@@ -37,11 +37,11 @@ class hotel_housekeeping_activity_type(osv.osv):
     _name = 'hotel.housekeeping.activity.type'
     _description = 'Activity Type'
     _inherits = {'product.category':'activity_id'}
-    
+
     _columns = {
-        'activity_id':fields.many2one('product.category','category',required=True),
+        'activity_id':fields.many2one('product.category','category',required=True,ondelete='cascade'),
     }
-    
+
 hotel_housekeeping_activity_type()
 
 class product_product(osv.osv):
@@ -57,7 +57,7 @@ class h_activity(osv.osv):
     _description = 'Housekeeping Activity'
 
     _columns = {
-        'h_id': fields.many2one('product.product','Product'),
+        'h_id': fields.many2one('product.product','Product',ondelete='cascade'),
     }
 h_activity()
 
@@ -65,7 +65,7 @@ h_activity()
 class hotel_housekeeping(osv.osv):
     _name = "hotel.housekeeping"
     _description = "Reservation"
-    
+
     _columns = {
         'current_date':fields.date("Today's Date",required=True),
         'clean_type':fields.selection([('daily','Daily'),('checkin','Check-in'),('checkout','Check-out')],'Clean Type',required=True),
@@ -82,14 +82,14 @@ class hotel_housekeeping(osv.osv):
         'state': lambda *a: 'dirty',
         'current_date':lambda *a: time.strftime('%Y-%m-%d'),
     }
-    
+
     def action_set_to_dirty(self, cr, uid, ids, *args):
         self.write(cr, uid, ids, {'state': 'dirty'})
         wf_service = netsvc.LocalService('workflow')
         for id in ids:
             wf_service.trg_create(uid, self._name, id, cr)
         return True
-    
+
     def room_cancel(self, cr, uid, ids, *args):
         self.write(cr, uid, ids, {
             'state':'cancel'
@@ -101,22 +101,22 @@ class hotel_housekeeping(osv.osv):
             'state':'done'
         })
         return True
-    
+
     def room_inspect(self, cr, uid, ids, *args):
 
         self.write(cr, uid, ids, {
             'state':'inspect'
         })
         return True
-    
+
     def room_clean(self, cr, uid, ids, *args):
 
         self.write(cr, uid, ids, {
             'state':'clean'
         })
         return True
-   
-hotel_housekeeping()  
+
+hotel_housekeeping()
 
 class hotel_housekeeping_activities(osv.osv):
     _name = "hotel.housekeeping.activities"

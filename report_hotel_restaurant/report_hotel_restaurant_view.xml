@@ -62,8 +62,8 @@
 		<field name="view_mode">graph,tree</field>
 
 	</record>
-	<menuitem name = "Hotel Management/Reports/This Month"
-			  id = "menu_hotel_restaurant_this_month"/>
+	<menuitem name = "This Month"
+			  id = "menu_hotel_restaurant_this_month" parent="hotel.hotel_report_menu"/>
 
 	<record model="ir.actions.act_window" id="action_report_hotel_restaurant_status_tree_graph_bar">
 			<field name="name">States By Restaurant</field>
