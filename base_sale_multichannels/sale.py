@@ -726,31 +726,33 @@ class sale_order(osv.osv):
                 uid, 'account.voucher', voucher_id, 'proforma_voucher', cr)
         return voucher_id
 
+    def _apply_payment_settings(self, cr, uid, order, paid, context=None):
+        payment_settings = order.base_payment_type_id
+        if payment_settings:
+            if payment_settings.payment_term_id:
+                self.write(cr, uid, order.id, {'payment_term': payment_settings.payment_term_id.id})
+
+            if payment_settings.check_if_paid and not paid:
+                if order.state == 'draft' and datetime.strptime(order.date_order, DEFAULT_SERVER_DATE_FORMAT) < datetime.now() - relativedelta(days=payment_settings.days_before_order_cancel or 30):
+                    self.init_auto_wkf_cancel( cr, uid, order, context=context)
+                    self.write(cr, uid, order.id, {'need_to_update': False})
+                    #TODO eventually call a trigger to cancel the order in the external system too
+                    logger.notifyChannel('ext synchro', netsvc.LOG_INFO, "order %s canceled in OpenERP because older than % days and still not confirmed" % (order.id, payment_settings.days_before_order_cancel or 30))
+                else:
+                    self.write(cr, uid, order.id, {'need_to_update': True})
+            else:
+                if payment_settings.validate_order:
+                    self.init_auto_wkf_validate(cr, uid, order, context=context)
+                    self.write(cr, uid, order.id, {'need_to_update': False})
+        return True
+
     def oe_status(self, cr, uid, ids, paid=True, context=None):
         if type(ids) in [int, long]:
             ids = [ids]
 
         auto_wkf_obj = self.pool.get('auto.workflow.job')
         for order in self.browse(cr, uid, ids, context):
-            payment_settings = order.base_payment_type_id
-
-            if payment_settings:
-                if payment_settings.payment_term_id:
-                    self.write(cr, uid, order.id, {'payment_term': payment_settings.payment_term_id.id})
-
-                if payment_settings.check_if_paid and not paid:
-                    if order.state == 'draft' and datetime.strptime(order.date_order, DEFAULT_SERVER_DATE_FORMAT) < datetime.now() - relativedelta(days=payment_settings.days_before_order_cancel or 30):
-                        self.init_auto_wkf_cancel( cr, uid, order, context=context)
-                        self.write(cr, uid, order.id, {'need_to_update': False})
-                        #TODO eventually call a trigger to cancel the order in the external system too
-                        logger.info("order %s canceled in OpenERP because older than % days and still not confirmed", order.id, payment_settings.days_before_order_cancel or 30)
-                    else:
-                        self.write(cr, uid, order.id, {'need_to_update': True})
-                else:
-                    if payment_settings.validate_order:
-                        self.init_auto_wkf_validate(cr, uid, order, context=context)
-                        self.write(cr, uid, order.id, {'need_to_update': False})
-
+            self._apply_payment_settings(cr, uid, order, paid, context=context)
         return True
 
     def _prepare_invoice(self, cr, uid, order, lines, context=None):
