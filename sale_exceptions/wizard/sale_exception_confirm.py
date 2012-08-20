@@ -49,7 +49,7 @@ class SaleExceptionConfirm(osv.osv_memory):
     def action_confirm(self, cr, uid, ids, context=None):
         form = self.browse(cr, uid, ids[0], context=context)
         if form.ignore:
-            self.pool.get('sale.order').write(cr, uid, form.sale_id.id,
+            self.pool.get('sale.order').write(cr, uid, [form.sale_id.id],
                     {'ignore_exceptions': True}, context=context)
         return {'type': 'ir.actions.act_window_close'}
 
