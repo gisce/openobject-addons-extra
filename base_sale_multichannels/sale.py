@@ -737,7 +737,7 @@ class sale_order(osv.osv):
                     self.init_auto_wkf_cancel( cr, uid, order, context=context)
                     self.write(cr, uid, order.id, {'need_to_update': False})
                     #TODO eventually call a trigger to cancel the order in the external system too
-                    logger.info("order %s canceled in OpenERP because older than % days and still not confirmed",
+                    _logger.info("order %s canceled in OpenERP because older than % days and still not confirmed",
                                 order.id, payment_settings.days_before_order_cancel or 30)
                 else:
                     self.write(cr, uid, order.id, {'need_to_update': True})
