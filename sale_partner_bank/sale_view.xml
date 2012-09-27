@@ -17,7 +17,7 @@
     <field name="inherit_id" ref="sale.view_order_form"/>
     <field name="arch" type="xml">
         <field name="payment_term" position="after">
-            <field name="partner_bank_id" domain="[('partner_id.ref_companies', 'in', [shop_id.company_id])]" groups="base.group_extended" /> <!-- I can't add widget=selection, because it will break the domain instruction -->
+            <field name="partner_bank_id" domain="[('partner_id.ref_companies', 'in', [company_id])]" groups="base.group_extended" /> <!-- I can't add widget=selection, because it will break the domain instruction -->
         </field>
     </field>
 </record>
