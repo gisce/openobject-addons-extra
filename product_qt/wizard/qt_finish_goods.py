@@ -134,7 +134,6 @@ class wizard_qty_test_finish(wizard.interface):
             'actions': [check],
             'result': {'type': 'state', 'state': 'end'},
         }
-
     }
 wizard_qty_test_finish('qty_test_finish')
 
