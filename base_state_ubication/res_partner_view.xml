@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        
+        <record model="ir.ui.view" id="view_partner_address_form1_satates_inherit">
+            <field name='name'>res.partner.address.form1.states.inherited</field>
+            <field name='model'>res.partner.address</field>
+            <field name="inherit_id" ref="base.view_partner_address_form1"/>
+            <field name='type'>form</field>
+            <field name='arch' type='xml'>
+                <field name="state_id" position="replace">
+                    <field name="state_id" domain="[('country_id','=',country_id),('type','=','normal')]" string="Ubication"/>
+                </field>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="view_partner_address_form2_satates_inherit">
+            <field name='name'>res.partner.address.form2.states.inherited</field>
+            <field name='model'>res.partner.address</field>
+            <field name="inherit_id" ref="base.view_partner_address_form2"/>
+            <field name='type'>form</field>
+            <field name='arch' type='xml'>
+                <field name="state_id" position="replace">
+                    <field name="state_id" domain="[('country_id','=',country_id),('type','=','normal')]" string="Ubication"/>
+                </field>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="view_partner_form_states_inherit">
+            <field name='name'>res.partner.form.states.inherited</field>
+            <field name='model'>res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field name='type'>form</field>
+            <field name='arch' type='xml'>
+                <field name="state_id" position="replace">
+                    <field name="state_id" domain="[('country_id','=',country_id),('type','=','normal')]" string="Ubication"/>
+                </field>
+            </field>
+        </record>
+        
+    </data>
+</openerp>

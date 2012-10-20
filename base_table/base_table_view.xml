@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+	<data>		
+	    <record id="view_base_element_tree" model="ir.ui.view">
+		<field name="name">Element of Table List</field>
+		<field name="model">base.element</field>
+		<field name="type">tree</field>
+		<field name="priority">100</field>
+		<field name="arch" type="xml">
+		    <tree string="Elements List">
+			<field name="name"/>
+			<field name="element_char"/>
+			<field name="element_percent"/>
+			<field name="element_float"/>
+			<field name="start_date"/>
+			<field name="end_date"/>
+		    </tree>
+		</field>
+	    </record>
+	    <record id="view_base_element_form" model="ir.ui.view">
+		<field name="name">Element of Table Form</field>
+		<field name="model">base.element</field>
+		<field name="type">form</field>
+		<field name="arch" type="xml">
+		    <form string="Element Form">
+			<field name="name"/>
+			<field name="active"/>
+			<field name="element_char"/>
+			<field name="element_percent"/>
+			<field name="element_float"/>
+			<separator string="Validity Dates" colspan="4"/>
+			<field name="start_date"/>
+			<field name="end_date"/>
+			<separator string="Description" colspan="4"/>
+			<field name="description" colspan="4" nolabel="1"/>
+		    </form>
+		</field>
+	    </record>
+
+
+	    <record id="view_base_table_tree" model="ir.ui.view">
+		<field name="name">Table of Tables List</field>
+		<field name="model">base.table</field>
+		<field name="type">tree</field>
+		<field name="field_parent">child_ids</field>
+		<field name="priority">100</field>
+		<field name="arch" type="xml">
+		    <tree string="Table of Tables List" toolbar="1">
+			<field name="complete_name"/>
+			<field name="code"/>
+			<field name="type"/>
+			<field name="parent_id"/>
+		    </tree>
+		</field>
+	    </record>
+	    <record id="view_base_table_form" model="ir.ui.view">
+		<field name="name">Table of Tables Form</field>
+		<field name="model">base.table</field>
+		<field name="type">form</field>
+		<field name="arch" type="xml">
+		    <form string="Table of Tables">
+			<field name="name"/>
+			<field name="code"/>
+			<field name="parent_id"/>
+			<group colspan="2">
+			    <field name="type"/>
+			    <field name="active"/>
+			</group>
+			
+			<notebook colspan="4">
+			    <page string="Table Elements">
+                    <field colspan="4" name="element_ids" nolabel="1" attrs="{'readonly':[('type','=','view')]}"/>
+			    </page>
+			    <page string="Description">
+			        <field name="description" colspan="4" nolabel="1"/>
+			    </page>
+			</notebook>
+		    </form>
+		</field>
+	    </record>
+
+	    <record model="ir.actions.act_window" id="base_table_list_action">
+		    <field name="name">Table of Tables</field>
+		    <field name="res_model">base.table</field>
+		    <field name="view_type">form</field>
+		    <field name="view_mode">tree,form</field>
+	    </record>
+
+	    <menuitem name='Table of Tables' id = 'base_table_menu' parent='base.next_id_9' sequence='200' action="base_table_list_action"/>
+	    
+	</data>
+</openerp>

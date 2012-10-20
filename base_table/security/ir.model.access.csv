@@ -1,0 +1,3 @@
+"id","name","model_id:id","group_id:id","perm_read","perm_write","perm_create","perm_unlink"
+"access_base_table","base.table","model_base_table",,1,0,0,0
+"access_base_element","base.element","model_base_element",,1,0,0,0

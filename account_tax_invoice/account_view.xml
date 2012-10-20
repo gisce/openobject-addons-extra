@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+	<data>
+    
+		<record model='ir.ui.view' id='view_account_fiscalyear_form_inherit_tax_invoice'>
+			<field name='name'>account.fiscalyear.form.inherit.tax.invoice</field>
+			<field name='model'>account.fiscalyear</field>
+			<field name='inherit_id' ref='account.view_account_fiscalyear_form'/>
+			<field name='type'>form</field>
+			<field name='arch' type='xml'>
+				<xpath expr="/form/group/field[@name='end_journal_period_id']" position="after">
+						<field name="fiscal_unit"/>
+				</xpath>
+			</field>
+		</record>
+		
+		<record model='ir.ui.view' id='view_tax_code_form_inherit_tax_invoice'>
+			<field name='name'>account.tax.code.form.inherit.tax.invoice</field>
+			<field name='model'>account.tax.code</field>
+			<field name='inherit_id' ref='account.view_tax_code_form'/>
+			<field name='type'>form</field>
+			<field name='arch' type='xml'>
+				<xpath expr="/form/field[@name='info']" position="after">
+                    <separator string="Appear Invoice" colspan="4"/>
+                    <field name="applicable_invoice" colspan="4"/>
+                    <field name="python_invoice" colspan="4" nolabel="1" attrs="{'readonly':[('applicable_invoice','=',False)]}"/>
+				</xpath>
+			</field>
+		</record>
+
+	</data>
+</openerp>

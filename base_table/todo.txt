@@ -1,0 +1,3 @@
+YT 15/12/2011
+
+- Analizar si se pone un secuenciador o element_integer

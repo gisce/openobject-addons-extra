@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+	<data>
+		
+		<record model='ir.ui.view' id='res_partner_form_view_inherit_person'>
+			<field name='name'>res.partner.form.inherit.person</field>
+			<field name='model'>res.partner</field>
+			<field name='inherit_id' ref='base.view_partner_form'/>
+			<field name='type'>form</field>
+			<field name='arch' type='xml'>
+				<xpath expr="/form/group/group/field[@name='name']" position="replace">
+                	<field name="name" select="1" attrs="{'invisible':[('natural_person','=',True)]}"/>
+					<field name="natural_person" on_change="onchange_natural_person(natural_person,first_name,middle_name,surname,mother_name)"/>
+                    <group colspan="6" col="8">
+                        <field name="first_name" attrs="{'invisible':[('natural_person','=',False)],'required':[('natural_person','=',True)]}" on_change="onchange_person_name(first_name,middle_name,surname,mother_name)"/>
+                        <field name="middle_name" attrs="{'invisible':[('natural_person','=',False)]}" on_change="onchange_person_name(first_name,middle_name,surname,mother_name)"/>
+                        <field name="surname" attrs="{'invisible':[('natural_person','=',False)],'required':[('natural_person','=',True)]}" on_change="onchange_person_name(first_name,middle_name,surname,mother_name)"/>
+                        <field name="mother_name" attrs="{'invisible':[('natural_person','=',False)]}" on_change="onchange_person_name(first_name,middle_name,surname,mother_name)"/>
+                    </group>
+				</xpath>
+			</field>
+		</record>
+		
+	</data>
+</openerp>
