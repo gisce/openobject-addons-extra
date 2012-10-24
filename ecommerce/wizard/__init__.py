@@ -19,6 +19,7 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
+import wizard_ecommerce_mailsend_finish
 import wizard_mailsend
 import wizard_product
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
