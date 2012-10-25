@@ -231,7 +231,6 @@ class account_move_import(osv.osv_memory):
         return reader
 
     def _generate_account_move(self, cr, uid, account_move_dict, setup, context=None):
-        # TODO support CSV files with multiple acc moves
         date = None
         journal = False
         move_ref = False
@@ -262,7 +261,6 @@ class account_move_import(osv.osv_memory):
             if row['analytic']:
                 analytic_search = self.pool.get('account.analytic.account').search(cr, uid,
                     [('code', '=', row['analytic'])], context=context)
-                analytic_search = [28] # TODO remove when finished
                 if len(analytic_search) <> 1:
                     raise osv.except_osv('Error :', "No match for analytic account code '%s' (line %d of the CSV file)" % (row['analytic'], line_csv))
                 analytic_account_id = analytic_search[0]
@@ -271,9 +269,7 @@ class account_move_import(osv.osv_memory):
             account_search = self.pool.get('account.account').search(cr, uid,
                 [('code', '=', row['account'])], context=context)
             if len(account_search) <> 1:
-#                raise osv.except_osv('Error :', "No match for legal account code '%s' (line %d of the CSV file)" % (row['account'], line_csv))
-                # TODO restor
-                account_search = [1016]
+                raise osv.except_osv('Error :', "No match for legal account code '%s' (line %d of the CSV file)" % (row['account'], line_csv))
             account_id = account_search[0]
             try:
                 if row['debit']:
