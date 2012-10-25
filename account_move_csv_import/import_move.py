@@ -126,10 +126,23 @@ class account_move_import(osv.osv_memory):
     def run_import_quadra(self, cr, uid, import_data, context=None):
         setup = {}
         setup.update({
-            'encoding': 'latin1',
+            'encoding': 'ibm850',
             'date_format': '%d%m%y',
             'top_lines_to_skip': 0,
             'bottom_lines_to_skip': 0,
+            'move_lines_start_with': 'M',
+            'field_positions': {
+                # Indicate position of first char and position of last char
+                # First position is 0
+                'account': [1, 8],
+                'amount_raw': [42, 54], # amount_raw = amount x 100
+                'date': [14, 19],
+                'journal': [9, 10],
+#                'label': [21, 40],
+                'label': [116, 147],
+                'sign': [41, 41],
+            
+            }
         })
         account_move_dict = self.parse_cols(cr, uid, import_data, setup, context=context)
         action = self._generate_account_move(cr, uid, account_move_dict, setup, context=context)
@@ -145,6 +158,8 @@ class account_move_import(osv.osv_memory):
             end_seq = None
         return fullstr, end_seq
 
+    def _extract_field(self, cr, uid, setup, line, field, context=None):
+        return line[setup['field_positions'][field][0]:setup['field_positions'][field][1] + 1]
 
     def parse_cols(self, cr, uid, import_data, setup, context=None):
         _logger.debug('Starting to import flat file')
@@ -162,46 +177,48 @@ class account_move_import(osv.osv_memory):
             if not line:
                 setup['top_lines_to_skip'] += 1
                 continue
-            elif line[0] == 'M':
+            elif setup.get('move_lines_start_with') and line[0:len(setup.get('move_lines_start_with'))] == setup.get('move_lines_start_with'):
                 break
             else:
                 setup['top_lines_to_skip'] += 1
-        print "setup['top_lines_to_skip']=", setup['top_lines_to_skip']
+        #print "setup['top_lines_to_skip']=", setup['top_lines_to_skip']
         cutstr2 = fullstr.split('\n')[setup.get('top_lines_to_skip'):end_seq]
-        print "cutstr2=", pformat(cutstr2)
+        #print "cutstr2=", pformat(cutstr2)
         for line in cutstr2:
             # This should only be the case for the last line
             # TODO find why and fix
             if not line:
                 continue
             line = line.strip()
-            print "line=", line
+            #print "line=", line
             line_dict = {}
-            line_dict['account'] = line[1:9]
-            if line_dict['account'].isdigit():
-                line_dict['account'] = line[1:7]
+            raw_account = self._extract_field(cr, uid, setup, line, 'account', context=context)
+            if raw_account.isdigit():
+                if len(raw_account) > 6:
+                    line_dict['account'] = raw_account[0:-(len(raw_account)-6)]
+                elif len(raw_account) == 6:
+                    line_dict['account'] = raw_account
             else:
-                line_dict['account'] = line[1:9].strip()
-            line_dict['date'] = line[14:20]
-            line_dict['label'] = line[21:41].strip().decode(setup.get('encoding'))
-            print "amount_raw=", line[42:55]
-            print "int amount_raw=", int(line[42:55])
-            amount_raw = float(int(line[42:55]))
+                line_dict['account'] = raw_account.strip()
+            line_dict['date'] = self._extract_field(cr, uid, setup, line, 'date', context=context)
+            line_dict['label'] = self._extract_field(cr, uid, setup, line, 'label', context=context).strip().decode(setup.get('encoding'))
+            amount_raw = float(int(self._extract_field(cr, uid, setup, line, 'amount_raw', context=context)))
             amount = amount_raw/100
-            if line[41] == 'C':
+            sign = self._extract_field(cr, uid, setup, line, 'sign', context=context)
+            if sign == 'C':
                 line_dict['credit'] = amount
             else:
                 line_dict['credit'] = 0
-            if line[41] == 'D':
+            if sign == 'D':
                 line_dict['debit'] = amount
             else:
                 line_dict['debit'] = 0
-            line_dict['journal'] = line[9:11]
+            line_dict['journal'] = self._extract_field(cr, uid, setup, line, 'journal', context=context)
             line_dict['analytic'] = False
-            print "line_dict=", line_dict
+            #print "line_dict=", line_dict
             move.append(line_dict)
-        print "move=", pformat(move)
-        print "len move=", len(move)
+        #print "move=", pformat(move)
+        #print "len move=", len(move)
         return move
 
     def parse_csv(self, cr, uid, import_data, setup, context=None):
@@ -227,7 +244,6 @@ class account_move_import(osv.osv_memory):
             quotechar = setup.get('quotechar', None),
             encoding = setup.get('encoding', 'utf-8'),
             )
-#        fileobj.close() # TODO : re tester si ça marche qd
         return reader
 
     def _generate_account_move(self, cr, uid, account_move_dict, setup, context=None):
@@ -270,6 +286,7 @@ class account_move_import(osv.osv_memory):
                 [('code', '=', row['account'])], context=context)
             if len(account_search) <> 1:
                 raise osv.except_osv('Error :', "No match for legal account code '%s' (line %d of the CSV file)" % (row['account'], line_csv))
+                #account_search = [722] # for TEST only
             account_id = account_search[0]
             try:
                 if row['debit']:
@@ -298,16 +315,15 @@ class account_move_import(osv.osv_memory):
             move_dict['lines'].append((0, 0, line_dict))
             move_dict['balance'] += debit - credit
             _logger.debug('[line %d] with this line, current balance is %d' % (line_csv, move_dict['balance']))
-            print "debit=", debit
-            print "credit=", credit
-            print "move_dict['balance']=", move_dict['balance']
+            #print "debit=", debit
+            #print "credit=", credit
+            #print "move_dict['balance']=", move_dict['balance']
             if not int(move_dict['balance']*100):
                 moves_to_create.append(move_dict)
                 _logger.debug('[line %d] NEW account move' % line_csv)
                 move_dict = deepcopy(move_dict_init)
 
         if setup.get('tempfile'):
-            print "Close file descripor"
             setup.get('tempfile').close()
 
         for move_to_create in moves_to_create:
