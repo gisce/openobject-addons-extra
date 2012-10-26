@@ -42,7 +42,7 @@ class sale_order(osv.osv):
         if part:
             partner = self.pool.get('res.partner').read(cr, uid, part, ['partner_bank_id'])
             if partner:
-                result['value'].update({'partner_bank_id': partner['partner_bank_id']})
+                result['value'].update({'partner_bank_id': partner['partner_bank_id'] and partner['partner_bank_id'][0] or False})
         return result
 
     def _prepare_invoice(self, cr, uid, order, lines, context=None):
