@@ -19,104 +19,61 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-import wizard
-import pooler
+from osv import osv,fields
 import tools
+from tools.translate import _
 import base64
 
-sent_dict = {}
-not_sent = []
-
-mail_send_form = '''<?xml version="1.0"?>
-<form string="Mail to Customer">
-    <field name="partner_id"/>
-    <newline/>
-    <field name="subject"/>
-    <newline/>
-    <field name="message"/>
-    <newline/>
-    <field name ="attachment"/>
-</form>'''
-
-mail_send_fields = {
-    'partner_id': {'string': 'Customer','type': 'many2many', 'relation': 'ecommerce.partner'},
-    'subject': {'string': 'Subject', 'type': 'char', 'size': 64, 'required': True},
-    'message': {'string': 'Message', 'type': 'text', 'required': True},
-    'attachment': {'string': 'Attachment', 'type': 'many2one', 'relation': 'ir.attachment'}
-}
-   
-finished_form = '''<?xml version="1.0"?>
-    <form string="Mail send">
-        <label string="Operation Completed" colspan="4"/>
-        <field name="mailsent" width="300"/>
-        <field name="mailnotsent" width="300"/>
-    </form>'''
-
-finished_fields = {
-    'mailsent': {'string': 'Mail Sent to', 'type': 'text'},
-    'mailnotsent': {'string': 'Mail Not sent', 'type': 'text'}
-}
-
-class ecommerce_sendmail_wizard(wizard.interface):
- 
-    def _send_reminder(self, cr, uid, data, context):
-
-        partner = data['form']['partner_id'][0][2]
-        if partner:
-            res = pooler.get_pool(cr.dbname).get('ecommerce.partner').browse(cr, uid, partner)
-            for partner in res:
-                if partner.address_ids and not partner.address_ids[0].email:
-                    not_sent.append(partner.name)
-                for adr in partner.address_ids:
-                    if adr.email:
-                        sent_dict[partner.name] = adr.email
-                        name = adr.username or partner.name
-                        to = '%s <%s>' % (name, adr.email)
-                        mail_from = 'mansuri.sananaz@gmail.com'
-                       
-                        attach_ids = pooler.get_pool(cr.dbname).get('ir.attachment').search(cr, uid, 
-                                                                                            [('res_model', '=', 'ecommerce.shop'),
-                                                                                            ('res_id', '=', data['ids'][0])])
-                        res_atc = pooler.get_pool(cr.dbname).get('ir.attachment').read(cr, uid,
-                                                                                       attach_ids, ['datas_fname', 'datas'])
-                        res_atc = map(lambda x: (x['datas_fname'],
-                                                 base64.decodestring(x['datas'])), res_atc)
-                        tools.email_send(mail_from, [to], data['form']['subject'], data['form']['message'], attach=res_atc)
-
-        return 'finished'
-
-    def get_mail_dtl(self, cr, uid, data, context):
-        cust_get_mail = []
-        cust_not_get_mail = []
-        mail_value = ''
-        not_mail = ''
-        for items in sent_dict:
-            cust_get_mail.append(items) 
-            mail_value = mail_value + ',' + items
-            
-        for items_not in not_sent:
-            cust_not_get_mail.append(items_not)
-            not_mail = not_mail + ',' + items_not
-            
-        return {'mailsent': str(mail_value), 'mailnotsent': str(not_mail)}
-
-    states = {
-        'init': {
-                'actions': [],
-                'result': {'type': 'form', 'arch': mail_send_form, 'fields': mail_send_fields, 'state': [('end', 'Cancel'), ('connect', 'Send Mail')]}
-        },
-        'connect': {
-                'actions': [],
-                'result': {'type':'choice', 'next_state': _send_reminder},
-        },
-        'finished': {
-                'actions': [get_mail_dtl],
-                'result': {'type': 'form', 'arch': finished_form, 'fields': finished_fields, 'state': [('end','OK')]}
-        }
+class ecommerce_sendmail_wizard(osv.osv_memory):
+    _name = 'ecommerce.customer.sendmail'
+    _rec_name = 'subject'
+    _columns = {
+        'partner_ids' : fields.many2many('ecommerce.partner', 'ecommerce_sendmail_rel', 'ecommerce_id', 'customer_id', 'Customer'),
+        'subject' : fields.char('Subject', size=64, required=True),
+        'message' : fields.text('Message', required=True),
+        'attachment' : fields.many2one('ir.attachment', 'Attachment')
     }
-  
-ecommerce_sendmail_wizard('ecommerce.customer.sendmail') 
-
+    def mail_send(self, cr, uid, ids, context=None):
+        if context is None:
+            context = {}
+        not_sent = []
+        result = {}
+        attchment_obj = self.pool.get('ir.attachment')
+        mail_message = self.pool.get('mail.message')
+        ecommerce_shop_rec = self.pool.get('ecommerce.shop').browse(cr, uid, context.get('active_id'), context)
+        ecommerce_record = self.browse(cr, uid, ids, context=context)
+        for record in ecommerce_record:
+            for partner in record.partner_ids:
+                if partner.id:
+                    res = self.pool.get('ecommerce.partner').browse(cr, uid, partner.id)
+                    if res.address_ids and not res.address_ids[0].email:
+                        not_sent.append(res.name)
+                    for address in res.address_ids:
+                        if address.email:
+                            result[res.name] = address.email
+                            name = address.username or res.name
+                            to = '%s <%s>' % (name, address.email)
+                            mail_from = 'mansuri.sananaz@gmail.com'
+                            attach_ids = attchment_obj.search(cr, uid, [('res_model', '=', 'ecommerce.shop'), ('res_id', '=', ecommerce_shop_rec.id)], context=context)
+                            att_rec = attchment_obj.read(cr, uid, attach_ids, ['datas', 'datas_fname'], context=context)
+                            att_rec = dict(map(lambda x: (x['datas_fname'],
+                                        base64.decodestring(x['datas'])), att_rec))
+                            mail_message.schedule_with_attach(cr, uid, mail_from, [to], record.subject, record.message, attachments=att_rec) 
+        model_data = self.pool.get('ir.model.data')
+        view_rec = model_data.get_object_reference(cr, uid, 'ecommerce', 'wizard_mailsend_finish_form_view')
+        view_id = view_rec and view_rec[1] or False
+        
+        return {
+            'name': _('Send Mail'),
+            'view_type': 'form',
+            'view_mode': 'form',
+            'view_id': [view_id],
+            'res_model': 'ecommerce.sendmail.finish',
+            'type': 'ir.actions.act_window',
+            'target': 'new',
+            'nodestroy' : True
+        }
+ecommerce_sendmail_wizard()
 
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
 

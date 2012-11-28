@@ -16,9 +16,9 @@
         <form string="Import account move">
             <separator string="Import account move via CSV file" colspan="4" />
             <field name="file_to_import" colspan="4" />
-            <newline />
-            <field name="post_move" colspan="4" />
-            <newline />
+            <field name="file_format" />
+            <field name="post_move" />
+            <field name="force_journal_id" colspan="4" />
             <separator string="Info about generic CSV format" colspan="4" />
             <!-- 50 chars max ; otherwise, nothing is displayed in the dialog box !-->
             <label colspan="4" string="Cols : Date (DD/MM/YYYY), Journal code,"/>
@@ -31,8 +31,7 @@
             <label colspan="4" string="If exporting from LibreOffice, set Language to" />
             <label colspan="4" string="English on numeric cells." />
             <newline />
-            <button name="run_import_meilleuregestion" type="object" icon="gtk-ok" string="Import MeilleureGestion" colspan="2" />
-            <button name="run_import_generic_csv" type="object" icon="gtk-ok" string="Import generic CSV" colspan="2" />
+            <button name="run_import" type="object" icon="gtk-ok" string="Run Import" colspan="2" />
             <button icon="gtk-close" special="cancel" string="Close" colspan="1" />
         </form>
     </field>

@@ -60,6 +60,21 @@
 			</form>
 		</field>
 	</record>
+	
+	<record id="view_ecommerce_partner_filter" model="ir.ui.view">
+            <field name="name">Partner</field>
+            <field name="model">ecommerce.partner</field>
+            <field name="type">search</field>
+            <field name="arch" type="xml">
+                <search string="Partner">
+                    <field name="name"/>
+                    <newline/>
+                    <group expand="0" string="Group By...">
+                        <filter string="Name" domain="[]" context="{'group_by':'name'}"/>
+                    </group>
+                </search>
+            </field>
+   </record>
 	<record model="ir.actions.act_window" id="action_partner_ecommerce_form">
 		<field name="name">Partners</field>
 		<field name="type">ir.actions.act_window</field>

@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+    <openerp>
+        <data>
+            <record model="ir.ui.view" id="wizard_mailsend_form_view">
+                <field name="name">wizard.mailsend.form</field>
+                <field name="model">ecommerce.customer.sendmail</field>
+                <field name="type">form</field>
+                <field name="arch" type="xml">
+                    <form string="Mail Send">
+                        <separator colspan="4" string="Customer"/>
+                        <field name="partner_ids" colspan="4" nolabel="1"/>
+                        <separator colspan="4" string="Subject" />
+                        <field name="subject" colspan="4" nolabel="1"/>
+                        <separator colspan="4" string="Message" />
+                        <field name="message" colspan="4" nolabel="1"/>
+                        <separator colspan="4" string="Attachment"/>
+                        <field name="attachment" colspan="4" nolabel="1"/>
+                        <group colspan="2">
+                            <button special="cancel" string="Cancel" icon="gtk-cancel"/>
+                            <button name="mail_send" string="Connect" type="object" icon="gtk-apply"/>
+                        </group>
+                     </form>
+                </field>
+            </record>
+            
+            <act_window name="Mail Send"
+                res_model="ecommerce.customer.sendmail"
+                src_model="ecommerce.shop"
+                view_type="form"
+                view_mode="form"
+                target="new"
+                key2="client_action_multi"
+                id="wizard_sendmail_customer_id"/>
+        </data>
+    </openerp>

@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+    <openerp>
+        <data>
+            <record model="ir.ui.view" id="wizard_mailsend_finish_form_view">
+                <field name="name">wizard.mailsend.finish.form</field>
+                <field name="model">ecommerce.sendmail.finish</field>
+                <field name="type">form</field>
+                <field name="arch" type="xml">
+                    <form string="Operation Complete">
+                        <field name="mailsent"/>
+                        <field name="mailnotsent"/>
+                        <group colspan="2">
+                            <button special="cancel" string="Cancel" icon="gtk-cancel"/>
+                            <button name="get_mail_detail" string="OK" type="object" icon="gtk-apply"/>
+                        </group>
+                    </form>
+                </field>
+            </record>
+            
+        </data>
+    </openerp>

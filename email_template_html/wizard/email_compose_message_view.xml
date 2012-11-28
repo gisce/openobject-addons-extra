@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <record model="ir.ui.view" id="email_compose_message_wizard_html_inherit_form">
+            <field name="name">mail.compose.message.form</field>
+            <field name="model">mail.compose.message</field>
+            <field name="type">form</field>
+            <field name="inherit_id" ref="mail.email_compose_message_wizard_form"/>
+            <field name="arch" type="xml">
+                <data>
+                    <field name="subject" position="after">
+                        <field name="force_html" colspan="4"/>
+                    </field>
+                    <xpath expr="/form/notebook/page[@string='Body']" position="replace">
+                        <page string="Body (Rich/HTML)" attrs="{'invisible':[('force_html','=',False)]}">
+                            <field name="body_html" colspan="4" nolabel="1" height="300" width="300"/>
+                        </page>
+                        <page string="Body (Plain)">
+                            <field name="body_text" colspan="4" nolabel="1" height="300" width="300"/>
+                        </page>
+                    </xpath>
+                </data>
+            </field>
+        </record>
+    </data>
+</openerp>

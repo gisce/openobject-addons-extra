@@ -27,6 +27,8 @@ import sys
 import base64
 from tempfile import TemporaryFile
 import logging
+from pprint import pformat
+from copy import deepcopy
 
 _logger = logging.getLogger(__name__)
 
@@ -73,7 +75,20 @@ class account_move_import(osv.osv_memory):
     _name = "account.move.import"
     _description = "Import account move from CSV file"
 
-    def run_import_generic_csv(self, cr, uid, ids, context=None):
+    def run_import(self, cr, uid, ids, context=None):
+        import_data = self.browse(cr, uid, ids[0], context=context)
+        file_format = import_data.file_format
+        if file_format == 'meilleuregestion':
+            return self.run_import_meilleuregestion(cr, uid, import_data, context=context)
+        elif file_format == 'genericcsv':
+            return self.run_import_genericcsv(cr, uid, import_data, context=context)
+        elif file_format == 'quadra':
+            return self.run_import_quadra(cr, uid, import_data, context=context)
+        else:
+            raise osv.except_osv(_('Error :'), _("You must select a file format."))
+
+
+    def run_import_genericcsv(self, cr, uid, import_data, context=None):
         setup = {}
         setup.update({
             'encoding': 'utf-8',
@@ -86,10 +101,11 @@ class account_move_import(osv.osv_memory):
             'top_lines_to_skip': 0,
             'bottom_lines_to_skip': 0,
         })
-        res = self.run_import_generic(cr, uid, ids, setup, context=context)
-        return res
+        account_move_dict = self.parse_csv(cr, uid, import_data, setup, context=context)
+        action = self._generate_account_move(cr, uid, account_move_dict, setup, context=context)
+        return action
 
-    def run_import_meilleuregestion(self, cr, uid, ids, context=None):
+    def run_import_meilleuregestion(self, cr, uid, import_data, context=None):
         setup = {}
         setup.update({
             'encoding': 'latin1',
@@ -102,30 +118,124 @@ class account_move_import(osv.osv_memory):
             'top_lines_to_skip': 4,
             'bottom_lines_to_skip': 3,
         })
-        res = self.run_import_generic(cr, uid, ids, setup, context=context)
-        return res
+        account_move_dict = self.parse_csv(cr, uid, import_data, setup, context=context)
+        action = self._generate_account_move(cr, uid, account_move_dict, setup, context=context)
+        return action
 
-    def run_import_generic(self, cr, uid, ids, setup, context=None):
-        import_data = self.browse(cr, uid, ids[0])
+
+    def run_import_quadra(self, cr, uid, import_data, context=None):
+        setup = {}
+        setup.update({
+            'encoding': 'ibm850',
+            'date_format': '%d%m%y',
+            'top_lines_to_skip': 0,
+            'bottom_lines_to_skip': 0,
+            'move_lines_start_with': 'M',
+            'field_positions': {
+                # Indicate position of first char and position of last char
+                # First position is 0
+                'account': [1, 8],
+                'amount_raw': [42, 54], # amount_raw = amount x 100
+                'date': [14, 19],
+                'journal': [9, 10],
+#                'label': [21, 40],
+                'label': [116, 147],
+                'sign': [41, 41],
+            
+            }
+        })
+        account_move_dict = self.parse_cols(cr, uid, import_data, setup, context=context)
+        action = self._generate_account_move(cr, uid, account_move_dict, setup, context=context)
+        return action
+
+    def parse_common(self, cr, uid, import_data, setup, context=None):
+        setup['post_move'] = import_data.post_move
+        setup['force_journal_id'] = import_data.force_journal_id.id
+        fullstr = base64.decodestring(import_data.file_to_import)
+        if setup.get('bottom_lines_to_skip'):
+            end_seq = -(setup.get('bottom_lines_to_skip') + 1)
+        else:
+            end_seq = None
+        return fullstr, end_seq
+
+    def _extract_field(self, cr, uid, setup, line, field, context=None):
+        return line[setup['field_positions'][field][0]:setup['field_positions'][field][1] + 1]
+
+    def parse_cols(self, cr, uid, import_data, setup, context=None):
+        _logger.debug('Starting to import flat file')
+        fullstr, end_seq = self.parse_common(cr, uid, import_data, setup, context=context)
+        if setup.get('top_lines_to_skip') or setup.get('bottom_lines_to_skip'):
+            cutstr = fullstr.split('\n')[setup.get('top_lines_to_skip'):end_seq]
+            _logger.debug('%d top lines skipped' % setup.get('top_lines_to_skip'))
+            _logger.debug('%d bottom lines skipped' % setup.get('bottom_lines_to_skip'))
+        else:
+            cutstr = fullstr.split('\n')
+ 
+        move = []
+        # 2nd parsing that updates top_lines_to_skip
+        for line in cutstr:
+            if not line:
+                setup['top_lines_to_skip'] += 1
+                continue
+            elif setup.get('move_lines_start_with') and line[0:len(setup.get('move_lines_start_with'))] == setup.get('move_lines_start_with'):
+                break
+            else:
+                setup['top_lines_to_skip'] += 1
+        #print "setup['top_lines_to_skip']=", setup['top_lines_to_skip']
+        cutstr2 = fullstr.split('\n')[setup.get('top_lines_to_skip'):end_seq]
+        #print "cutstr2=", pformat(cutstr2)
+        for line in cutstr2:
+            # This should only be the case for the last line
+            # TODO find why and fix
+            if not line:
+                continue
+            line = line.strip()
+            #print "line=", line
+            line_dict = {}
+            raw_account = self._extract_field(cr, uid, setup, line, 'account', context=context)
+            if raw_account.isdigit():
+                if len(raw_account) > 6:
+                    line_dict['account'] = raw_account[0:-(len(raw_account)-6)]
+                elif len(raw_account) == 6:
+                    line_dict['account'] = raw_account
+            else:
+                line_dict['account'] = raw_account.strip()
+            line_dict['date'] = self._extract_field(cr, uid, setup, line, 'date', context=context)
+            line_dict['label'] = self._extract_field(cr, uid, setup, line, 'label', context=context).strip().decode(setup.get('encoding'))
+            amount_raw = float(int(self._extract_field(cr, uid, setup, line, 'amount_raw', context=context)))
+            amount = amount_raw/100
+            sign = self._extract_field(cr, uid, setup, line, 'sign', context=context)
+            if sign == 'C':
+                line_dict['credit'] = amount
+            else:
+                line_dict['credit'] = 0
+            if sign == 'D':
+                line_dict['debit'] = amount
+            else:
+                line_dict['debit'] = 0
+            line_dict['journal'] = self._extract_field(cr, uid, setup, line, 'journal', context=context)
+            line_dict['analytic'] = False
+            #print "line_dict=", line_dict
+            move.append(line_dict)
+        #print "move=", pformat(move)
+        #print "len move=", len(move)
+        return move
+
+    def parse_csv(self, cr, uid, import_data, setup, context=None):
         _logger.debug('Starting to import CSV file')
         # Code inspired by module/wizard/base_import_language.py
         #print "Imported file=", base64.decodestring(import_data.file_to_import)
-        fullstr = base64.decodestring(import_data.file_to_import)
-        top_lines_to_skip = setup.get('top_lines_to_skip', 0)
-        bottom_lines_to_skip = setup.get('bottom_lines_to_skip', 0)
-        if bottom_lines_to_skip:
-            end_seq = -(bottom_lines_to_skip + 1)
-        else:
-            end_seq = None
-        if top_lines_to_skip or bottom_lines_to_skip:
-            cutstr = '\n'.join(fullstr.split('\n')[top_lines_to_skip:end_seq])
-            _logger.debug('%d top lines skipped' % top_lines_to_skip)
-            _logger.debug('%d bottom lines skipped' % bottom_lines_to_skip)
+        fullstr, end_seq = self.parse_common(cr, uid, import_data, setup, context=context)
+        if setup.get('top_lines_to_skip') or setup.get('bottom_lines_to_skip'):
+            cutstr = '\n'.join(fullstr.split('\n')[setup.get('top_lines_to_skip'):end_seq])
+            _logger.debug('%d top lines skipped' % setup.get('top_lines_to_skip'))
+            _logger.debug('%d bottom lines skipped' % setup.get('bottom_lines_to_skip'))
         else:
             cutstr = fullstr
         fileobj = TemporaryFile('w+')
+        setup['tempfile'] = fileobj
         fileobj.write(cutstr)
-        fileobj.seek(0) # il faut revenir au début !
+        fileobj.seek(0) # We must start reading from the beginning !
         reader = UnicodeDictReader(
             fileobj,
             fieldnames = setup.get('fieldnames'),
@@ -134,23 +244,35 @@ class account_move_import(osv.osv_memory):
             quotechar = setup.get('quotechar', None),
             encoding = setup.get('encoding', 'utf-8'),
             )
+        return reader
+
+    def _generate_account_move(self, cr, uid, account_move_dict, setup, context=None):
         date = None
-        journal = None
+        journal = False
         move_ref = False
         date_datetime = False
-        move_lines = 0
-        line_csv = top_lines_to_skip
-        line_seq = []
-        for row in reader:
+        line_csv = setup.get('top_lines_to_skip', 0)
+        # moves_to_create contains a seq ; each member is a dict with keys journal, date, lines and ref
+        moves_to_create = []
+        move_ids_created = []
+        move_dict_init = {
+            'journal': False,
+            'date_datetime': False,
+            'ref': False,
+            'lines': [],
+            'balance': 0}
+        move_dict = deepcopy(move_dict_init)
+
+        for row in account_move_dict:
             line_csv +=1
             _logger.debug('[line %d] Content : %s' % (line_csv, row))
             # Date and journal are read from the first line
-            if not date_datetime:
-                date_datetime = datetime.strptime(row['date'], setup.get('date_format'))
-            if not journal:
-                journal = row['journal']
-            if not move_ref:
-                move_ref = row['label']
+            if not move_dict['date_datetime']:
+                move_dict['date_datetime'] = datetime.strptime(row['date'], setup.get('date_format'))
+            if not move_dict['journal']:
+                move_dict['journal'] = row['journal']
+            if not move_dict['ref']:
+                move_dict['ref'] = row['label']
 
             if row['analytic']:
                 analytic_search = self.pool.get('account.analytic.account').search(cr, uid,
@@ -164,6 +286,7 @@ class account_move_import(osv.osv_memory):
                 [('code', '=', row['account'])], context=context)
             if len(account_search) <> 1:
                 raise osv.except_osv('Error :', "No match for legal account code '%s' (line %d of the CSV file)" % (row['account'], line_csv))
+                #account_search = [722] # for TEST only
             account_id = account_search[0]
             try:
                 if row['debit']:
@@ -181,60 +304,99 @@ class account_move_import(osv.osv_memory):
                 _logger.debug('[line %d] Skipped because debit=credit=0' % line_csv)
                 continue
 
-            line_seq.append((0, 0, {
+            line_dict = {
                 'account_id': account_id,
                 'name': row['label'],
                 'debit': debit,
                 'credit': credit,
                 'analytic_account_id': analytic_account_id,
-            }))
-            move_lines += 1
+            }
 
-        if not date_datetime:
-            raise osv.except_osv('Error :', "No account move found in the CSV file")
+            move_dict['lines'].append((0, 0, line_dict))
+            move_dict['balance'] += debit - credit
+            _logger.debug('[line %d] with this line, current balance is %d' % (line_csv, move_dict['balance']))
+            #print "debit=", debit
+            #print "credit=", credit
+            #print "move_dict['balance']=", move_dict['balance']
+            if not int(move_dict['balance']*100):
+                moves_to_create.append(move_dict)
+                _logger.debug('[line %d] NEW account move' % line_csv)
+                move_dict = deepcopy(move_dict_init)
 
-        date_str = datetime.strftime(date_datetime, '%Y-%m-%d')
-        journal_search = self.pool.get('account.journal').search(cr, uid, [('code', '=', journal)], context=context)
-        if len(journal_search) <> 1:
-            raise osv.except_osv('Error :', "No match for journal code '%s'" % journal)
-        journal_id = journal_search[0]
-        period_search = self.pool.get('account.period').find(cr, uid, date_str, context=context)
-        if len(period_search) <> 1:
-            raise osv.except_osv('Error :', "No matching period for date '%s'" % date_str)
-        period_id = period_search[0]
+        if setup.get('tempfile'):
+            setup.get('tempfile').close()
 
-        move_id = self.pool.get('account.move').create(cr, uid, {
-            'journal_id': journal_id,
-            'date': date_str,
-            'period_id': period_id,
-            'ref': move_ref, # in v6.1, 'name' <-> 'Number' -> do not fill !
-            'line_id': line_seq,
-            }, context=context)
-        _logger.debug('Account move ID %d created with %d move lines' % (move_id, move_lines))
-        fileobj.close()
+        for move_to_create in moves_to_create:
+#TODO
+#            if not date_datetime:
+#               raise osv.except_osv('Error :', "No account move found in the CSV file")
 
-        res_validate = self.pool.get('account.move').validate(cr, uid, [move_id], context=context)
-        _logger.debug('Account move ID %d validated' % (move_id))
-        if import_data.post_move:
-            res_post = self.pool.get('account.move').post(cr, uid, [move_id], context=context)
-            _logger.debug('Account move ID %d posted' % (move_id))
+            date_str = datetime.strftime(move_to_create['date_datetime'], '%Y-%m-%d')
+            # If the user has forced a journal, we take it
+            # otherwize, we take the journal of the CSV file
+            if setup.get('force_journal_id'):
+                journal_id = setup.get('force_journal_id')
+            else:
+                journal_search = self.pool.get('account.journal').search(cr, uid, [('code', '=', move_to_create['journal'])], context=context)
+                if len(journal_search) <> 1:
+                    raise osv.except_osv('Error :', "No match for journal code '%s'" % journal)
+                journal_id = journal_search[0]
+
+            # Select period
+            period_search = self.pool.get('account.period').find(cr, uid, date_str, context=context)
+            if len(period_search) <> 1:
+                raise osv.except_osv('Error :', "No matching period for date '%s'" % date_str)
+            period_id = period_search[0]
+
+            # Create move
+            move_id = self.pool.get('account.move').create(cr, uid, {
+                'journal_id': journal_id,
+                'date': date_str,
+                'period_id': period_id,
+                'ref': move_to_create['ref'], # in v6.1, 'name' <-> 'Number' -> do not fill !
+                'line_id': move_to_create['lines'],
+                }, context=context)
+            _logger.debug('Account move ID %d created with %d move lines' % (move_id, len(move_to_create['lines'])))
+            move_ids_created.append(move_id)
+
+        res_validate = self.pool.get('account.move').validate(cr, uid, move_ids_created, context=context)
+        _logger.debug('Account move IDs %s validated' % move_ids_created)
+        if setup.get('post_move'):
+            res_post = self.pool.get('account.move').post(cr, uid, move_ids_created, context=context)
+            _logger.debug('Account move ID %s posted' % move_ids_created)
+
         action = {
             'name': 'Account move',
             'view_type': 'form',
-            'view_mode': 'form,tree',
             'view_id': False,
             'res_model': 'account.move',
             'type': 'ir.actions.act_window',
-            'nodestroy': True,
+            'nodestroy': False,
             'target': 'current',
-            'res_id': [move_id],
-                }
+            }
+
+        if len(move_ids_created) == 1:
+            action.update({
+                'view_mode': 'form,tree',
+                'res_id': move_ids_created,
+                })
+        else:
+            action.update({
+                'view_mode': 'tree,form',
+                'domain': [('id', 'in', move_ids_created)],
+                })
         return action
 
 
     _columns = {
         'file_to_import': fields.binary('File to import', required=True, help="CSV file containing the account move to import."),
         'post_move': fields.boolean('Validate the account move', help="If True, the account move will be posted after the import."),
+        'force_journal_id': fields.many2one('account.journal', string="Force Journal", help="Journal in which the account move will be created, even if the CSV file indicate another journal."),
+        'file_format': fields.selection([
+            ('meilleuregestion', 'MeilleureGestion'),
+            ('genericcsv', 'Generic CSV'),
+            ('quadra', 'Quadra'),
+            ], 'File format', help="Select the type of file you are importing."),
     }
 
 account_move_import()
