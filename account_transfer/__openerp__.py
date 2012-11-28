@@ -2,7 +2,7 @@
 ##############################################################################
 #
 #    OpenERP, Open Source Management Solution
-#    Copyright (C) 2011 Cubic ERP - Teradata SAC (<http://cubicerp.com>).
+#    Copyright (C) 2012 Cubic ERP - Teradata SAC (<http://cubicerp.com>).
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -19,28 +19,45 @@
 #
 ##############################################################################
 {
-    "name": "Account Trasnsfer Cash and Bank",
+    "name": "Cash and Bank Transfers",
     "version": "1.0",
     "description": """
-Extend the account_voucher to management cash/bank transfers
+Manage transfers between cash and bank accounts
+===============================================
 
-Gestión de transferencias de efectivo entre cuentas propias y relacionadas
+The management of bank and cash transfers, enables you to track your money transfers in easy and secure way.
+OpenERP has several methods of tracking the cash account move, like vouchers or bank statements. In this way this module will generate payment vouchers to integrate the cash and bank transfers to OpenERP.
+
+Key Features
+------------
+* Manage the authorization of money transfers
+* Allow transfer money between accounts directly
+* Optimize the treasure management
+
+Dashboard / Reports for Money Transfer will include:
+----------------------------------------------------
+* Transfer Report
     """,
     "author": "Cubic ERP",
     "website": "http://cubicERP.com",
-    "category": "Finance",
+    "category": "Financial",
     "depends": [
-		"account_voucher",
-		"account",
+        "account",
+        "account_voucher",
+        ],
+    "data":[
+        "account_transfer_view.xml",
+        "security/account_transfer_security.xml",
+	    "security/ir.model.access.csv",
+        "account_transfer_workflow.xml",
+        "account_view.xml",
+        "account_transfer_sequence.xml",
+        "account_transfer_data.xml",
 	    ],
-    "data":[ 
-	    "account_transfer_view.xml",
-	    "account_view.xml",
-	    ],
-    "demo_xml": [ ],
+    "demo_xml": [],
+    "update_xml": [],
     "active": False,
     "installable": True,
     "certificate" : "",
 }
-
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

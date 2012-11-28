@@ -2,7 +2,7 @@
 ##############################################################################
 #
 #    OpenERP, Open Source Management Solution
-# Copyright (c) 2012 Cubic ERP - Teradata SAC. (http://cubicerp.com).
+# Copyright (c) 2011 Cubic ERP - Teradata SAC. (http://cubicerp.com).
 #
 # WARNING: This program as such is intended to be used by professional
 # programmers who take the whole responsability of assessing all potential
@@ -27,8 +27,6 @@
 #
 ##############################################################################
 
-import account_transfer
-import account
-
+import purchase
 
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

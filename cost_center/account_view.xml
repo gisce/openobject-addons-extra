@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+	<data>
+
+		<record model='ir.ui.view' id='account_type_form_view_inherit_cost'>
+			<field name='name'>Account Type Form Inherit Cost Center</field>
+			<field name='model'>account.account.type</field>
+			<field name='inherit_id' ref='account.view_account_type_form'/>
+			<field name='type'>form</field>
+			<field name='arch' type='xml'>
+                <field name="close_method" position="after">
+                    <field name="is_cost_center"/>
+                </field>
+            </field>
+        </record>
+        
+		<record model='ir.ui.view' id='view_account_journal_form_inherit_cost'>
+			<field name='name'>cost.center.account.journal.form</field>
+			<field name='model'>account.journal</field>
+			<field name='inherit_id' ref='account.view_account_journal_form'/>
+			<field name='type'>form</field>
+			<field name='arch' type='xml'>
+                <field name="type" position="after">
+                    <field name="charge_account_id" attrs="{'invisible':[('type','not in',['purchase','purchase_refund'])]}"/>
+                </field>
+            </field>
+        </record>
+		
+		<record model='ir.ui.view' id='account_form_view_inherit_cost'>
+			<field name='name'>Account Form Inherit Cost Center</field>
+			<field name='model'>account.account</field>
+			<field name='inherit_id' ref='account.view_account_form'/>
+			<field name='type'>form</field>
+			<field name='arch' type='xml'>
+                <field name="reconcile" position="after">
+                    <field name="is_cost_center"/>
+                </field>
+			</field>
+		</record>
+
+		<record model='ir.ui.view' id='account_move_line_form_view_inherit_cost'>
+			<field name='name'>Account Move Line Form Inherit Cost Center</field>
+			<field name='model'>account.move.line</field>
+			<field name='inherit_id' ref='account.view_move_line_form'/>
+			<field name='type'>form</field>
+			<field name='arch' type='xml'>
+                <field name="account_id" position="after">
+                    <field name="related_account_id" attrs="{'readonly':[('state','=','valid')]}"/>
+                </field>
+			</field>
+		</record>
+        
+        <record model="ir.ui.view" id="view_move_line_tree_inherit_cost_center">
+            <field name="name">account.move.line.tree.inherit</field>
+            <field name="model">account.move.line</field>
+            <field name="type">tree</field>
+            <field name="priority">2</field>
+            <field name="inherit_id" ref="account.view_move_line_tree"/>
+            <field name="arch" type="xml">
+                <field name="reconcile_id" position="after">
+                    <field name="related_account_id"/>
+                </field>
+            </field>
+        </record>
+
+		<record model='ir.ui.view' id='account_move_line_filter_view_inherit_cost'>
+			<field name='name'>Account Move Line Filter Inherit Cost Center</field>
+			<field name='model'>account.move.line</field>
+			<field name='inherit_id' ref='account.view_account_move_line_filter'/>
+			<field name='type'>search</field>
+			<field name='arch' type='xml'>
+				<xpath expr="/search/group/filter[@string='Period']" position="after">
+					<separator orientation="vertical"/>
+                    <filter string="Related Account" icon="terp-folder-green" domain="[]" context="{'group_by':'related_account_id'}" help="Related cost center or related expense account"/>
+				</xpath>
+			</field>
+		</record>
+        
+	</data>
+</openerp>

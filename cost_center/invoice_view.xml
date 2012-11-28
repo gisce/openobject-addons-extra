@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+	<data>
+		
+		<record model='ir.ui.view' id='account_invoice_cc_form_view'>
+			<field name='name'>Account Invoice Cost Center Form Inherit</field>
+			<field name='model'>account.invoice</field>
+			<field name='inherit_id' ref='account.invoice_supplier_form'/>
+			<field name='type'>form</field>
+			<field name='arch' type='xml'>
+                <!--xpath expr="/form/sheet/notebook/page[@string='Invoice Lines']/field[@name='invoice_line']/tree/field[@name='account_analytic_id']" position="replace"-->
+                <field name="account_analytic_id" position="replace">
+                    <field name="account_analytic_id" groups="analytic.group_analytic_accounting" domain="[('type','!=','view'), ('company_id', '=', parent.company_id), ('parent_id', '!=', False)]" on_change="onchange_analytic_id(account_analytic_id)"/>
+                    <field name="account_cc_id"/>
+                </field>
+                <!--/xpath-->
+			</field>
+		</record>
+		
+	</data>
+</openerp>
