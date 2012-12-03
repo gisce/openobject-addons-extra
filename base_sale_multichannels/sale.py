@@ -386,7 +386,7 @@ class sale_shop(osv.osv):
         LEFT JOIN stock_picking as pickings
                   ON (sale_order.id = pickings.sale_id
                       AND pickings.type='out'
-                      AND picking.state != 'cancel')
+                      AND pickings.state != 'cancel')
         LEFT JOIN ir_model_data
                   ON stock_picking.id = ir_model_data.res_id
                   AND ir_model_data.model = 'stock.picking'
