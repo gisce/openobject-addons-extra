@@ -44,7 +44,13 @@ class external_shop_group(osv.osv):
         'name': fields.char('Name', size=64, required=True),
         'referential_id': fields.many2one('external.referential', 'Referential', select=True, ondelete='cascade'),
         'shop_ids': fields.one2many('sale.shop', 'shop_group_id', 'Sale Shops'),
+        'import_partners_from_date': fields.datetime('Import partner changes from'),
     }
+
+    def import_partners(self, cr, uid, group, context=None):
+        """Not Implemented in abstract base module!"""
+        return {}
+
 
 external_shop_group()
 
@@ -170,6 +176,7 @@ class sale_shop(osv.osv):
         'last_images_export_date': fields.datetime('Last Images Export Time'),
         'last_update_order_export_date' : fields.datetime('Last Order Update  Time'),
         'last_products_export_date' : fields.datetime('Last Product Export  Time'),
+        'import_partners_from_date' : fields.related('shop_group_id', 'import_partners_from_date', type="datetime", string="Import changes from"),
         'referential_id': fields.function(_get_referential_id, fnct_inv = _set_referential_id, type='many2one',
                 relation='external.referential', string='External Referential', method=True,
                 store={
@@ -328,6 +335,7 @@ class sale_shop(osv.osv):
         """Not Implemented in abstract base module!"""
         return {}
 
+
     def _update_order_query(self, cr, uid, shop, context=None):
         req = """
             SELECT ir_model_data.res_id, ir_model_data.name
@@ -361,6 +369,33 @@ class sale_shop(osv.osv):
                     _logger.info("Successfully updated order with OpenERP id %s and ext id %s in external sale system", id, order_ext_id)
             self.pool.get('sale.shop').write(cr, uid, shop.id, {'last_update_order_export_date': time.strftime(DEFAULT_SERVER_DATETIME_FORMAT)})
         return False
+
+    def _get_shop_group_ids(self, cr, uid, ids, context=None):
+        """
+        For each shop id given find all shop id of the same shop
+        """
+        shop_group_ids = set()
+        for shop in self.browse(cr, uid, ids, context=context):
+            shop_group_ids.add(shop.shop_group_id.id)
+        return list(shop_group_ids)
+
+
+    def import_partners(self, cr, uid, ids, context=None):
+        """
+        Import Partners from External into OpenERP
+
+        Will do it for each shop of the same shop group
+        """
+        if context is None:
+            context = {}
+        shop_group_ids = self._get_shop_group_ids(cr, uid, ids, context=context)
+
+        group_obj = self.pool.get('external.shop.group')
+
+        for group in group_obj.browse(cr, uid, shop_group_ids):
+            group_obj.import_partners(cr, uid, group, context=context)
+        return False
+
 
     def update_shop_partners(self, cr, uid, ids, context=None):
         if context is None:
