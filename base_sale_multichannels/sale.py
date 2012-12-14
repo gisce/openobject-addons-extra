@@ -386,8 +386,6 @@ class sale_shop(osv.osv):
 
         Will do it for each shop of the same shop group
         """
-        if context is None:
-            context = {}
         shop_group_ids = self._get_shop_group_ids(cr, uid, ids, context=context)
 
         group_obj = self.pool.get('external.shop.group')
