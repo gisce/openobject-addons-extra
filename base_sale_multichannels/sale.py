@@ -392,7 +392,8 @@ class sale_shop(osv.osv):
 
         group_obj = self.pool.get('external.shop.group')
 
-        for group in group_obj.browse(cr, uid, shop_group_ids):
+        shop_groups = group_obj.browse(cr, uid, shop_group_ids, context=context)
+        for group in shop_groups:
             group_obj.import_partners(cr, uid, group, context=context)
         return False
 
