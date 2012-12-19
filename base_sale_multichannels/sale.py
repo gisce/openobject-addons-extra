@@ -47,7 +47,7 @@ class external_shop_group(osv.osv):
         'import_partners_from_date': fields.datetime('Import partner changes from'),
     }
 
-    def import_partners(self, cr, uid, group, context=None):
+    def _import_partners(self, cr, uid, group, context=None):
         """Not Implemented in abstract base module!"""
         return {}
 
@@ -392,7 +392,7 @@ class sale_shop(osv.osv):
 
         shop_groups = group_obj.browse(cr, uid, shop_group_ids, context=context)
         for group in shop_groups:
-            group_obj.import_partners(cr, uid, group, context=context)
+            group_obj._import_partners(cr, uid, group, context=context)
         return False
 
 
